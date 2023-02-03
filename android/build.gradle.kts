@@ -1,11 +1,8 @@
 plugins {
-    id("org.jetbrains.compose")
+    id("org.jetbrains.compose") version "1.3.0"
     id("com.android.application")
     kotlin("android")
 }
-
-group "com.outsidesource"
-version "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -27,8 +24,8 @@ android {
         versionName = "1.0-SNAPSHOT"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     buildTypes {
         getByName("release") {
