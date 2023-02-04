@@ -18,6 +18,8 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
+                api(compose.preview)
+                implementation("androidx.compose.ui:ui:1.3.3")
                 implementation(project(":common"))
             }
         }
@@ -37,11 +39,7 @@ kotlin {
                 implementation("junit:junit:4.13.2")
             }
         }
-        val desktopMain by getting {
-            dependencies {
-                api(compose.preview)
-            }
-        }
+        val desktopMain by getting
         val desktopTest by getting
     }
 }
@@ -57,4 +55,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+dependencies {
 }
