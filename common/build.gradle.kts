@@ -18,6 +18,7 @@ kotlin {
                 api("io.insert-koin:koin-core:3.1.6")
                 api("co.touchlab:kermit:1.1.1")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
             }
         }
         val commonTest by getting {

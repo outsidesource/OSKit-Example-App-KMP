@@ -7,8 +7,8 @@ class HomeViewInteractor(
     private val coordinator: AppCoordinator
 ): Interactor<Unit>(initialState = Unit) {
 
-    fun coordinatorExampleButtonClicked() {
-        coordinator.coordinatorExample()
+    fun appStateExampleButtonClicked() {
+        coordinator.appStateExample()
     }
 
     fun viewStateExampleButtonClicked() {

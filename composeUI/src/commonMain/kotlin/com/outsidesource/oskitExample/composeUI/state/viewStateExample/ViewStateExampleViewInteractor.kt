@@ -1,4 +1,4 @@
-package com.outsidesource.oskitExample.composeUI.state.stateExample
+package com.outsidesource.oskitExample.composeUI.state.viewStateExample
 
 import com.outsidesource.oskitExample.composeUI.coordinator.AppCoordinator
 import com.outsidesource.oskitkmp.interactor.Interactor
@@ -10,7 +10,7 @@ data class StateExampleViewState(
     val isValidityCheckerValid: Boolean = true,
 )
 
-class StateExampleViewInteractor(
+class ViewStateExampleViewInteractor(
     private val coordinator: AppCoordinator,
 ): Interactor<StateExampleViewState>(
     initialState = StateExampleViewState()

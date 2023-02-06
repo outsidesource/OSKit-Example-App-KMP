@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.outsidesource.oskitExample.composeUI.state.stateExample.StateExampleViewInteractor
+import com.outsidesource.oskitExample.composeUI.state.viewStateExample.ViewStateExampleViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitkmp.interactor.collectAsState
 import com.outsidesource.oskitkmp.router.rememberForRoute
@@ -21,7 +21,7 @@ import org.koin.java.KoinJavaComponent.inject
 @Composable
 fun ViewStateExampleScreen(
     depth: Int,
-    interactor: StateExampleViewInteractor = rememberForRoute { inject<StateExampleViewInteractor>(StateExampleViewInteractor::class.java).value }
+    interactor: ViewStateExampleViewInteractor = rememberForRoute { inject<ViewStateExampleViewInteractor>(ViewStateExampleViewInteractor::class.java).value }
 ) {
     val state by interactor.collectAsState()
 

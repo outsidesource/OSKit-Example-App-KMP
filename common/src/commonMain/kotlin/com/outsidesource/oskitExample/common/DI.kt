@@ -1,5 +1,7 @@
 package com.outsidesource.oskitExample.common
 
+import com.outsidesource.oskitExample.common.service.device.DeviceService
+import com.outsidesource.oskitExample.common.state.device.DeviceInteractor
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
@@ -12,5 +14,7 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}, extraModules: Array<Module
     }
 
 fun commonModule() = module {
+    single { DeviceService() }
 
+    single { DeviceInteractor(get()) }
 }
