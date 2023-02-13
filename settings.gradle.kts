@@ -15,6 +15,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "OSKit-KMP-Example-App"
+rootProject.name = "OSKit-Example-App-KMP"
 
 include(":android", ":desktop", ":common", ":composeUI")
