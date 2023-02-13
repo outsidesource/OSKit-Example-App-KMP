@@ -25,11 +25,11 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
         ) {
             Button(
-                content = { Text("App State Example") },
+                content = { Text("App Interactor Example") },
                 onClick = { interactor.appStateExampleButtonClicked() }
             )
             Button(
-                content = { Text("View State Example") },
+                content = { Text("View Interactor Example") },
                 onClick = { interactor.viewStateExampleButtonClicked() }
             )
         }
