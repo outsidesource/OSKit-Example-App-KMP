@@ -1,4 +1,4 @@
-package com.outsidesource.oskitExample.composeUI.ui.stateExample
+package com.outsidesource.oskitExample.composeUI.ui.viewStateExample
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
