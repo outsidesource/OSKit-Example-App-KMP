@@ -17,6 +17,7 @@ import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
 import com.outsidesource.oskitExample.common.model.device.Device
 import com.outsidesource.oskitExample.common.model.device.DeviceMode
 import com.outsidesource.oskitExample.composeUI.state.device.DeviceHomeViewInteractor
+import com.outsidesource.oskitExample.composeUI.ui.common.CustomSlider
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitkmp.interactor.collectAsState
 import com.outsidesource.oskitkmp.lib.ValRef
@@ -87,8 +88,6 @@ private fun DeviceView(
     val interactor = interactorRef.value
     val device = state.device ?: return
 
-    var localVolume by remember(device.volume) { mutableStateOf(device.volume) }
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -108,13 +107,10 @@ private fun DeviceView(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text("Volume")
-            Slider(
-                value = localVolume * 100f,
+            CustomSlider(
+                value = device.volume * 100f,
                 valueRange = 0f..100f,
-                onValueChange = {
-                    localVolume = it / 100f
-                    interactor.setVolume(it / 100f)
-                },
+                onValueChange = { interactor.setVolume(it / 100f) },
             )
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -133,7 +129,7 @@ fun ModeButton(isSelected: Boolean, mode: DeviceMode, onClick: () -> Unit) {
             .shadow(4.dp, RoundedCornerShape(8.dp))
             .border(
                 width = if (isSelected) 2.dp else 0.dp,
-                color = if (isSelected) Color.Black else Color.Transparent,
+                color = if (isSelected) MaterialTheme.colors.primary else Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
             )
             .background(Color(0xFFF2F2F2), RoundedCornerShape(8.dp))

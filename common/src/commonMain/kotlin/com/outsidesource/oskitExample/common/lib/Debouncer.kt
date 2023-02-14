@@ -1,5 +1,7 @@
 package com.outsidesource.oskitExample.common.lib
 
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -11,8 +13,9 @@ class Debouncer(
 ) {
     private var job: Job? = null
     private var lastEmit: Instant = Clock.System.now()
+    private val lock = reentrantLock()
 
-    fun emit(func: suspend () -> Unit) {
+    fun emit(func: suspend () -> Unit) = lock.withLock {
         job?.cancel()
 
         if (maxWaitMillis < 0) {

@@ -19,6 +19,7 @@ kotlin {
                 api("co.touchlab:kermit:1.1.1")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
                 api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+                api("org.jetbrains.kotlinx:atomicfu:0.19.0")
             }
         }
         val commonTest by getting {
@@ -28,7 +29,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api("androidx.appcompat:appcompat:1.6.0")
+                api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.9.0")
             }
         }

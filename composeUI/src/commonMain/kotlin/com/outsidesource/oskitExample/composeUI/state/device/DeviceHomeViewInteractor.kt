@@ -19,7 +19,7 @@ class DeviceHomeViewInteractor(
     initialState = DeviceHomeViewState(),
     dependencies = listOf(deviceInteractor)
 ) {
-    private val debouncer = Debouncer(200)
+    private val debouncer = Debouncer(200, maxWaitMillis = 200)
 
     override fun computed(state: DeviceHomeViewState): DeviceHomeViewState {
         return state.copy(
@@ -41,7 +41,9 @@ class DeviceHomeViewInteractor(
     }
 
     fun setVolume(volume: Float) = interactorScope.launch {
-        debouncer.emit { deviceInteractor.setVolume(deviceId, volume) }
+        debouncer.emit {
+            deviceInteractor.setVolume(deviceId, volume)
+        }
     }
 
     fun setMode(mode: DeviceMode) = interactorScope.launch {
