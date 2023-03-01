@@ -8,7 +8,7 @@ import com.outsidesource.oskitExample.composeUI.ui.appStateExample.AppStateExamp
 import com.outsidesource.oskitExample.composeUI.ui.device.DeviceHomeScreen
 import com.outsidesource.oskitExample.composeUI.ui.home.HomeScreen
 import com.outsidesource.oskitExample.composeUI.ui.viewStateExample.ViewStateExampleScreen
-import com.outsidesource.oskitkmp.router.RouteSwitch
+import com.outsidesource.oskitcompose.router.RouteSwitch
 import org.koin.java.KoinJavaComponent.inject
 
 @Composable

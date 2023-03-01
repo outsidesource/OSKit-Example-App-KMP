@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitExample.composeUI.state.viewStateExample.ViewStateExampleViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
-import com.outsidesource.oskitkmp.interactor.collectAsState
-import com.outsidesource.oskitkmp.router.rememberForRoute
+import com.outsidesource.oskitcompose.interactor.collectAsState
+import com.outsidesource.oskitcompose.router.rememberForRoute
 import org.koin.java.KoinJavaComponent.inject
 
 @Composable

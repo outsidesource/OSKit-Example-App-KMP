@@ -1,13 +1,13 @@
 package com.outsidesource.oskitExample.composeUI.coordinator
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import com.outsidesource.oskitExample.common.model.device.Device
 import com.outsidesource.oskitExample.composeUI.ui.Route
+import com.outsidesource.oskitcompose.router.DefaultRouteTransition
+import com.outsidesource.oskitcompose.router.ScaleRouteTransition
 import com.outsidesource.oskitkmp.coordinator.Coordinator
 import com.outsidesource.oskitkmp.lib.Platform
 import com.outsidesource.oskitkmp.lib.current
-import com.outsidesource.oskitkmp.router.DefaultRouteTransition
-import com.outsidesource.oskitkmp.router.ScaleRouteTransition
+
 
 @OptIn(ExperimentalAnimationApi::class)
 class AppCoordinator: Coordinator(

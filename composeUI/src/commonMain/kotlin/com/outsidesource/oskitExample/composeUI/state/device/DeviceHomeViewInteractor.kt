@@ -1,10 +1,10 @@
 package com.outsidesource.oskitExample.composeUI.state.device
 
-import com.outsidesource.oskitExample.common.lib.Debouncer
 import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
 import com.outsidesource.oskitExample.common.model.device.Device
 import com.outsidesource.oskitExample.common.model.device.DeviceMode
 import com.outsidesource.oskitExample.common.state.device.DeviceInteractor
+import com.outsidesource.oskitkmp.concurrency.Debouncer
 import com.outsidesource.oskitkmp.interactor.Interactor
 import kotlinx.coroutines.launch
 

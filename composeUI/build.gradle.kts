@@ -10,7 +10,12 @@ version = "1.0-SNAPSHOT"
 kotlin {
     android()
     jvm("desktop") {
-        jvmToolchain(17)
+        val main by compilations.getting {
+            compilerOptions.configure {
+                jvmToolchain(11)
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+            }
+        }
     }
     sourceSets {
         val commonMain by getting {
@@ -20,6 +25,7 @@ kotlin {
                 api(compose.material)
                 api(compose.preview)
                 implementation("androidx.compose.ui:ui:1.3.3")
+                implementation("com.outsidesource:oskit-compose:1.0.0")
                 implementation(project(":common"))
             }
         }
@@ -54,7 +60,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        kotlin.jvmToolchain(11)
     }
-}
-dependencies {
 }
