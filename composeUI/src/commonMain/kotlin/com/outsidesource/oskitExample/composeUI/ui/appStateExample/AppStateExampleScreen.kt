@@ -25,12 +25,13 @@ import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
 import com.outsidesource.oskitExample.composeUI.state.appStateExample.AppStateExampleViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
+import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.router.rememberForRoute
 import org.koin.java.KoinJavaComponent.inject
 
 @Composable
 fun AppStateExampleScreen(
-    interactor: AppStateExampleViewInteractor = rememberForRoute { inject<AppStateExampleViewInteractor>(AppStateExampleViewInteractor::class.java).value }
+    interactor: AppStateExampleViewInteractor = rememberInjectForRoute()
 ) {
     val state by interactor.collectAsState()
 

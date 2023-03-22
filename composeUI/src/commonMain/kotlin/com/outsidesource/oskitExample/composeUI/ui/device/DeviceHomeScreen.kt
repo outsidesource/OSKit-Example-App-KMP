@@ -24,6 +24,7 @@ import com.outsidesource.oskitExample.composeUI.ui.common.CustomSlider
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.ValRef
+import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.lib.rememberValRef
 import com.outsidesource.oskitcompose.router.rememberForRoute
 import org.koin.core.parameter.parametersOf
@@ -32,9 +33,7 @@ import org.koin.java.KoinJavaComponent.inject
 @Composable
 fun DeviceHomeScreen(
     deviceId: Int,
-    interactor: DeviceHomeViewInteractor = rememberForRoute {
-        inject<DeviceHomeViewInteractor>(DeviceHomeViewInteractor::class.java, parameters = { parametersOf(deviceId) }).value
-    }
+    interactor: DeviceHomeViewInteractor = rememberInjectForRoute()
 ) {
     val state by interactor.collectAsState()
 
