@@ -15,7 +15,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api("com.outsidesource:oskit-kmp:2.1.1")
-                api("com.outsidesource:oskit-compose:1.0.1")
+                api("com.outsidesource:oskit-compose:1.2.0")
                 api("io.insert-koin:koin-core:3.3.3")
                 api("co.touchlab:kermit:1.1.1")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
