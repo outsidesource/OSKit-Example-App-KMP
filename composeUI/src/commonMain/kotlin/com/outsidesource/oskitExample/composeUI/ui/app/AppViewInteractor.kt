@@ -1,4 +1,4 @@
-package com.outsidesource.oskitExample.composeUI.state.app
+package com.outsidesource.oskitExample.composeUI.ui.app
 
 import com.outsidesource.oskitExample.composeUI.coordinator.AppCoordinator
 import com.outsidesource.oskitkmp.interactor.Interactor

@@ -24,8 +24,8 @@ kotlin {
                 api(compose.foundation)
                 api(compose.material)
                 api(compose.preview)
-                implementation("androidx.compose.ui:ui:1.3.3")
-                implementation("com.outsidesource:oskit-compose:1.0.1")
+                implementation("androidx.compose.ui:ui:1.4.0")
+                implementation("com.outsidesource:oskit-compose:1.2.0")
                 implementation(project(":common"))
             }
         }

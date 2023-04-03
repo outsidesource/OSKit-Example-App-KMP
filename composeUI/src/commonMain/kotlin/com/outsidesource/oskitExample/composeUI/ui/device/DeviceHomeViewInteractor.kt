@@ -1,4 +1,4 @@
-package com.outsidesource.oskitExample.composeUI.state.device
+package com.outsidesource.oskitExample.composeUI.ui.device
 
 import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
 import com.outsidesource.oskitExample.common.model.device.Device

@@ -12,12 +12,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.outsidesource.oskitExample.composeUI.state.viewStateExample.ViewStateExampleViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
-import com.outsidesource.oskitcompose.router.rememberForRoute
-import org.koin.java.KoinJavaComponent.inject
 
 @Composable
 fun ViewStateExampleScreen(

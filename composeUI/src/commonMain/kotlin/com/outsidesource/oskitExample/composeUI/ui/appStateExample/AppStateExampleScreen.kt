@@ -22,12 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
-import com.outsidesource.oskitExample.composeUI.state.appStateExample.AppStateExampleViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
-import com.outsidesource.oskitcompose.router.rememberForRoute
-import org.koin.java.KoinJavaComponent.inject
 
 @Composable
 fun AppStateExampleScreen(

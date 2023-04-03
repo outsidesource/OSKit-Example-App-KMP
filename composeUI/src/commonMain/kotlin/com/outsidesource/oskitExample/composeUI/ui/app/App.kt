@@ -2,7 +2,6 @@ package com.outsidesource.oskitExample.composeUI.ui.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.outsidesource.oskitExample.composeUI.state.app.AppViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.Route
 import com.outsidesource.oskitExample.composeUI.ui.appStateExample.AppStateExampleScreen
 import com.outsidesource.oskitExample.composeUI.ui.device.DeviceHomeScreen

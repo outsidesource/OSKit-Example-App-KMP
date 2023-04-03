@@ -1,4 +1,4 @@
-package com.outsidesource.oskitExample.composeUI.state.appStateExample
+package com.outsidesource.oskitExample.composeUI.ui.appStateExample
 
 import com.outsidesource.oskitExample.common.model.device.Device
 import com.outsidesource.oskitExample.common.state.device.DeviceInteractor

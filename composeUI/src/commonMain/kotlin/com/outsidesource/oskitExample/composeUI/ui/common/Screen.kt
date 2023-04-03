@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.outsidesource.oskitExample.composeUI.state.app.AppViewInteractor
+import com.outsidesource.oskitExample.composeUI.ui.app.AppViewInteractor
 import org.koin.java.KoinJavaComponent.inject
 
 @Composable
