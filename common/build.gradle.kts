@@ -14,13 +14,13 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("com.outsidesource:oskit-kmp:2.1.1")
-                api("com.outsidesource:oskit-compose:1.2.0")
+                api("com.outsidesource:oskit-kmp:3.0.0")
+                api("com.outsidesource:oskit-compose:2.0.0")
                 api("io.insert-koin:koin-core:3.3.3")
                 api("co.touchlab:kermit:1.1.1")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
                 api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
-                api("org.jetbrains.kotlinx:atomicfu:0.19.0")
+                api("org.jetbrains.kotlinx:atomicfu:0.20.2")
             }
         }
         val commonTest by getting {
@@ -31,7 +31,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.9.0")
+                api("androidx.core:core-ktx:1.10.1")
             }
         }
         val androidInstrumentedTest by getting {

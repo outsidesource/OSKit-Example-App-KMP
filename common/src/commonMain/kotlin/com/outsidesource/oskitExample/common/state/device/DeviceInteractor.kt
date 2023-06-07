@@ -21,13 +21,13 @@ class DeviceInteractor(
         }
     }
 
-    suspend fun setVolume(id: Int, volume: Float): Outcome<Unit> {
+    suspend fun setVolume(id: Int, volume: Float): Outcome<Unit, Any> {
         val outcome = deviceService.setVolume(id, volume)
         if (outcome is Outcome.Ok) updateDevice(id) { settings -> settings.copy(volume = volume) }
         return outcome
     }
 
-    suspend fun setMode(id: Int, mode: DeviceMode): Outcome<Unit> {
+    suspend fun setMode(id: Int, mode: DeviceMode): Outcome<Unit, Any> {
         val outcome = deviceService.setMode(id, mode)
         if (outcome is Outcome.Ok) updateDevice(id) { settings -> settings.copy(mode = mode) }
         return outcome

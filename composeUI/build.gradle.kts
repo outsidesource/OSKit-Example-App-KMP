@@ -1,6 +1,8 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose") version "1.3.0"
+    id("org.jetbrains.compose") version "1.4.0"
     id("com.android.library")
 }
 
@@ -13,7 +15,7 @@ kotlin {
         val main by compilations.getting {
             compilerOptions.configure {
                 jvmToolchain(11)
-                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+                jvmTarget.set(JvmTarget.JVM_11)
             }
         }
     }
@@ -24,8 +26,8 @@ kotlin {
                 api(compose.foundation)
                 api(compose.material)
                 api(compose.preview)
-                implementation("androidx.compose.ui:ui:1.4.0")
-                implementation("com.outsidesource:oskit-compose:1.2.0")
+                implementation("androidx.compose.ui:ui:1.4.3")
+                implementation("com.outsidesource:oskit-compose:2.0.0")
                 implementation(project(":common"))
             }
         }
@@ -37,7 +39,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.9.0")
+                api("androidx.core:core-ktx:1.10.1")
             }
         }
         val androidInstrumentedTest by getting {
