@@ -55,5 +55,5 @@ class DeviceService {
         return Outcome.Ok(Unit)
     }
 
-    private suspend fun randomDelay(min: Int, max: Int) = delay(((Random.nextInt() * (max - min)) + min).toLong())
+    private suspend fun randomDelay(min: Int, max: Int) = delay(((Random.nextFloat() * (max - min)) + min).toLong())
 }
