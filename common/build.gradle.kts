@@ -8,19 +8,32 @@ version = "1.0-SNAPSHOT"
 
 kotlin {
     android()
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "common"
+            isStatic = true
+        }
+    }
+
     jvm("desktop") {
         jvmToolchain(11)
     }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("com.outsidesource:oskit-kmp:3.0.0")
-                api("com.outsidesource:oskit-compose:2.0.0")
-                api("io.insert-koin:koin-core:3.3.3")
+                api("com.outsidesource:oskit-kmp:3.1.2")
+                api("com.outsidesource:oskit-compose:2.1.0")
+                api("io.insert-koin:koin-core:3.4.0")
                 api("co.touchlab:kermit:1.1.1")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
                 api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
-                api("org.jetbrains.kotlinx:atomicfu:0.20.2")
+                api("org.jetbrains.kotlinx:atomicfu:0.21.0")
             }
         }
         val commonTest by getting {
@@ -44,15 +57,25 @@ kotlin {
             }
         }
         val desktopTest by getting
+
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }
     }
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

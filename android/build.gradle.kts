@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.compose") version "1.4.0"
+    id("org.jetbrains.compose") version "1.5.0"
     id("com.android.application")
     kotlin("android")
 }
@@ -16,11 +16,11 @@ dependencies {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.outsidesource.oskitExample"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0-SNAPSHOT"
     }

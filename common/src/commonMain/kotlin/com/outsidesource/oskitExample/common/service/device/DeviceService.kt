@@ -7,6 +7,7 @@ import com.outsidesource.oskitExample.common.model.device.DeviceModel
 import com.outsidesource.oskitkmp.outcome.Outcome
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
+import kotlin.random.Random
 
 class DeviceService {
     // These variables are just here to mock persistent device state
@@ -54,5 +55,5 @@ class DeviceService {
         return Outcome.Ok(Unit)
     }
 
-    private suspend fun randomDelay(min: Int, max: Int) = delay(((Math.random() * (max - min)) + min).toLong())
+    private suspend fun randomDelay(min: Int, max: Int) = delay(((Random.nextInt() * (max - min)) + min).toLong())
 }

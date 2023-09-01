@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose") version "1.4.0"
+    id("org.jetbrains.compose") version "1.5.0"
     id("com.android.library")
 }
 
@@ -19,15 +19,25 @@ kotlin {
             }
         }
     }
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "composeUI"
+            isStatic = true
+        }
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
-                api(compose.preview)
-                implementation("androidx.compose.ui:ui:1.4.3")
-                implementation("com.outsidesource:oskit-compose:2.0.0")
+                implementation("com.outsidesource:oskit-compose:2.1.0")
                 implementation(project(":common"))
             }
         }
@@ -38,6 +48,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                implementation("androidx.compose.ui:ui:1.5.0")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.10.1")
             }
@@ -49,6 +60,16 @@ kotlin {
         }
         val desktopMain by getting
         val desktopTest by getting
+
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }
     }
 }
 

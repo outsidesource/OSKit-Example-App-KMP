@@ -1,18 +1,17 @@
 package com.outsidesource.oskitExample.composeUI.ui.app
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import com.outsidesource.oskitExample.composeUI.ui.Route
 import com.outsidesource.oskitExample.composeUI.ui.appStateExample.AppStateExampleScreen
 import com.outsidesource.oskitExample.composeUI.ui.device.DeviceHomeScreen
 import com.outsidesource.oskitExample.composeUI.ui.home.HomeScreen
 import com.outsidesource.oskitExample.composeUI.ui.viewStateExample.ViewStateExampleScreen
+import com.outsidesource.oskitcompose.lib.rememberInject
 import com.outsidesource.oskitcompose.router.RouteSwitch
-import org.koin.java.KoinJavaComponent.inject
 
 @Composable
 fun App(
-    interactor: AppViewInteractor = remember { inject<AppViewInteractor>(AppViewInteractor::class.java).value }
+    interactor: AppViewInteractor = rememberInject<AppViewInteractor>()
 ) {
     RouteSwitch(interactor.coordinator) {
         when (it) {
