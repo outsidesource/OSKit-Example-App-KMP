@@ -330,6 +330,8 @@
 					"$(inherited)",
 					"-framework",
 					common,
+					"$(inherited)",
+					"-framework",
 					composeUI,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID}${TEAM_ID}";
@@ -364,6 +366,8 @@
 					"$(inherited)",
 					"-framework",
 					common,
+					"$(inherited)",
+					"-framework",
 					composeUI,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID}${TEAM_ID}";
