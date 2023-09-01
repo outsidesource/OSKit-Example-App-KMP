@@ -1,6 +1,5 @@
 package com.outsidesource.oskitExample.composeUI
 
-import com.outsidesource.oskitExample.common.service.device.DeviceService
 import com.outsidesource.oskitExample.composeUI.coordinator.AppCoordinator
 import com.outsidesource.oskitExample.composeUI.ui.app.AppViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.appStateExample.AppStateExampleViewInteractor
@@ -17,6 +16,4 @@ val composeUIModule = module {
     factory { ViewStateExampleViewInteractor(get()) }
     factory { AppStateExampleViewInteractor(get(), get()) }
     factory { params -> DeviceHomeViewInteractor(params[0], get()) }
-
-    single { DeviceService() }
 } + platformModule()
