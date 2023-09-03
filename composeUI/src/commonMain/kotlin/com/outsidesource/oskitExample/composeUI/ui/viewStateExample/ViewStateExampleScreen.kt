@@ -21,7 +21,7 @@ fun ViewStateExampleScreen(
     depth: Int,
     interactor: ViewStateExampleViewInteractor = rememberInjectForRoute()
 ) {
-    val state by interactor.collectAsState()
+    val state = interactor.collectAsState()
 
     Screen("View State Example") {
         Column(

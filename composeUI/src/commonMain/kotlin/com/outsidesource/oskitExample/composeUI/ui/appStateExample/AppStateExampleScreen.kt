@@ -30,7 +30,7 @@ import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 fun AppStateExampleScreen(
     interactor: AppStateExampleViewInteractor = rememberInjectForRoute()
 ) {
-    val state by interactor.collectAsState()
+    val state = interactor.collectAsState()
 
     Screen("App State Example") {
         Column(

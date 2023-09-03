@@ -32,8 +32,7 @@ fun DeviceHomeScreen(
     deviceId: Int,
     interactor: DeviceHomeViewInteractor = rememberInjectForRoute { parametersOf(deviceId) }
 ) {
-    val state by interactor.collectAsState()
-
+    val state = interactor.collectAsState()
     val device = state.device ?: return
 
     LaunchedEffect(Unit) {
@@ -82,7 +81,7 @@ fun DeviceHomeScreen(
 private fun DeviceView(
     interactorRef: ValRef<DeviceHomeViewInteractor>
 ) {
-    val state by interactorRef.value.collectAsState()
+    val state = interactorRef.value.collectAsState()
     val interactor = interactorRef.value
     val device = state.device ?: return
 

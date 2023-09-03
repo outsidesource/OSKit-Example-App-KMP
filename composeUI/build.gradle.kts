@@ -37,7 +37,8 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
-                implementation("com.outsidesource:oskit-compose:2.1.0")
+                implementation("com.outsidesource:oskit-kmp:3.1.2")
+                implementation("com.outsidesource:oskit-compose:2.1.1")
                 implementation(project(":common"))
             }
         }
