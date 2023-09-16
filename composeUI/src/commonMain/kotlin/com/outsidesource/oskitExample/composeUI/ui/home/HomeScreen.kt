@@ -1,16 +1,17 @@
 package com.outsidesource.oskitExample.composeUI.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.outsidesource.oskitExample.composeUI.Images
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
+import com.outsidesource.oskitcompose.resources.rememberKmpImage
 
 @Composable
 fun HomeScreen(
@@ -24,11 +25,15 @@ fun HomeScreen(
         ) {
             Button(
                 content = { Text("App Interactor Example") },
-                onClick = { interactor.appStateExampleButtonClicked() }
+                onClick = interactor::appStateExampleButtonClicked,
             )
             Button(
                 content = { Text("View Interactor Example") },
-                onClick = { interactor.viewStateExampleButtonClicked() }
+                onClick = interactor::viewStateExampleButtonClicked,
+            )
+            Button(
+                content = { Text("File Handling") },
+                onClick = interactor::fileHandlingButtonClicked,
             )
         }
     }

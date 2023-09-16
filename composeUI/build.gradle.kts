@@ -10,7 +10,7 @@ group = "com.outsidesource.oskitExample.composeUI"
 version = "1.0-SNAPSHOT"
 
 kotlin {
-    android()
+    androidTarget()
     jvm("desktop") {
         val main by compilations.getting {
             compilerOptions.configure {
@@ -37,8 +37,11 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
-                implementation("com.outsidesource:oskit-kmp:3.1.2")
-                implementation("com.outsidesource:oskit-compose:2.1.1")
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
+                implementation("com.outsidesource:oskit-kmp:4.0.0")
+                api("com.outsidesource:oskit-compose:3.0.0")
+                api("com.squareup.okio:okio:3.5.0")
                 implementation(project(":common"))
             }
         }
@@ -49,9 +52,9 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation("androidx.compose.ui:ui:1.5.0")
+                implementation("androidx.compose.ui:ui:1.5.1")
                 api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.10.1")
+                api("androidx.core:core-ktx:1.12.0")
             }
         }
         val androidInstrumentedTest by getting {
@@ -75,11 +78,11 @@ kotlin {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

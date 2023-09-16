@@ -12,7 +12,7 @@ repositories {
 dependencies {
     implementation(project(":common"))
     implementation(project(":composeUI"))
-    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.activity:activity-compose:1.7.2")
 }
 
 android {

@@ -27,7 +27,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("com.outsidesource:oskit-kmp:3.1.2")
+                api("com.outsidesource:oskit-kmp:4.0.0")
                 api("io.insert-koin:koin-core:3.4.3")
                 api("co.touchlab:kermit:1.1.1")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
@@ -43,7 +43,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.10.1")
+                api("androidx.core:core-ktx:1.12.0")
             }
         }
         val androidInstrumentedTest by getting {
@@ -51,10 +51,7 @@ kotlin {
                 implementation("junit:junit:4.13.2")
             }
         }
-        val desktopMain by getting {
-            dependencies {
-            }
-        }
+        val desktopMain by getting
         val desktopTest by getting
 
         val iosX64Main by getting

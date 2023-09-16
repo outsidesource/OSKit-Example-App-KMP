@@ -7,4 +7,5 @@ sealed class Route: IRoute {
     data class ViewStateExample(val depth: Int): Route()
     data object AppStateExample: Route()
     data class DeviceHome(val deviceId: Int): Route()
+    data object FileHandling: Route()
 }

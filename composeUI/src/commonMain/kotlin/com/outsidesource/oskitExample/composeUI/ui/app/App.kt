@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.outsidesource.oskitExample.composeUI.ui.Route
 import com.outsidesource.oskitExample.composeUI.ui.appStateExample.AppStateExampleScreen
 import com.outsidesource.oskitExample.composeUI.ui.device.DeviceHomeScreen
+import com.outsidesource.oskitExample.composeUI.ui.file.FileHandlingScreen
 import com.outsidesource.oskitExample.composeUI.ui.home.HomeScreen
 import com.outsidesource.oskitExample.composeUI.ui.viewStateExample.ViewStateExampleScreen
 import com.outsidesource.oskitcompose.lib.rememberInject
@@ -19,6 +20,7 @@ fun App(
             is Route.AppStateExample -> AppStateExampleScreen()
             is Route.ViewStateExample -> ViewStateExampleScreen(it.depth)
             is Route.DeviceHome -> DeviceHomeScreen(it.deviceId)
+            is Route.FileHandling -> FileHandlingScreen()
         }
     }
 }
