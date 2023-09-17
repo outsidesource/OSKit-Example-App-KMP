@@ -50,6 +50,15 @@ fun FileHandlingScreen(
             }
 
             Column {
+                Text("Pick Save File: ${state.saveFile ?: "None"}")
+                Button(
+                    onClick = interactor::pickSaveFile
+                ) {
+                    Text("Pick Save File")
+                }
+            }
+
+            Column {
                 Text("Create File: ${state.createFileResult ?: ""}")
                 TextField(value = state.createFileName, placeholder = { Text("Name") }, onValueChange = interactor::createFileNameChanged)
                 TextField(value = state.createFileContent, placeholder = { Text("Content") }, onValueChange = interactor::createFileContentChanged)
@@ -100,7 +109,7 @@ fun FileHandlingScreen(
             }
 
             Column {
-                Text("Delete File: ${state.deleteFileResult ?: ""}")
+                Text("Delete Selected File: ${state.deleteFileResult ?: ""}")
                 Button(
                     onClick = interactor::deleteFile
                 ) {
@@ -109,7 +118,7 @@ fun FileHandlingScreen(
             }
 
             Column {
-                Text("Delete Folder: ${state.deleteFolderResult ?: ""}")
+                Text("Delete Selected Folder: ${state.deleteFolderResult ?: ""}")
                 Button(
                     onClick = interactor::deleteFolder
                 ) {
@@ -118,7 +127,7 @@ fun FileHandlingScreen(
             }
 
             Column {
-                Text("List Files")
+                Text("List Files In Selected Folder")
                 Button(
                     onClick = interactor::list
                 ) {
@@ -132,7 +141,7 @@ fun FileHandlingScreen(
             }
 
             Column {
-                Text("Check File and Folder Exists")
+                Text("Check Selected File and Folder Exists")
                 Text("File Exists: ${state.fileExistsResult}    Folder Exists: ${state.folderExistsResult}")
                 Button(
                     onClick = interactor::exists

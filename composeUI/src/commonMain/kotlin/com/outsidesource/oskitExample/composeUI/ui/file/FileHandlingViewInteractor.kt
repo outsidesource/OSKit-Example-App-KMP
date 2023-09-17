@@ -1,9 +1,6 @@
 package com.outsidesource.oskitExample.composeUI.ui.file
 
-import com.outsidesource.oskitkmp.file.IKMPFileHandler
-import com.outsidesource.oskitkmp.file.KMPFileMetadata
-import com.outsidesource.oskitkmp.file.KMPFileRef
-import com.outsidesource.oskitkmp.file.sink
+import com.outsidesource.oskitkmp.file.*
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.outcome.Outcome
 import com.outsidesource.oskitkmp.outcome.unwrapOrElse
@@ -14,7 +11,7 @@ import okio.use
 data class FileHandlingViewState(
     val selectedFile: KMPFileRef? = null,
     val renameFile: String = "",
-    val renameFileResult: Outcome<KMPFileRef, Exception>? = null,
+    val renameFileResult: Outcome<Unit, Exception>? = null,
     val selectedFolder: KMPFileRef? = null,
     val renameFolder: String = "",
     val renameFolderResult: Outcome<KMPFileRef, Exception>? = null,
@@ -29,6 +26,7 @@ data class FileHandlingViewState(
     val createFileContent: String = "",
     val createFolderName: String = "",
     val createFolderResult: Outcome<KMPFileRef, Exception>? = null,
+    val saveFile: Outcome<KMPFileRef?, Exception>? = null,
 )
 
 class FileHandlingViewInteractor(
@@ -41,6 +39,13 @@ class FileHandlingViewInteractor(
         interactorScope.launch {
             val outcome = fileHandler.pickFile()
             if (outcome is Outcome.Ok) update { state -> state.copy(selectedFile = outcome.value) }
+        }
+    }
+
+    fun pickSaveFile() {
+        interactorScope.launch {
+            val saveFileOutcome = fileHandler.pickSaveFile()
+            update { state -> state.copy(saveFile = saveFileOutcome) }
         }
     }
 
@@ -96,8 +101,6 @@ class FileHandlingViewInteractor(
         }
     }
 
-    // TODO: Create with segments
-
     fun readMetaData() {
         interactorScope.launch {
             val outcome = fileHandler.readMetadata(state.selectedFile ?: return@launch)
@@ -112,8 +115,13 @@ class FileHandlingViewInteractor(
     fun renameFile() {
         interactorScope.launch {
             val file = state.selectedFile ?: return@launch
-            val outcome = fileHandler.rename(file, state.renameFile)
-            update { state -> state.copy(renameFileResult = outcome) }
+            val newFile = fileHandler.pickSaveFile(state.renameFile).unwrapOrElse { return@launch } ?: return@launch
+            val outcome = fileHandler.move(file, newFile)
+            
+            update { state -> state.copy(
+                renameFileResult = outcome,
+                selectedFile = if (outcome is Outcome.Ok) newFile else state.selectedFile
+            ) }
         }
     }
 
@@ -125,7 +133,10 @@ class FileHandlingViewInteractor(
         interactorScope.launch {
             val folder = state.selectedFolder ?: return@launch
             val outcome = fileHandler.rename(folder, state.renameFolder)
-            update { state -> state.copy(renameFolderResult = outcome) }
+            update { state -> state.copy(
+                renameFolderResult = outcome,
+                selectedFolder = if (outcome is Outcome.Ok) outcome.value else state.selectedFolder
+            ) }
         }
     }
 
