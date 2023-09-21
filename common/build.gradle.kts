@@ -10,6 +10,9 @@ kotlin {
     androidTarget {
         jvmToolchain(11)
     }
+    jvm("desktop") {
+        jvmToolchain(17)
+    }
 
     listOf(
         iosX64(),
@@ -20,10 +23,6 @@ kotlin {
             baseName = "common"
             isStatic = true
         }
-    }
-
-    jvm("desktop") {
-        jvmToolchain(17)
     }
 
     sourceSets {
