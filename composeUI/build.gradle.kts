@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose") version "1.5.0"
@@ -10,14 +8,11 @@ group = "com.outsidesource.oskitExample.composeUI"
 version = "1.0-SNAPSHOT"
 
 kotlin {
-    androidTarget()
+    androidTarget {
+        jvmToolchain(11)
+    }
     jvm("desktop") {
-        val main by compilations.getting {
-            compilerOptions.configure {
-                jvmToolchain(11)
-                jvmTarget.set(JvmTarget.JVM_11)
-            }
-        }
+        jvmToolchain(17)
     }
 
     listOf(

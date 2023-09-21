@@ -117,7 +117,7 @@ class FileHandlingViewInteractor(
             val file = state.selectedFile ?: return@launch
             val newFile = fileHandler.pickSaveFile(state.renameFile).unwrapOrElse { return@launch } ?: return@launch
             val outcome = fileHandler.move(file, newFile)
-            
+
             update { state -> state.copy(
                 renameFileResult = outcome,
                 selectedFile = if (outcome is Outcome.Ok) newFile else state.selectedFile

@@ -7,7 +7,9 @@ group = "com.outsidesource.oskitExample.common"
 version = "1.0-SNAPSHOT"
 
 kotlin {
-    android()
+    androidTarget {
+        jvmToolchain(11)
+    }
 
     listOf(
         iosX64(),
@@ -21,7 +23,7 @@ kotlin {
     }
 
     jvm("desktop") {
-        jvmToolchain(11)
+        jvmToolchain(17)
     }
 
     sourceSets {
