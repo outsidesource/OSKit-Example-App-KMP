@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose") version "1.5.0"
+    id("org.jetbrains.compose") version "1.5.1"
     id("com.android.library")
 }
 
@@ -57,13 +57,16 @@ kotlin {
                 implementation("junit:junit:4.13.2")
             }
         }
-        val desktopMain by getting
+        val desktopMain by getting {
+//            resources.srcDirs("src/commonMain/resources")
+        }
         val desktopTest by getting
 
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
+//            resources.srcDirs("src/commonMain/resources")
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
@@ -75,6 +78,7 @@ kotlin {
 android {
     compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+//    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
     defaultConfig {
         minSdk = 24
         targetSdk = 34

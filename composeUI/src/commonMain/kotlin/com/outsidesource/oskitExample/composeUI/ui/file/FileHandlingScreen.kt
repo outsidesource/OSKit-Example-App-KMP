@@ -3,8 +3,6 @@ package com.outsidesource.oskitExample.composeUI.ui.file
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -12,7 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
@@ -59,6 +56,24 @@ fun FileHandlingScreen(
             }
 
             Column {
+                Text("Store Selected File: ${state.storedFile ?: "None"}")
+                Button(
+                    onClick = interactor::storeFile
+                ) {
+                    Text("Store File")
+                }
+            }
+
+            Column {
+                Text("Store Selected Folder: ${state.storedFolder ?: "None"}")
+                Button(
+                    onClick = interactor::storeFolder
+                ) {
+                    Text("Store Folder")
+                }
+            }
+
+            Column {
                 Text("Create File: ${state.createFileResult ?: ""}")
                 TextField(value = state.createFileName, placeholder = { Text("Name") }, onValueChange = interactor::createFileNameChanged)
                 TextField(value = state.createFileContent, placeholder = { Text("Content") }, onValueChange = interactor::createFileContentChanged)
@@ -66,6 +81,16 @@ fun FileHandlingScreen(
                     onClick = interactor::createFile
                 ) {
                     Text("Create File")
+                }
+            }
+
+            Column {
+                Text("Append To File: ${state.appendFileResult ?: ""}")
+                TextField(value = state.appendFileContent, placeholder = { Text("Content") }, onValueChange = interactor::appendToFileContentChanged)
+                Button(
+                    onClick = interactor::appendToFile
+                ) {
+                    Text("Append")
                 }
             }
 
@@ -85,26 +110,6 @@ fun FileHandlingScreen(
                     onClick = interactor::readMetaData
                 ) {
                     Text("Read Metadata")
-                }
-            }
-
-            Column {
-                Text("Rename Selected File: ${state.renameFileResult ?: ""}")
-                TextField(value = state.renameFile, onValueChange = interactor::renameFileNameChanged)
-                Button(
-                    onClick = interactor::renameFile
-                ) {
-                    Text("Rename File")
-                }
-            }
-
-            Column {
-                Text("Rename Selected Folder: ${state.renameFolderResult ?: ""}")
-                TextField(value = state.renameFolder, onValueChange = interactor::renameFolderNameChanged)
-                Button(
-                    onClick = interactor::renameFolder
-                ) {
-                    Text("Rename Folder")
                 }
             }
 

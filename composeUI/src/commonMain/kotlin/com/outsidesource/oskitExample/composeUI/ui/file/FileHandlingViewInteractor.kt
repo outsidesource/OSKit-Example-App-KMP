@@ -10,11 +10,7 @@ import okio.use
 
 data class FileHandlingViewState(
     val selectedFile: KMPFileRef? = null,
-    val renameFile: String = "",
-    val renameFileResult: Outcome<Unit, Exception>? = null,
     val selectedFolder: KMPFileRef? = null,
-    val renameFolder: String = "",
-    val renameFolderResult: Outcome<KMPFileRef, Exception>? = null,
     val metadata: KMPFileMetadata? = null,
     val deleteFileResult: Outcome<Unit, Exception>? = null,
     val deleteFolderResult: Outcome<Unit, Exception>? = null,
@@ -27,6 +23,10 @@ data class FileHandlingViewState(
     val createFolderName: String = "",
     val createFolderResult: Outcome<KMPFileRef, Exception>? = null,
     val saveFile: Outcome<KMPFileRef?, Exception>? = null,
+    val storedFile: KMPFileRef? = null,
+    val storedFolder: KMPFileRef? = null,
+    val appendFileResult: Outcome<Unit, Exception>? = null,
+    val appendFileContent: String = "",
 )
 
 class FileHandlingViewInteractor(
@@ -44,16 +44,30 @@ class FileHandlingViewInteractor(
 
     fun pickSaveFile() {
         interactorScope.launch {
-            val saveFileOutcome = fileHandler.pickSaveFile()
+            val saveFileOutcome = fileHandler.pickSaveFile("untitled.txt")
             update { state -> state.copy(saveFile = saveFileOutcome) }
         }
     }
 
     fun pickFolder() {
         interactorScope.launch {
-            val outcome = fileHandler.pickFolder()
+            val outcome = fileHandler.pickDirectory()
             if (outcome is Outcome.Ok) update { state -> state.copy(selectedFolder = outcome.value) }
         }
+    }
+
+    fun storeFile() {
+        // TODO: Actually store
+        val string = state.selectedFile?.toPersistableString() ?: return
+        println(string)
+        println(KMPFileRef.fromPersistableString(string))
+    }
+
+    fun storeFolder() {
+        // TODO: Actually store
+        val string = state.selectedFolder?.toPersistableString() ?: return
+        println(string)
+        println(KMPFileRef.fromPersistableString(string))
     }
 
     fun createFileNameChanged(value: String) {
@@ -85,6 +99,28 @@ class FileHandlingViewInteractor(
         }
     }
 
+    fun appendToFileContentChanged(value: String) {
+        interactorScope.launch {
+            update { state -> state.copy(appendFileContent = value) }
+        }
+    }
+
+    fun appendToFile() {
+       interactorScope.launch {
+            val file = state.selectedFile ?: return@launch
+            val sink = file.sink(mode = KMPFileWriteMode.Append).unwrapOrElse {
+                update { state -> state.copy(appendFileResult = this) }
+                return@launch
+            }
+
+           sink.buffer().use {
+               it.writeUtf8(state.appendFileContent)
+           }
+
+           update { state -> state.copy(appendFileResult = Outcome.Ok(Unit)) }
+       }
+    }
+
     fun createFolderNameChanged(value: String) {
         update { state -> state.copy(createFolderName = value) }
     }
@@ -103,40 +139,8 @@ class FileHandlingViewInteractor(
 
     fun readMetaData() {
         interactorScope.launch {
-            val outcome = fileHandler.readMetadata(state.selectedFile ?: return@launch)
+            val outcome = fileHandler.readMetadata(state.selectedFolder ?: return@launch)
             if (outcome is Outcome.Ok) update { state -> state.copy(metadata = outcome.value) }
-        }
-    }
-
-    fun renameFileNameChanged(value: String) {
-        update { state -> state.copy(renameFile = value) }
-    }
-
-    fun renameFile() {
-        interactorScope.launch {
-            val file = state.selectedFile ?: return@launch
-            val newFile = fileHandler.pickSaveFile(state.renameFile).unwrapOrElse { return@launch } ?: return@launch
-            val outcome = fileHandler.move(file, newFile)
-
-            update { state -> state.copy(
-                renameFileResult = outcome,
-                selectedFile = if (outcome is Outcome.Ok) newFile else state.selectedFile
-            ) }
-        }
-    }
-
-    fun renameFolderNameChanged(value: String) {
-        update { state -> state.copy(renameFolder = value) }
-    }
-
-    fun renameFolder() {
-        interactorScope.launch {
-            val folder = state.selectedFolder ?: return@launch
-            val outcome = fileHandler.rename(folder, state.renameFolder)
-            update { state -> state.copy(
-                renameFolderResult = outcome,
-                selectedFolder = if (outcome is Outcome.Ok) outcome.value else state.selectedFolder
-            ) }
         }
     }
 
