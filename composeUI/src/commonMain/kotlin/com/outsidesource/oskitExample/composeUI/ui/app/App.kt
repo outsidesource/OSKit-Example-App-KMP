@@ -1,5 +1,6 @@
 package com.outsidesource.oskitExample.composeUI.ui.app
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import com.outsidesource.oskitExample.composeUI.ui.Route
 import com.outsidesource.oskitExample.composeUI.ui.appStateExample.AppStateExampleScreen
@@ -9,11 +10,19 @@ import com.outsidesource.oskitExample.composeUI.ui.home.HomeScreen
 import com.outsidesource.oskitExample.composeUI.ui.viewStateExample.ViewStateExampleScreen
 import com.outsidesource.oskitcompose.lib.rememberInject
 import com.outsidesource.oskitcompose.router.RouteSwitch
+import com.outsidesource.oskitcompose.systemui.SystemBarColorEffect
+import com.outsidesource.oskitcompose.systemui.SystemBarIconColor
 
 @Composable
 fun App(
     interactor: AppViewInteractor = rememberInject<AppViewInteractor>()
 ) {
+
+    SystemBarColorEffect(
+        statusBarColor = MaterialTheme.colors.primary,
+        statusBarIconColor = SystemBarIconColor.Light,
+    )
+
     RouteSwitch(interactor.coordinator) {
         when (it) {
             is Route.Home -> HomeScreen()
