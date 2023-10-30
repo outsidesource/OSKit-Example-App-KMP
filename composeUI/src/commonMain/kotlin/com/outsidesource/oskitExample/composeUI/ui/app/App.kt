@@ -1,6 +1,5 @@
 package com.outsidesource.oskitExample.composeUI.ui.app
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import com.outsidesource.oskitExample.composeUI.ui.Route
 import com.outsidesource.oskitExample.composeUI.ui.appStateExample.AppStateExampleScreen
@@ -19,7 +18,6 @@ fun App(
 ) {
 
     SystemBarColorEffect(
-        statusBarColor = MaterialTheme.colors.primary,
         statusBarIconColor = SystemBarIconColor.Light,
     )
 
