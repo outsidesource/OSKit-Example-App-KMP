@@ -8,4 +8,7 @@ sealed class Route: IRoute {
     data object AppStateExample: Route()
     data class DeviceHome(val deviceId: Int): Route()
     data object FileHandling: Route()
+    data object Markdown: Route()
+    data object Popups: Route()
+    data object Images: Route()
 }

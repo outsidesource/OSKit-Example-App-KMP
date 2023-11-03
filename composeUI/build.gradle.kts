@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose") version "1.5.1"
+    id("org.jetbrains.compose") version "1.5.10"
     id("com.android.library")
 }
 
@@ -22,9 +22,11 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "composeUI"
-            isStatic = true
+            isStatic = true // https://youtrack.jetbrains.com/issue/KT-42254
         }
     }
+
+    applyDefaultHierarchyTemplate()
 
     sourceSets {
         val commonMain by getting {
@@ -47,30 +49,15 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation("androidx.compose.ui:ui:1.5.1")
-                api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.12.0")
+                implementation("androidx.compose.ui:ui:1.5.4")
+                implementation("androidx.appcompat:appcompat:1.6.1")
+                implementation("androidx.core:core-ktx:1.12.0")
             }
         }
         val androidInstrumentedTest by getting {
             dependencies {
                 implementation("junit:junit:4.13.2")
             }
-        }
-        val desktopMain by getting {
-//            resources.srcDirs("src/commonMain/resources")
-        }
-        val desktopTest by getting
-
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-//            resources.srcDirs("src/commonMain/resources")
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
         }
     }
 }

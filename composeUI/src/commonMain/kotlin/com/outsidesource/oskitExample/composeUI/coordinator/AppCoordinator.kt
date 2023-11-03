@@ -19,6 +19,9 @@ class AppCoordinator: Coordinator(
     fun coordinatorHasBackStack() = hasBackStack()
     fun deviceHome(deviceId: Int) = push(Route.DeviceHome(deviceId))
     fun fileHandling() = push(Route.FileHandling)
+    fun markdown() = push(Route.Markdown)
+    fun popups() = push(Route.Popups)
+    fun images() = push(Route.Images)
     fun popToHome() = popTo(Route.Home)
     fun popBackStack() = pop()
 }

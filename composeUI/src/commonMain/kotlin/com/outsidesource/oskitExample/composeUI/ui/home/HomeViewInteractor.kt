@@ -19,4 +19,16 @@ class HomeViewInteractor(
     fun fileHandlingButtonClicked() {
         coordinator.fileHandling()
     }
+
+    fun markdownButtonClicked() {
+        coordinator.markdown()
+    }
+
+    fun popupsButtonClicked() {
+        coordinator.popups()
+    }
+
+    fun imagesButtonClicked() {
+        coordinator.images()
+    }
 }
