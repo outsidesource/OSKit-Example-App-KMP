@@ -29,8 +29,7 @@ fun Screen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .padding(16.dp)
-                .windowInsetsPadding(KMPWindowInsets.bottomInsets),
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
             content = content
         )
     }

@@ -1,6 +1,7 @@
 package com.outsidesource.oskitExample.composeUI.ui.markdown
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -10,6 +11,8 @@ import com.outsidesource.oskitExample.composeUI.Images
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.markdown.Markdown
 import com.outsidesource.oskitcompose.resources.rememberKmpImage
+import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
+import com.outsidesource.oskitcompose.systemui.bottomInsets
 
 @Composable
 fun MarkdownScreen() {
@@ -20,7 +23,8 @@ fun MarkdownScreen() {
         Markdown(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .windowInsetsPadding(KMPWindowInsets.bottomInsets),
             text = markdown,
             loadAsync = true,
             localImageMap = remember {
@@ -28,7 +32,7 @@ fun MarkdownScreen() {
                     "penguin" to penguin,
                     "tux" to tux,
                 )
-            }
+            },
         )
     }
 }
@@ -132,20 +136,26 @@ val markdown = """
     
     ### Block Images
 
-    ![Minion](https://octodex.github.com/images/minion.png) 
+    Align Center:
     
-    ![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
+    ![attrs(width=200, height=200, hAlign=center) Minion](https://octodex.github.com/images/minion.png)
+    
+    Align End:
+    
+    ![attrs(width=200, height=200, hAlign=end) Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
 
     ### Inline Images
-    These ![](https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Logo_CODE.svg/320px-Logo_CODE.svg.png) are inline images ![](https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Kotlin_Icon.png/240px-Kotlin_Icon.png)
+    These ![attrs(height=30)](https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Logo_CODE.svg/320px-Logo_CODE.svg.png) are inline images ![attrs(width=60)](https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Kotlin_Icon.png/240px-Kotlin_Icon.png)
 
     ### Local Resource Images
     
     Align Center:
     
-    ![](local:penguin,width:100,height:100,halign:center)
+    ![attrs(width=100,height=100,hAlign=center)](local:penguin)
     
     Align End:
     
-    ![](local:tux,width:100,height:100,halign:end)
+    ![attrs(width=100, height=100, hAlign=end) Description](local:tux)
 """.trimIndent()
+
+// ![attrs(width=100, height=100) My Description](https://google.com/blah.png)
