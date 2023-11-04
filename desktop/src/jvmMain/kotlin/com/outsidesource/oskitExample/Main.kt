@@ -1,12 +1,17 @@
 package com.outsidesource.oskitExample
 
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.outsidesource.oskitExample.common.initKoin
 import com.outsidesource.oskitExample.composeUI.composeUIModule
 import com.outsidesource.oskitExample.composeUI.ui.app.App
 import com.outsidesource.oskitcompose.lib.koinInjector
+import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
+import com.outsidesource.oskitcompose.systemui.KMPWindowInsetsHolder
+import com.outsidesource.oskitcompose.systemui.LocalKMPWindowInsets
 import com.outsidesource.oskitcompose.window.SizedWindow
 import com.outsidesource.oskitcompose.window.rememberPersistedWindowState
 import com.outsidesource.oskitkmp.file.DesktopKMPFileHandler
@@ -32,6 +37,8 @@ fun main() = application {
             onDispose {  }
         }
 
-        App()
+        CompositionLocalProvider(LocalKMPWindowInsets provides KMPWindowInsetsHolder(bottom = 16.dp)) {
+            App()
+        }
     }
 }
