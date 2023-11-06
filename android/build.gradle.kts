@@ -16,6 +16,7 @@ dependencies {
 }
 
 android {
+    namespace = "com.outsidesource.oskitExample"
     compileSdk = 34
     defaultConfig {
         applicationId = "com.outsidesource.oskitExample"
@@ -25,8 +26,8 @@ android {
         versionName = "1.0-SNAPSHOT"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildTypes {
         getByName("release") {

@@ -8,7 +8,7 @@ version = "1.0-SNAPSHOT"
 
 kotlin {
     androidTarget {
-        jvmToolchain(11)
+        jvmToolchain(17)
     }
     jvm("desktop") {
         jvmToolchain(17)
@@ -53,6 +53,7 @@ kotlin {
 }
 
 android {
+    namespace = "com.outsidesource.oskitExample.common"
     compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
@@ -60,7 +61,7 @@ android {
         targetSdk = 34
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
