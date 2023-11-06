@@ -10,14 +10,14 @@ import androidx.compose.ui.Modifier
 import com.outsidesource.oskitExample.composeUI.Images
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.markdown.Markdown
-import com.outsidesource.oskitcompose.resources.rememberKmpImage
+import com.outsidesource.oskitcompose.resources.rememberKmpImagePainter
 import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
 import com.outsidesource.oskitcompose.systemui.bottomInsets
 
 @Composable
 fun MarkdownScreen() {
-    val penguin = rememberKmpImage(Images.Penguin)
-    val tux = rememberKmpImage(Images.TuxXML)
+    val penguin = rememberKmpImagePainter(Images.Penguin)
+    val tux = rememberKmpImagePainter(Images.TuxXML)
 
     Screen("Markdown") {
         Markdown(

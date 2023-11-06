@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.sp
 import com.outsidesource.oskitExample.composeUI.Images
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.resources.KMPImage
-import com.outsidesource.oskitcompose.resources.rememberKmpImage
+import com.outsidesource.oskitcompose.resources.rememberKmpImagePainter
 
 @Composable
 fun ImagesScreen() {
@@ -33,7 +33,7 @@ fun ImageWithCaption(resource: KMPImage, caption: String) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Image(modifier = Modifier.size(200.dp), painter = rememberKmpImage(resource), contentDescription = "")
+        Image(modifier = Modifier.size(200.dp), painter = rememberKmpImagePainter(resource), contentDescription = "")
         Text(caption, fontSize = 12.sp)
     }
 }
