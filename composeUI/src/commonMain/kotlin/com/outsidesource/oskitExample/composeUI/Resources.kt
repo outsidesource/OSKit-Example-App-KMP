@@ -20,7 +20,7 @@ object Fonts {
                 KMPFont("fonts/SourceSansPro-Bold.ttf", weight = FontWeight.Bold),
                 KMPFont("fonts/SourceSansPro-Light.ttf", weight = FontWeight.Light),
                 KMPFont("fonts/SourceSansPro-Regular.ttf", weight = FontWeight.Normal),
-                KMPFont("fonts/SourceSansPro-SemiBole.ttf", weight = FontWeight.SemiBold)
+                KMPFont("fonts/SourceSansPro-SemiBold.ttf", weight = FontWeight.SemiBold)
             )
         )
         runBlocking { resolveKmpFontFamily(family) }

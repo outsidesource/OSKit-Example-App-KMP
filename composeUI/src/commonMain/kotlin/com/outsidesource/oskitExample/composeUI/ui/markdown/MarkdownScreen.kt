@@ -7,9 +7,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import com.outsidesource.oskitExample.composeUI.Images
+import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.markdown.Markdown
+import com.outsidesource.oskitcompose.markdown.MarkdownStyles
 import com.outsidesource.oskitcompose.resources.rememberKmpImagePainter
 import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
 import com.outsidesource.oskitcompose.systemui.bottomInsets
@@ -18,6 +22,12 @@ import com.outsidesource.oskitcompose.systemui.bottomInsets
 fun MarkdownScreen() {
     val penguin = rememberKmpImagePainter(Images.Penguin)
     val tux = rememberKmpImagePainter(Images.TuxXML)
+    val defaultFontFamily = AppTheme.typography.default
+    val markdownStyles = remember {
+        MarkdownStyles()
+            .withDefaultTextStyle(TextStyle(fontFamily = defaultFontFamily))
+            .let { it.copy(codeTextStyle = it.codeTextStyle.merge(TextStyle(fontFamily = FontFamily.Monospace))) }
+    }
 
     Screen("Markdown") {
         Markdown(
@@ -25,6 +35,7 @@ fun MarkdownScreen() {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .windowInsetsPadding(KMPWindowInsets.bottomInsets),
+            styles = markdownStyles,
             text = markdown,
             loadAsync = true,
             localImageMap = remember {

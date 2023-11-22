@@ -2,6 +2,7 @@ package com.outsidesource.oskitExample.composeUI.ui.app
 
 import androidx.compose.runtime.Composable
 import com.outsidesource.oskitExample.composeUI.ui.Route
+import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitExample.composeUI.ui.appStateExample.AppStateExampleScreen
 import com.outsidesource.oskitExample.composeUI.ui.device.DeviceHomeScreen
 import com.outsidesource.oskitExample.composeUI.ui.file.FileHandlingScreen
@@ -24,16 +25,18 @@ fun App(
         statusBarIconColor = SystemBarIconColor.Light,
     )
 
-    RouteSwitch(interactor.coordinator) {
-        when (it) {
-            is Route.Home -> HomeScreen()
-            is Route.AppStateExample -> AppStateExampleScreen()
-            is Route.ViewStateExample -> ViewStateExampleScreen(it.depth)
-            is Route.DeviceHome -> DeviceHomeScreen(it.deviceId)
-            is Route.FileHandling -> FileHandlingScreen()
-            is Route.Images -> ImagesScreen()
-            is Route.Markdown -> MarkdownScreen()
-            is Route.Popups -> PopupsScreen()
+    AppTheme {
+        RouteSwitch(interactor.coordinator) {
+            when (it) {
+                is Route.Home -> HomeScreen()
+                is Route.AppStateExample -> AppStateExampleScreen()
+                is Route.ViewStateExample -> ViewStateExampleScreen(it.depth)
+                is Route.DeviceHome -> DeviceHomeScreen(it.deviceId)
+                is Route.FileHandling -> FileHandlingScreen()
+                is Route.Images -> ImagesScreen()
+                is Route.Markdown -> MarkdownScreen()
+                is Route.Popups -> PopupsScreen()
+            }
         }
     }
 }
