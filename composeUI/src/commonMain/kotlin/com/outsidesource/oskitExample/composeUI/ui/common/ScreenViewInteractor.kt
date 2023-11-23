@@ -1,4 +1,4 @@
-package com.outsidesource.oskitExample.composeUI.ui.app
+package com.outsidesource.oskitExample.composeUI.ui.common
 
 import com.outsidesource.oskitExample.common.interactor.app.AppInteractor
 import com.outsidesource.oskitExample.composeUI.coordinator.AppCoordinator
@@ -6,19 +6,23 @@ import com.outsidesource.oskitcompose.lib.koinInjector
 import com.outsidesource.oskitkmp.interactor.Interactor
 import org.koin.core.component.inject
 
-data class AppViewState(
+data class ScreenViewState(
     val isDarkTheme: Boolean = false,
 )
 
-class AppViewInteractor(
+class ScreenViewInteractor(
     private val appInteractor: AppInteractor,
-) : Interactor<AppViewState>(
-    initialState = AppViewState(),
+    private val coordinator: AppCoordinator,
+) : Interactor<ScreenViewState>(
+    initialState = ScreenViewState(),
     dependencies = listOf(appInteractor)
 ) {
-    val coordinator by koinInjector.inject<AppCoordinator>()
 
-    override fun computed(state: AppViewState): AppViewState {
+    override fun computed(state: ScreenViewState): ScreenViewState {
         return state.copy(isDarkTheme = appInteractor.state.isDarkTheme)
     }
+
+    fun onThemeToggled() { appInteractor.onThemeToggled() }
+    fun hasBackStack() = coordinator.coordinatorHasBackStack()
+    fun appBarBackButtonPressed() = coordinator.popBackStack()
 }

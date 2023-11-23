@@ -1,4 +1,4 @@
-package com.outsidesource.oskitExample.common.state.device
+package com.outsidesource.oskitExample.common.interactor.device
 
 import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
 import com.outsidesource.oskitExample.common.model.device.Device

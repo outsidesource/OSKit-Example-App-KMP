@@ -1,7 +1,7 @@
 package com.outsidesource.oskitExample.composeUI.ui.appStateExample
 
 import com.outsidesource.oskitExample.common.model.device.Device
-import com.outsidesource.oskitExample.common.state.device.DeviceInteractor
+import com.outsidesource.oskitExample.common.interactor.device.DeviceInteractor
 import com.outsidesource.oskitExample.composeUI.coordinator.AppCoordinator
 import com.outsidesource.oskitkmp.interactor.Interactor
 import kotlinx.coroutines.launch

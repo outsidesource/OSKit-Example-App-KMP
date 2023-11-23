@@ -65,7 +65,11 @@ fun AppTheme(
     ) {
         MaterialTheme(
             typography = Typography(defaultFontFamily = AppTheme.typography.default),
-            colors = MaterialTheme.colors.copy(primary = AppTheme.colors.primary)
+            colors = MaterialTheme.colors.copy(
+                primary = AppTheme.colors.primary,
+                secondaryVariant = AppTheme.colors.switchOn,
+                surface = AppTheme.colors.switchOff,
+            )
         ) {
             Box(
                 modifier = Modifier

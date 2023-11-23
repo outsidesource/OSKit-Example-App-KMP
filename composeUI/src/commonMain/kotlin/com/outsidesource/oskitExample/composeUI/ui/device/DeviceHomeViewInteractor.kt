@@ -3,7 +3,7 @@ package com.outsidesource.oskitExample.composeUI.ui.device
 import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
 import com.outsidesource.oskitExample.common.model.device.Device
 import com.outsidesource.oskitExample.common.model.device.DeviceMode
-import com.outsidesource.oskitExample.common.state.device.DeviceInteractor
+import com.outsidesource.oskitExample.common.interactor.device.DeviceInteractor
 import com.outsidesource.oskitkmp.concurrency.Debouncer
 import com.outsidesource.oskitkmp.interactor.Interactor
 import kotlinx.coroutines.launch
