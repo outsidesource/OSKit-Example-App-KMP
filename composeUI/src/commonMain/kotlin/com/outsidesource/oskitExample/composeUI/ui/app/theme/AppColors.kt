@@ -19,6 +19,6 @@ data object LightAppColors: IAppColors {
 }
 
 data object DarkAppColors: IAppColors by LightAppColors {
-    override val screenBackground = { SolidColor(Color.Black) }
+    override val screenBackground = { SolidColor(Color(0xFF2222222)) }
     override val primary = Color(0xFF1d4991)
 }
