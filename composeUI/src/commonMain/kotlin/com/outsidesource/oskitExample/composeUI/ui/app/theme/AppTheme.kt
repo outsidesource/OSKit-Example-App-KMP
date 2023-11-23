@@ -42,7 +42,7 @@ object AppTheme {
 fun AppTheme(
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val colors = if (isSystemInDarkTheme()) LightAppColors else DarkAppColors
+    val colors = if (!isSystemInDarkTheme()) LightAppColors else DarkAppColors
     val containerSize = LocalWindowInfo.current.containerSize
     val density = LocalDensity.current
     val size = remember(containerSize) {
@@ -50,8 +50,13 @@ fun AppTheme(
             DpSize(containerSize.width.toDp(), containerSize.height.toDp())
         }
     }
-    val dimensions = if (min(size.width.value, size.height.value).dp <= 600.dp) PhoneAppDimensions else TabletAppDimensions
-    val typography = remember(colors) { AppTypography(colors, dimensions) }
+    val minDimension = min(size.width.value, size.height.value).dp
+    val dimensions = when {
+        minDimension <= 600.dp -> PhoneAppDimensions
+        minDimension <= 1024.dp -> TabletAppDimensions
+        else -> DesktopAppDimensions
+    }
+    val typography = remember(colors, dimensions) { AppTypography(colors, dimensions) }
 
     CompositionLocalProvider(
         LocalAppColors provides colors,

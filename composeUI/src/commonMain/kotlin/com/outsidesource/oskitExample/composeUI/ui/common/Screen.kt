@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.outsidesource.oskitExample.composeUI.ui.app.AppViewInteractor
+import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitcompose.lib.rememberInject
 import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
 import com.outsidesource.oskitcompose.systemui.bottomInsets
@@ -28,8 +29,8 @@ fun Screen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                .background(brush = AppTheme.colors.screenBackground())
+                .padding(AppTheme.dimensions.screenPadding),
             content = content
         )
     }
