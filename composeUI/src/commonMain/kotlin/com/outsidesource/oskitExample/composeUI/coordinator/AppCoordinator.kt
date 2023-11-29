@@ -21,7 +21,7 @@ class AppCoordinator: Coordinator(
     fun fileHandling() = push(Route.FileHandling)
     fun markdown() = push(Route.Markdown)
     fun popups() = push(Route.Popups)
-    fun images() = push(Route.Images)
+    fun resources() = push(Route.Resources)
     fun popToHome() = popTo(Route.Home)
     fun popBackStack() = pop()
 }

@@ -25,7 +25,7 @@ kotlin {
             dependencies {
                 api("com.outsidesource:oskit-kmp:4.0.0")
                 api("io.insert-koin:koin-core:3.4.3")
-                api("co.touchlab:kermit:1.1.1")
+                api("co.touchlab:kermit:2.0.2")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
                 api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
                 api("org.jetbrains.kotlinx:atomicfu:0.21.0")

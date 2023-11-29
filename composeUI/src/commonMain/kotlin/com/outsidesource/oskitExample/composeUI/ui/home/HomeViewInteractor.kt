@@ -2,7 +2,6 @@ package com.outsidesource.oskitExample.composeUI.ui.home
 
 import com.outsidesource.oskitExample.composeUI.coordinator.AppCoordinator
 import com.outsidesource.oskitkmp.interactor.Interactor
-import com.outsidesource.oskitkmp.router.IRouteLifecycleListener
 
 class HomeViewInteractor(
     private val coordinator: AppCoordinator
@@ -28,7 +27,7 @@ class HomeViewInteractor(
         coordinator.popups()
     }
 
-    fun imagesButtonClicked() {
-        coordinator.images()
+    fun resourcesButtonClicked() {
+        coordinator.resources()
     }
 }

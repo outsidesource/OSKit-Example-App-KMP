@@ -64,7 +64,7 @@ fun AppTheme(
         LocalAppDimensions provides dimensions,
     ) {
         MaterialTheme(
-            typography = Typography(defaultFontFamily = AppTheme.typography.default),
+            typography = Typography(defaultFontFamily = AppTheme.typography.defaultFontFamily),
             colors = MaterialTheme.colors.copy(
                 primary = AppTheme.colors.primary,
                 secondaryVariant = AppTheme.colors.switchOn,

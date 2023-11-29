@@ -1,20 +1,14 @@
-package com.outsidesource.oskitExample.composeUI
+package com.outsidesource.oskitExample.composeUI.resources
 
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import com.outsidesource.oskitcompose.resources.KMPFont
 import com.outsidesource.oskitcompose.resources.KMPFontFamily
-import com.outsidesource.oskitcompose.resources.KMPImage
 import com.outsidesource.oskitcompose.resources.resolveKmpFontFamily
 import kotlinx.coroutines.runBlocking
 
-object Images {
-    val Penguin = KMPImage("images/penguin.png")
-    val TuxXML = KMPImage("images/tux.xml")
-    val TuxMonoXML = KMPImage("images/tux-mono.xml")
-    val DarkMode = KMPImage("images/dark_mode.xml")
-}
-
 object Fonts {
+    val Default = FontFamily.Default
     val SansSerifPro by lazy {
         val family = KMPFontFamily(
             listOf(

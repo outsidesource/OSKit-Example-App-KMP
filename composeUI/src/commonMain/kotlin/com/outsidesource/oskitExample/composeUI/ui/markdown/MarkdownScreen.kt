@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import com.outsidesource.oskitExample.composeUI.Images
+import com.outsidesource.oskitExample.composeUI.resources.Images
 import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.markdown.Markdown
@@ -22,7 +22,7 @@ import com.outsidesource.oskitcompose.systemui.bottomInsets
 fun MarkdownScreen() {
     val penguin = rememberKmpImagePainter(Images.Penguin)
     val tux = rememberKmpImagePainter(Images.TuxXML)
-    val defaultFontFamily = AppTheme.typography.default
+    val defaultFontFamily = AppTheme.typography.defaultFontFamily
     val markdownStyles = remember {
         MarkdownStyles()
             .withDefaultTextStyle(TextStyle(fontFamily = defaultFontFamily))

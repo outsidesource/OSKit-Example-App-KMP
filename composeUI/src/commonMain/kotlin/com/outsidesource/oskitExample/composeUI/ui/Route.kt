@@ -10,5 +10,5 @@ sealed class Route: IRoute {
     data object FileHandling: Route()
     data object Markdown: Route()
     data object Popups: Route()
-    data object Images: Route()
+    data object Resources: Route()
 }

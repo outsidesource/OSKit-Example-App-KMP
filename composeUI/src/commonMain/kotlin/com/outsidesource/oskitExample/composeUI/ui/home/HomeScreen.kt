@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalOSKitAPI::class)
+
 package com.outsidesource.oskitExample.composeUI.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
@@ -6,13 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.outsidesource.oskitExample.composeUI.resources.Strings
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
-import com.outsidesource.oskitcompose.markdown.MarkdownStyles
+import com.outsidesource.oskitcompose.resources.rememberKmpString
+import com.outsidesource.oskitkmp.annotation.ExperimentalOSKitAPI
 
 @Composable
 fun HomeScreen(
@@ -25,28 +28,28 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
         ) {
             Button(
-                content = { Text("App Interactor Example") },
+                content = { Text(rememberKmpString(Strings.appInteractorExample)) },
                 onClick = interactor::appStateExampleButtonClicked,
             )
             Button(
-                content = { Text("View Interactor Example") },
+                content = { Text(rememberKmpString(Strings.viewInteractorExample)) },
                 onClick = interactor::viewStateExampleButtonClicked,
             )
             Button(
-                content = { Text("File Handling") },
+                content = { Text(rememberKmpString(Strings.fileHandling)) },
                 onClick = interactor::fileHandlingButtonClicked,
             )
             Button(
-                content = { Text("Markdown") },
+                content = { Text(rememberKmpString(Strings.markdown)) },
                 onClick = interactor::markdownButtonClicked,
             )
             Button(
-                content = { Text("Popups") },
+                content = { Text(rememberKmpString(Strings.popups)) },
                 onClick = interactor::popupsButtonClicked,
             )
             Button(
-                content = { Text("Images") },
-                onClick = interactor::imagesButtonClicked,
+                content = { Text(rememberKmpString(Strings.resources)) },
+                onClick = interactor::resourcesButtonClicked,
             )
         }
     }

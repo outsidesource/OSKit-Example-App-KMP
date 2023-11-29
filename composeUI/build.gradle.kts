@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose") version "1.5.10"
+    id("org.jetbrains.compose") version "1.5.11"
     id("com.android.library")
 }
 
@@ -37,7 +37,7 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation("com.outsidesource:oskit-kmp:4.0.0")
-                api("com.outsidesource:oskit-compose:3.0.0")
+                api("com.outsidesource:oskit-compose:3.2.0")
                 api("com.squareup.okio:okio:3.5.0")
                 implementation(project(":common"))
             }
