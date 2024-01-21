@@ -18,7 +18,7 @@ class DeviceService {
     suspend fun discoverDevices() = flow {
         for (i in 0..10) {
             randomDelay(100, 1000)
-            emit(Device(i, "Device $i", DeviceModel.values()[i % DeviceModel.values().size]))
+            emit(Device(i, "Device $i", DeviceModel.entries[i % DeviceModel.entries.size]))
         }
     }
 

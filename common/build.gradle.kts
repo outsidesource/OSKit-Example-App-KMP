@@ -23,7 +23,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("com.outsidesource:oskit-kmp:4.0.0")
+                api("com.outsidesource:oskit-kmp:4.2.0")
                 api("io.insert-koin:koin-core:3.4.3")
                 api("co.touchlab:kermit:2.0.2")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")

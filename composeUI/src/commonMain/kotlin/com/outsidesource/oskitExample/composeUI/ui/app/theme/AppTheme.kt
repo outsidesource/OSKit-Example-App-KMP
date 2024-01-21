@@ -8,12 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.outsidesource.oskitcompose.systemui.rememberKMPWindowInfo
 import kotlin.math.min
 
 val LocalAppColors = staticCompositionLocalOf<IAppColors> { LightAppColors }
@@ -37,19 +36,20 @@ object AppTheme {
         get() = LocalAppDimensions.current
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppTheme(
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val windowInfo = rememberKMPWindowInfo()
     val colors = if (!isSystemInDarkTheme()) LightAppColors else DarkAppColors
-    val containerSize = LocalWindowInfo.current.containerSize
+    val containerSize = windowInfo.containerSize
     val density = LocalDensity.current
     val size = remember(containerSize) {
         with(density) {
             DpSize(containerSize.width.toDp(), containerSize.height.toDp())
         }
     }
+
     val minDimension = min(size.width.value, size.height.value).dp
     val dimensions = when {
         minDimension <= 600.dp -> PhoneAppDimensions
