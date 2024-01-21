@@ -94,7 +94,7 @@ private fun DeviceView(
         Row(
             horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            DeviceMode.values().forEach {
+            DeviceMode.entries.forEach {
                 ModeButton(isSelected = device.mode == it, mode = it, onClick = { interactor.setMode(it) })
             }
         }
@@ -132,6 +132,9 @@ fun ModeButton(isSelected: Boolean, mode: DeviceMode, onClick: () -> Unit) {
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Text(mode.toString())
+        Text(
+            text = mode.toString(),
+            color = Color.Black,
+        )
     }
 }
