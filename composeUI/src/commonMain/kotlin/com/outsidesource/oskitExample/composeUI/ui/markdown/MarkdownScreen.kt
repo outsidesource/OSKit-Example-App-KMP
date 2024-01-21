@@ -23,9 +23,11 @@ fun MarkdownScreen() {
     val penguin = rememberKmpImagePainter(Images.Penguin)
     val tux = rememberKmpImagePainter(Images.TuxXML)
     val defaultFontFamily = AppTheme.typography.defaultFontFamily
-    val markdownStyles = remember {
+    val fontColor = AppTheme.colors.fontColor
+
+    val markdownStyles = remember(fontColor) {
         MarkdownStyles()
-            .withDefaultTextStyle(TextStyle(fontFamily = defaultFontFamily))
+            .withDefaultTextStyle(TextStyle(fontFamily = defaultFontFamily, color = fontColor))
             .let { it.copy(codeTextStyle = it.codeTextStyle.merge(TextStyle(fontFamily = FontFamily.Monospace))) }
     }
 

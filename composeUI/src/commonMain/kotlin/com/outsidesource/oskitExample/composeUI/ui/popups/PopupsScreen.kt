@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
@@ -68,7 +69,10 @@ fun PopupsScreen(
                 .width(300.dp)
                 .height(200.dp)
         ) {
-            Text("Modal")
+            Text(
+                text = "Modal",
+                color = AppTheme.colors.popupFontColor,
+            )
         }
     }
 
@@ -90,7 +94,10 @@ fun PopupsScreen(
                     .width(100.dp)
                     .bottomSheetSwipeToDismiss()
             )
-            Text("Bottom Sheet")
+            Text(
+                text = "Bottom Sheet",
+                color = AppTheme.colors.popupFontColor,
+            )
         }
     }
 
@@ -104,7 +111,10 @@ fun PopupsScreen(
                 .windowInsetsPadding(KMPWindowInsets.verticalInsets)
                 .fillMaxSize()
         ) {
-            Text("Drawer")
+            Text(
+                text = "Drawer",
+                color = AppTheme.colors.popupFontColor,
+            )
         }
     }
 }

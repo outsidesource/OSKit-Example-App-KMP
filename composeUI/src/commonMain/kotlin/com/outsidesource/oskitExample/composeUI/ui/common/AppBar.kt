@@ -45,7 +45,7 @@ fun AppBar(
                 .background(AppTheme.colors.primary),
             backgroundColor = AppTheme.colors.primary,
             contentColor = Color.White,
-            title = { Text(title) },
+            title = { Text(text = title, color = AppTheme.colors.onPrimary) },
             navigationIcon = if (!hasBackStack) null else {
                 {
                     IconButton(onClick = onBackPress) {

@@ -31,19 +31,19 @@ fun App(
         statusBarIconColor = SystemBarIconColor.Light,
     )
 
-    AppTheme {
-        CompositionLocalProvider(LocalAppColors provides if (state.isDarkTheme) DarkAppColors else LightAppColors) {
-            RouteSwitch(interactor.coordinator) {
-                when (it) {
-                    is Route.Home -> HomeScreen()
-                    is Route.AppStateExample -> AppStateExampleScreen()
-                    is Route.ViewStateExample -> ViewStateExampleScreen(it.depth)
-                    is Route.DeviceHome -> DeviceHomeScreen(it.deviceId)
-                    is Route.FileHandling -> FileHandlingScreen()
-                    is Route.Resources -> ResourcesScreen()
-                    is Route.Markdown -> MarkdownScreen()
-                    is Route.Popups -> PopupsScreen()
-                }
+    AppTheme(
+        colorsOverride = if (state.isDarkTheme) DarkAppColors else LightAppColors
+    ) {
+        RouteSwitch(interactor.coordinator) {
+            when (it) {
+                is Route.Home -> HomeScreen()
+                is Route.AppStateExample -> AppStateExampleScreen()
+                is Route.ViewStateExample -> ViewStateExampleScreen(it.depth)
+                is Route.DeviceHome -> DeviceHomeScreen(it.deviceId)
+                is Route.FileHandling -> FileHandlingScreen()
+                is Route.Resources -> ResourcesScreen()
+                is Route.Markdown -> MarkdownScreen()
+                is Route.Popups -> PopupsScreen()
             }
         }
     }

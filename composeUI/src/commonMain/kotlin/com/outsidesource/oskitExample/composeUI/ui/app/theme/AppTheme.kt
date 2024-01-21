@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitcompose.systemui.rememberKMPWindowInfo
@@ -38,10 +40,16 @@ object AppTheme {
 
 @Composable
 fun AppTheme(
+    colorsOverride: IAppColors? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val windowInfo = rememberKMPWindowInfo()
-    val colors = if (!isSystemInDarkTheme()) LightAppColors else DarkAppColors
+    val colors = when {
+        colorsOverride != null -> colorsOverride
+        !isSystemInDarkTheme() -> LightAppColors
+        else -> DarkAppColors
+    }
+
     val containerSize = windowInfo.containerSize
     val density = LocalDensity.current
     val size = remember(containerSize) {
@@ -64,19 +72,32 @@ fun AppTheme(
         LocalAppDimensions provides dimensions,
     ) {
         MaterialTheme(
-            typography = Typography(defaultFontFamily = AppTheme.typography.defaultFontFamily),
+            typography = Typography(
+                defaultFontFamily = AppTheme.typography.defaultFontFamily,
+                button = MaterialTheme.typography.button.copy(
+                    fontFamily = AppTheme.typography.defaultFontFamily,
+                    color = AppTheme.colors.onPrimary,
+                )
+            ),
             colors = MaterialTheme.colors.copy(
                 primary = AppTheme.colors.primary,
                 secondaryVariant = AppTheme.colors.switchOn,
                 surface = AppTheme.colors.switchOff,
             )
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(LightAppColors.screenBackground()),
-                content = content,
-            )
+            ProvideTextStyle(
+                TextStyle(
+                    fontFamily = AppTheme.typography.defaultFontFamily,
+                    color = AppTheme.colors.fontColor,
+                )
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(LightAppColors.screenBackground()),
+                    content = content,
+                )
+            }
         }
     }
 }
