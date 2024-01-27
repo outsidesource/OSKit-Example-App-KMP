@@ -1,17 +1,16 @@
 package com.outsidesource.oskitExample.composeUI.ui.app
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import com.outsidesource.oskitExample.composeUI.ui.Route
 import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitExample.composeUI.ui.app.theme.DarkAppColors
 import com.outsidesource.oskitExample.composeUI.ui.app.theme.LightAppColors
-import com.outsidesource.oskitExample.composeUI.ui.app.theme.LocalAppColors
 import com.outsidesource.oskitExample.composeUI.ui.appStateExample.AppStateExampleScreen
 import com.outsidesource.oskitExample.composeUI.ui.device.DeviceHomeScreen
 import com.outsidesource.oskitExample.composeUI.ui.file.FileHandlingScreen
 import com.outsidesource.oskitExample.composeUI.ui.home.HomeScreen
 import com.outsidesource.oskitExample.composeUI.ui.images.ResourcesScreen
+import com.outsidesource.oskitExample.composeUI.ui.iosServices.IOSServicesScreen
 import com.outsidesource.oskitExample.composeUI.ui.markdown.MarkdownScreen
 import com.outsidesource.oskitExample.composeUI.ui.popups.PopupsScreen
 import com.outsidesource.oskitExample.composeUI.ui.viewStateExample.ViewStateExampleScreen
@@ -44,6 +43,7 @@ fun App(
                 is Route.Resources -> ResourcesScreen()
                 is Route.Markdown -> MarkdownScreen()
                 is Route.Popups -> PopupsScreen()
+                is Route.IOSServices -> IOSServicesScreen()
             }
         }
     }

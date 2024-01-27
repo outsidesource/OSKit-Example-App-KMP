@@ -1,6 +1,8 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    kotlin("native.cocoapods")
+    id("co.touchlab.skie") version "0.6.1"
 }
 
 group = "com.outsidesource.oskitExample.common"
@@ -19,6 +21,17 @@ kotlin {
     iosSimulatorArm64()
 
     applyDefaultHierarchyTemplate()
+
+    cocoapods {
+        ios.deploymentTarget = "15"
+
+        pod("AWSCore") {
+            version = "2.33.8"
+        }
+        pod("AWSS3") {
+            version = "2.33.8"
+        }
+    }
 
     sourceSets {
         val commonMain by getting {

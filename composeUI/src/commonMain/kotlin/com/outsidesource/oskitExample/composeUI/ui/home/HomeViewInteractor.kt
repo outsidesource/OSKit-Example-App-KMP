@@ -30,4 +30,8 @@ class HomeViewInteractor(
     fun resourcesButtonClicked() {
         coordinator.resources()
     }
+
+    fun iosServicesButtonClicked() {
+        coordinator.iosServices()
+    }
 }

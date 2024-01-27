@@ -51,6 +51,10 @@ fun HomeScreen(
                 content = { Text(rememberKmpString(Strings.resources)) },
                 onClick = interactor::resourcesButtonClicked,
             )
+            Button(
+                content = { Text(rememberKmpString(Strings.iosServices)) },
+                onClick = interactor::iosServicesButtonClicked,
+            )
         }
     }
 }
