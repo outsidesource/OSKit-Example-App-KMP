@@ -2,9 +2,9 @@ package com.outsidesource.oskitExample.common.service
 
 import cocoapods.AWSCore.*
 import cocoapods.AWSS3.AWSS3
-import cocoapods.AWSS3.AWSS3GetObjectRequest
 import cocoapods.AWSS3.AWSS3ListObjectsRequest
 import cocoapods.AWSS3.AWSS3Object
+import com.outsidesource.oskitExample.common.service.s3.IS3Service
 import com.outsidesource.oskitkmp.outcome.Outcome
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlin.coroutines.resume
@@ -40,7 +40,7 @@ class IOSS3Service : IS3Service {
         s3 = AWSS3.defaultS3()
     }
 
-    override suspend fun getS3Files(): Outcome<List<String>, Any> = suspendCoroutine {
+    override suspend fun listS3Files(): Outcome<List<String>, Any> = suspendCoroutine {
         s3.listObjects(AWSS3ListObjectsRequest(mapOf("bucket" to "kmp-poc-public"), null)) { result, error ->
             when {
                 result != null -> {
