@@ -2,66 +2,34 @@ import Foundation
 import composeUI
 
 class SwiftExampleService : ISwiftExampleService {
-    func flowFromSwift() -> composeUI.SkieSwiftFlow<String> {
+    
+    func createFlowInSwift() -> SkieSwiftFlow<String> {
         class _Flow : SwiftFlow<NSString> {
             override func __create() async throws {
-                try await __emit(value: "one")
-                try await Task.sleep(nanoseconds: 2_000_000_000)
-                try await __emit(value: "two")
-                try await Task.sleep(nanoseconds: 2_000_000_000)
-                try await __emit(value: "three")
+                try await __emit(value: "One")
+                try await Task.sleep(nanoseconds: 1_000_000_000)
+                try await __emit(value: "Two")
+                try await Task.sleep(nanoseconds: 1_000_000_000)
+                try await __emit(value: "Three")
+                try await Task.sleep(nanoseconds: 1_000_000_000)
+                try await __emit(value: "Done!")
+                try await Task.sleep(nanoseconds: 1_000_000_000)
             }
         }
 
         return SkieSwiftFlow(_Flow().unwrap())
     }
     
-    func flowToSwift(flow: composeUI.SkieSwiftFlow<String>) {
-        
+    func __collectFlowInSwift(flow: SkieSwiftFlow<String>) async throws {
+        for await message in flow {
+            print("Received: ", message)
+        }
+        print("Done Collecting")
     }
     
-    func __kotlinSuspendFunction() async throws -> String {
-        return ""
+    func __suspendFunction() async throws -> Outcome<NSString, AnyObject> {
+        try await Task.sleep(nanoseconds: 2_000_000_000)
+        return SwiftOutcomeOk(value: "Done!").unwrap()
     }
-    
-    func __swiftAsyncFunction() async throws -> String {
-        return ""
-    }
-    
     
 }
-
-//class TestImpl : ITestInterface {
-//    func test1() -> String {
-//        return "Hello KMP!"
-//    }
-//    
-//    func test2() -> Outcome<NSArray, KotlinException> {
-//        return SwiftOutcomeOk(value: [Foo(one: "", two: 2)]).unwrap()
-//    }
-//    
-//    func test3() -> Outcome<NSString, KotlinException> {
-//        return SwiftOutcomeOk(value: "Hello").unwrap()
-//    }
-//    
-//    func test4() -> SkieSwiftFlow<String> {
-//        class _Flow : SwiftFlow<NSString> {
-//            override func __create() async throws {
-//                try await __emit(value: "one")
-//                try await Task.sleep(nanoseconds: 2_000_000_000)
-//                try await __emit(value: "two")
-//                try await Task.sleep(nanoseconds: 2_000_000_000)
-//                try await __emit(value: "three")
-//            }
-//        }
-//
-//        return SkieSwiftFlow(_Flow().unwrap())
-//    }
-//    
-//    func __test5(flow: SkieSwiftFlow<String>) async throws {
-//        for await message in flow {
-//            print(message)
-//        }
-//        print("done")
-//    }
-//}

@@ -4,7 +4,6 @@ package com.outsidesource.oskitExample.composeUI.ui.iosServices
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -45,41 +44,26 @@ fun IOSServicesScreen(
             }
 
             Section("Implemented with Swift") {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
+                Column{
                     Button(
-                        content = { Text("Observe Flow from Swift") },
-                        onClick = {}
+                        content = { Text("Create Flow in Swift") },
+                        onClick = interactor::createFlowInSwiftClicked
                     )
-                    Text("")
+                    Text(state.createFlowInSwiftText)
                 }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
+                Column {
                     Button(
-                        content = { Text("Observe Flow in Swift") },
-                        onClick = {}
+                        content = { Text("Collect Flow in Swift") },
+                        onClick = interactor::collectFlowInSwiftClicked
                     )
-                    Text("")
+                    Text(state.collectFlowInSwiftText)
                 }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
+                Column {
                     Button(
                         content = { Text("Suspend Function from Swift") },
-                        onClick = {}
+                        onClick = interactor::suspendFunctionClicked
                     )
-                    Text("")
-                }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Button(
-                        content = { Text("Suspend Function in Swift") },
-                        onClick = {}
-                    )
-                    Text("")
+                    Text(state.suspendFunctionText)
                 }
             }
         }
