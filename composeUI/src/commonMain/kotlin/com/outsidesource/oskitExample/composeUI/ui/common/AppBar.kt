@@ -21,8 +21,7 @@ import com.outsidesource.oskitExample.composeUI.resources.Images
 import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitcompose.modifier.outerShadow
 import com.outsidesource.oskitcompose.resources.rememberKmpImagePainter
-import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
-import com.outsidesource.oskitcompose.systemui.topInsets
+import com.outsidesource.oskitcompose.systemui.*
 
 @Composable
 fun AppBar(
@@ -33,11 +32,13 @@ fun AppBar(
     onThemeToggled: (Boolean) -> Unit,
     onBackPress: () -> Unit,
 ) {
+
     Column(
         modifier = modifier
             .outerShadow(blur = 8.dp, color = Color.Black.copy(alpha = .25f), offset = DpOffset(0.dp, 2.dp))
             .background(AppTheme.colors.primary)
             .windowInsetsPadding(KMPWindowInsets.topInsets)
+            .windowInsetsPadding(KMPWindowInsets.horizontalInsets)
     ) {
         TopAppBar(
             modifier = Modifier

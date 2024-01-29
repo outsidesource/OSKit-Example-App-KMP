@@ -8,6 +8,7 @@ import androidx.compose.ui.zIndex
 import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInject
+import com.outsidesource.oskitcompose.systemui.*
 
 @Composable
 fun Screen(
@@ -30,6 +31,7 @@ fun Screen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(brush = AppTheme.colors.screenBackground())
+                .windowInsetsPadding(KMPWindowInsets.horizontalInsets)
                 .padding(AppTheme.dimensions.screenPadding),
             content = content
         )
