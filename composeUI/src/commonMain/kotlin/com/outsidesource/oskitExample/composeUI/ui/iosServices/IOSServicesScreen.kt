@@ -4,9 +4,13 @@ package com.outsidesource.oskitExample.composeUI.ui.iosServices
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,6 +38,7 @@ fun IOSServicesScreen(
         }
 
         Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             Section("Implemented with Kotlin via Cocoapods and Objective-C interop") {
@@ -66,6 +71,13 @@ fun IOSServicesScreen(
                     )
                     Text(state.suspendFunctionText)
                 }
+            }
+
+            Section("UIKit") {
+                UIKitViewExample(
+                    modifier = Modifier
+                        .size(200.dp)
+                )
             }
         }
     }
