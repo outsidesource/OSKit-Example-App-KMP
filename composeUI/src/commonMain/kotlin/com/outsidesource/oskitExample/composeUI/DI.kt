@@ -7,6 +7,7 @@ import com.outsidesource.oskitExample.composeUI.ui.appStateExample.AppStateExamp
 import com.outsidesource.oskitExample.composeUI.ui.device.DeviceHomeViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.file.FileHandlingViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.home.HomeViewInteractor
+import com.outsidesource.oskitExample.composeUI.ui.iosServices.IOSServicesScreenViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.popups.PopupsScreenViewInteractor
 import com.outsidesource.oskitExample.composeUI.ui.viewStateExample.ViewStateExampleViewInteractor
 import org.koin.dsl.module
@@ -22,4 +23,5 @@ val composeUIModule = module {
     factory { params -> DeviceHomeViewInteractor(params[0], get()) }
     factory { FileHandlingViewInteractor(get()) }
     factory { PopupsScreenViewInteractor() }
+    factory { IOSServicesScreenViewInteractor(get(), get()) }
 } + platformModule()

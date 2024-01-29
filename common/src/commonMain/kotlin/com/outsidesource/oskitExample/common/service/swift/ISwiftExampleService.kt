@@ -8,3 +8,17 @@ interface ISwiftExampleService {
     suspend fun collectFlowInSwift(flow: Flow<String>)
     suspend fun suspendFunction(): Outcome<String, Any>
 }
+
+class NoOpSwiftExampleService : ISwiftExampleService {
+    override fun createFlowInSwift(): Flow<String> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun collectFlowInSwift(flow: Flow<String>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun suspendFunction(): Outcome<String, Any> {
+        TODO("Not yet implemented")
+    }
+}
