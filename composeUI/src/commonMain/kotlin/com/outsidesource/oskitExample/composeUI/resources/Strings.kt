@@ -14,6 +14,7 @@ object Strings : KMPStrings() {
     val markdown = kmpStringKey()
     val popups = kmpStringKey()
     val resources = kmpStringKey()
+    val iosServices = kmpStringKey()
 
     val strings = kmpStringKey()
     val fonts = kmpStringKey()
@@ -41,6 +42,7 @@ private object EnStrings : KMPStringSet() {
         Strings.markdown to "Markdown",
         Strings.popups to "Popups",
         Strings.resources to "Resources",
+        Strings.iosServices to "iOS Services",
 
         Strings.strings to "Strings",
         Strings.fonts to "Fonts",

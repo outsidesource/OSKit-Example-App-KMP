@@ -1,15 +1,13 @@
-import com.outsidesource.oskitExample.common.initKoin
-import com.outsidesource.oskitExample.composeUI.composeUIModule
 import com.outsidesource.oskitExample.composeUI.ui.app.App
+import com.outsidesource.oskitcompose.lib.koinInjector
 import com.outsidesource.oskitcompose.uikit.OSComposeUIViewController
 import com.outsidesource.oskitkmp.file.IKMPFileHandler
 import com.outsidesource.oskitkmp.file.KMPFileHandlerContext
-import platform.UIKit.*
-
-private val koin = initKoin(extraModules = composeUIModule.toTypedArray()).koin
+import org.koin.core.component.inject
+import platform.UIKit.UIViewController
 
 fun MainViewController(): UIViewController {
-    val fileHandler by koin.inject<IKMPFileHandler>()
+    val fileHandler by koinInjector.inject<IKMPFileHandler>()
 
     return OSComposeUIViewController {
         App()
@@ -17,6 +15,3 @@ fun MainViewController(): UIViewController {
         fileHandler.init(KMPFileHandlerContext(this))
     }
 }
-
-
-

@@ -22,6 +22,7 @@ class AppCoordinator: Coordinator(
     fun markdown() = push(Route.Markdown)
     fun popups() = push(Route.Popups)
     fun resources() = push(Route.Resources)
+    fun iosServices() = push(Route.IOSServices)
     fun popToHome() = popTo(Route.Home)
     fun popBackStack() = pop()
 }

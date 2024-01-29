@@ -11,4 +11,5 @@ sealed class Route: IRoute {
     data object Markdown: Route()
     data object Popups: Route()
     data object Resources: Route()
+    data object IOSServices: Route()
 }
