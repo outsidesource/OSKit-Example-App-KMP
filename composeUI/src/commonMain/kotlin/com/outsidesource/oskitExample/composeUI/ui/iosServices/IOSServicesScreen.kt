@@ -11,6 +11,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitExample.composeUI.resources.Strings
+import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
@@ -82,5 +83,5 @@ private fun Section(title: String, content: @Composable () -> Unit) {
 
 @Composable
 private fun SectionHeader(text: String) {
-    Text(text = text, style = TextStyle(fontWeight = FontWeight.Bold))
+    Text(text = text, style = TextStyle(fontWeight = FontWeight.Bold, color = AppTheme.colors.fontColor))
 }
