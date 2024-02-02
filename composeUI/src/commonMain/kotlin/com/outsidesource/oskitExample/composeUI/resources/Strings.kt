@@ -1,11 +1,8 @@
-@file:OptIn(ExperimentalOSKitAPI::class)
-
 package com.outsidesource.oskitExample.composeUI.resources
 
 import com.outsidesource.oskitcompose.resources.KMPStringKey
 import com.outsidesource.oskitcompose.resources.KMPStringSet
 import com.outsidesource.oskitcompose.resources.KMPStrings
-import com.outsidesource.oskitkmp.annotation.ExperimentalOSKitAPI
 
 object Strings : KMPStrings() {
     val appInteractorExample = kmpStringKey()

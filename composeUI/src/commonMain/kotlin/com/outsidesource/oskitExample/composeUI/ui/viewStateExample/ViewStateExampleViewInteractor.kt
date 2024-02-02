@@ -24,9 +24,9 @@ class ViewStateExampleViewInteractor(
         )
     }
 
-    fun increment() = update { it.copy(count = it.count + 1) }
-    fun decrement() = update { it.copy(count = it.count - 1) }
-    fun validityCheckerValueChanged(value: String) = update { it.copy(validityCheckerValue = value) }
-    fun pushNewScreenButtonClicked(depth: Int) = coordinator.viewStateExample(depth)
+    fun incrementClicked() = update { state -> state.copy(count = state.count + 1) }
+    fun decrementClicked() = update { state -> state.copy(count = state.count - 1) }
+    fun validityCheckerValueChanged(value: String) = update { state -> state.copy(validityCheckerValue = value) }
+    fun pushNewScreenButtonClicked(depth: Int) = coordinator.viewStateExampleClicked(depth)
     fun popToHome() = coordinator.popToHome()
 }

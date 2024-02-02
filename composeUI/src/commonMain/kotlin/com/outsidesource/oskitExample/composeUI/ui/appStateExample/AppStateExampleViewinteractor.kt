@@ -32,6 +32,6 @@ class AppStateExampleViewInteractor(
     }
 
     fun deviceSelected(device: Device) {
-        coordinator.deviceHome(device.id)
+        coordinator.deviceClicked(device.id)
     }
 }
