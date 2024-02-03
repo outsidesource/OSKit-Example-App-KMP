@@ -31,6 +31,7 @@ fun MarkdownScreen() {
             .let { it.copy(
                 codeTextStyle = it.codeTextStyle.merge(TextStyle(fontFamily = FontFamily.Monospace)),
                 loaderBackgroundColor = colors.primary,
+                linkTextStyle = it.linkTextStyle.merge(TextStyle(color = colors.primary))
             ) }
     }
 
@@ -165,9 +166,9 @@ val markdown = """
 
     ### Local Resource Images
     
-    Align Center:
+    Align Start:
     
-    ![attrs(width=100,height=100,hAlign=center)](local:penguin)
+    ![attrs(width=100,height=100,hAlign=start)](local:penguin)
     
     Align End:
     
