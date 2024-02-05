@@ -174,5 +174,3 @@ val markdown = """
     
     ![attrs(width=100, height=100, hAlign=end) Description](local:tux)
 """.trimIndent()
-
-// ![attrs(width=100, height=100) My Description](https://google.com/blah.png)
