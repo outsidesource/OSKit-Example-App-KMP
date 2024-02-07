@@ -1,4 +1,4 @@
-package com.outsidesource.oskitExample.common.model.device
+package com.outsidesource.oskitExample.common.entity.device
 
 data class Device(
     val id: Int = 0,

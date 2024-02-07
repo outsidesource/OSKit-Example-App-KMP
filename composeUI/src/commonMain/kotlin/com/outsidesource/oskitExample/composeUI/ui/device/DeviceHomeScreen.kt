@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
-import com.outsidesource.oskitExample.common.model.device.DeviceMode
+import com.outsidesource.oskitExample.common.entity.device.ConnectionStatus
+import com.outsidesource.oskitExample.common.entity.device.DeviceMode
 import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitExample.composeUI.ui.common.CustomSlider
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen

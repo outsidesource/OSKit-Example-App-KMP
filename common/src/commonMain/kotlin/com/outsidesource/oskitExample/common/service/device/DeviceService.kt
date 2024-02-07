@@ -1,9 +1,9 @@
 package com.outsidesource.oskitExample.common.service.device
 
-import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
-import com.outsidesource.oskitExample.common.model.device.Device
-import com.outsidesource.oskitExample.common.model.device.DeviceMode
-import com.outsidesource.oskitExample.common.model.device.DeviceModel
+import com.outsidesource.oskitExample.common.entity.device.ConnectionStatus
+import com.outsidesource.oskitExample.common.entity.device.Device
+import com.outsidesource.oskitExample.common.entity.device.DeviceMode
+import com.outsidesource.oskitExample.common.entity.device.DeviceModel
 import com.outsidesource.oskitkmp.outcome.Outcome
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow

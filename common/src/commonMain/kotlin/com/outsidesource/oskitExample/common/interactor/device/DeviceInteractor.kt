@@ -1,8 +1,8 @@
 package com.outsidesource.oskitExample.common.interactor.device
 
-import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
-import com.outsidesource.oskitExample.common.model.device.Device
-import com.outsidesource.oskitExample.common.model.device.DeviceMode
+import com.outsidesource.oskitExample.common.entity.device.ConnectionStatus
+import com.outsidesource.oskitExample.common.entity.device.Device
+import com.outsidesource.oskitExample.common.entity.device.DeviceMode
 import com.outsidesource.oskitExample.common.service.device.DeviceService
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.outcome.Outcome
