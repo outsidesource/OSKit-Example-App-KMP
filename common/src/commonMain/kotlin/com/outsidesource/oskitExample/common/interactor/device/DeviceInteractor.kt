@@ -1,8 +1,8 @@
-package com.outsidesource.oskitExample.common.state.device
+package com.outsidesource.oskitExample.common.interactor.device
 
-import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
-import com.outsidesource.oskitExample.common.model.device.Device
-import com.outsidesource.oskitExample.common.model.device.DeviceMode
+import com.outsidesource.oskitExample.common.entity.device.ConnectionStatus
+import com.outsidesource.oskitExample.common.entity.device.Device
+import com.outsidesource.oskitExample.common.entity.device.DeviceMode
 import com.outsidesource.oskitExample.common.service.device.DeviceService
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.outcome.Outcome
@@ -33,16 +33,6 @@ class DeviceInteractor(
         return outcome
     }
 
-    suspend fun getVolume(id: Int) {
-        val outcome = deviceService.getVolume(id)
-        if (outcome is Outcome.Ok) updateDevice(id) { settings -> settings.copy(volume = outcome.value) }
-    }
-
-    suspend fun getMode(id: Int) {
-        val outcome = deviceService.getMode(id)
-        if (outcome is Outcome.Ok) updateDevice(id) { settings -> settings.copy(mode = outcome.value) }
-    }
-
     suspend fun connect(id: Int) {
         updateDevice(id) { deviceState -> deviceState.copy(connectionStatus = ConnectionStatus.Connecting)}
 
@@ -55,6 +45,16 @@ class DeviceInteractor(
         } else {
             updateDevice(id) { deviceState -> deviceState.copy(connectionStatus = ConnectionStatus.Disconnected)}
         }
+    }
+
+    private suspend fun getVolume(id: Int) {
+        val outcome = deviceService.getVolume(id)
+        if (outcome is Outcome.Ok) updateDevice(id) { settings -> settings.copy(volume = outcome.value) }
+    }
+
+    private suspend fun getMode(id: Int) {
+        val outcome = deviceService.getMode(id)
+        if (outcome is Outcome.Ok) updateDevice(id) { settings -> settings.copy(mode = outcome.value) }
     }
 
     fun disconnect(id: Int) {

@@ -1,4 +1,4 @@
-package com.outsidesource.oskitExample.common.model.device
+package com.outsidesource.oskitExample.common.entity.device
 
 data class Device(
     val id: Int = 0,
@@ -16,13 +16,13 @@ enum class DeviceMode {
 }
 
 enum class DeviceModel {
-    RedRocket,
+    RedWagon,
     BlueFire,
     GreenTree,
     OrangeOrange;
 
     override fun toString(): String = when(this) {
-        RedRocket -> "Red Rocket"
+        RedWagon -> "Red Wagon"
         BlueFire -> "Blue Fire"
         GreenTree -> "Green Tree"
         OrangeOrange -> "Orange Orange"

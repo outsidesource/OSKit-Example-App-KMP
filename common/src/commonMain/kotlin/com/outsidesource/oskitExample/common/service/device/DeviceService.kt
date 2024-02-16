@@ -1,12 +1,13 @@
 package com.outsidesource.oskitExample.common.service.device
 
-import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
-import com.outsidesource.oskitExample.common.model.device.Device
-import com.outsidesource.oskitExample.common.model.device.DeviceMode
-import com.outsidesource.oskitExample.common.model.device.DeviceModel
+import com.outsidesource.oskitExample.common.entity.device.ConnectionStatus
+import com.outsidesource.oskitExample.common.entity.device.Device
+import com.outsidesource.oskitExample.common.entity.device.DeviceMode
+import com.outsidesource.oskitExample.common.entity.device.DeviceModel
 import com.outsidesource.oskitkmp.outcome.Outcome
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
+import kotlin.random.Random
 
 class DeviceService {
     // These variables are just here to mock persistent device state
@@ -17,7 +18,7 @@ class DeviceService {
     suspend fun discoverDevices() = flow {
         for (i in 0..10) {
             randomDelay(100, 1000)
-            emit(Device(i, "Device $i", DeviceModel.values()[i % DeviceModel.values().size]))
+            emit(Device(i, "Device $i", DeviceModel.entries[i % DeviceModel.entries.size]))
         }
     }
 
@@ -54,5 +55,5 @@ class DeviceService {
         return Outcome.Ok(Unit)
     }
 
-    private suspend fun randomDelay(min: Int, max: Int) = delay(((Math.random() * (max - min)) + min).toLong())
+    private suspend fun randomDelay(min: Int, max: Int) = delay(((Random.nextFloat() * (max - min)) + min).toLong())
 }

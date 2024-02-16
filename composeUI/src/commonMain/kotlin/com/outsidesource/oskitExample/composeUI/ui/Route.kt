@@ -3,8 +3,13 @@ package com.outsidesource.oskitExample.composeUI.ui
 import com.outsidesource.oskitkmp.router.IRoute
 
 sealed class Route: IRoute {
-    object Home: Route()
+    data object Home: Route()
     data class ViewStateExample(val depth: Int): Route()
-    object AppStateExample: Route()
+    data object AppStateExample: Route()
     data class DeviceHome(val deviceId: Int): Route()
+    data object FileHandling: Route()
+    data object Markdown: Route()
+    data object Popups: Route()
+    data object Resources: Route()
+    data object IOSServices: Route()
 }

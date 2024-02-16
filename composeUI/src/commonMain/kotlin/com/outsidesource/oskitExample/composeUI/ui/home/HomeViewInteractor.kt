@@ -8,10 +8,30 @@ class HomeViewInteractor(
 ): Interactor<Unit>(initialState = Unit) {
 
     fun appStateExampleButtonClicked() {
-        coordinator.appStateExample()
+        coordinator.appStateExampleClicked()
     }
 
     fun viewStateExampleButtonClicked() {
-        coordinator.viewStateExample(0)
+        coordinator.viewStateExampleClicked(0)
+    }
+
+    fun fileHandlingButtonClicked() {
+        coordinator.fileHandlingClicked()
+    }
+
+    fun markdownButtonClicked() {
+        coordinator.markdownClicked()
+    }
+
+    fun popupsButtonClicked() {
+        coordinator.popupsClicked()
+    }
+
+    fun resourcesButtonClicked() {
+        coordinator.resourcesClicked()
+    }
+
+    fun iosServicesButtonClicked() {
+        coordinator.iosServicesClicked()
     }
 }

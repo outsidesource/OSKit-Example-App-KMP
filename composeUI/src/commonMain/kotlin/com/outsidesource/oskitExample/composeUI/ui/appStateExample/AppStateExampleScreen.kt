@@ -1,6 +1,7 @@
 package com.outsidesource.oskitExample.composeUI.ui.appStateExample
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +14,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
+import com.outsidesource.oskitExample.common.entity.device.ConnectionStatus
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
@@ -30,7 +30,7 @@ import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 fun AppStateExampleScreen(
     interactor: AppStateExampleViewInteractor = rememberInjectForRoute()
 ) {
-    val state by interactor.collectAsState()
+    val state = interactor.collectAsState()
 
     Screen("App State Example") {
         Column(
@@ -67,7 +67,7 @@ fun AppStateExampleScreen(
                                     .padding(horizontal = 8.dp)
                                     .fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(it.name)
                                 Text(text = it.model.toString(), fontSize = 12.sp, color = Color(0xFF777777))

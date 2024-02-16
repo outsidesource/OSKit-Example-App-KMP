@@ -7,18 +7,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.outsidesource.oskitExample.common.model.device.ConnectionStatus
-import com.outsidesource.oskitExample.common.model.device.DeviceMode
+import com.outsidesource.oskitExample.common.entity.device.ConnectionStatus
+import com.outsidesource.oskitExample.common.entity.device.DeviceMode
+import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitExample.composeUI.ui.common.CustomSlider
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
@@ -32,8 +31,7 @@ fun DeviceHomeScreen(
     deviceId: Int,
     interactor: DeviceHomeViewInteractor = rememberInjectForRoute { parametersOf(deviceId) }
 ) {
-    val state by interactor.collectAsState()
-
+    val state = interactor.collectAsState()
     val device = state.device ?: return
 
     LaunchedEffect(Unit) {
@@ -82,7 +80,7 @@ fun DeviceHomeScreen(
 private fun DeviceView(
     interactorRef: ValRef<DeviceHomeViewInteractor>
 ) {
-    val state by interactorRef.value.collectAsState()
+    val state = interactorRef.value.collectAsState()
     val interactor = interactorRef.value
     val device = state.device ?: return
 
@@ -96,7 +94,7 @@ private fun DeviceView(
         Row(
             horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            DeviceMode.values().forEach {
+            DeviceMode.entries.forEach {
                 ModeButton(isSelected = device.mode == it, mode = it, onClick = { interactor.setMode(it) })
             }
         }
@@ -127,13 +125,16 @@ fun ModeButton(isSelected: Boolean, mode: DeviceMode, onClick: () -> Unit) {
             .shadow(4.dp, RoundedCornerShape(8.dp))
             .border(
                 width = if (isSelected) 2.dp else 0.dp,
-                color = if (isSelected) MaterialTheme.colors.primary else Color.Transparent,
+                color = if (isSelected) AppTheme.colors.primary else Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
             )
             .background(Color(0xFFF2F2F2), RoundedCornerShape(8.dp))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Text(mode.toString())
+        Text(
+            text = mode.toString(),
+            color = Color.Black,
+        )
     }
 }

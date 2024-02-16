@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.compose") version "1.4.0"
+    id("org.jetbrains.compose") version "1.5.11"
     id("com.android.application")
     kotlin("android")
 }
@@ -12,25 +12,27 @@ repositories {
 dependencies {
     implementation(project(":common"))
     implementation(project(":composeUI"))
-    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.activity:activity-compose:1.8.2")
 }
 
 android {
-    compileSdk = 33
+    namespace = "com.outsidesource.oskitExample"
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.outsidesource.oskitExample"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0-SNAPSHOT"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }

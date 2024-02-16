@@ -8,7 +8,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,7 +20,7 @@ fun ViewStateExampleScreen(
     depth: Int,
     interactor: ViewStateExampleViewInteractor = rememberInjectForRoute()
 ) {
-    val state by interactor.collectAsState()
+    val state = interactor.collectAsState()
 
     Screen("View State Example") {
         Column(
@@ -37,11 +36,11 @@ fun ViewStateExampleScreen(
             ) {
                 Button(
                     content = { Text("Increment") },
-                    onClick = interactor::increment
+                    onClick = interactor::incrementClicked
                 )
                 Button(
                     content = { Text("Decrement") },
-                    onClick = interactor::decrement
+                    onClick = interactor::decrementClicked
                 )
             }
 
