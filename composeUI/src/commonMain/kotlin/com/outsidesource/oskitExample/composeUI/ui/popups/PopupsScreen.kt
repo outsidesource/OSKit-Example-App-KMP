@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,6 +15,8 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
+import com.outsidesource.oskitcompose.geometry.PopupCaretAlignment
+import com.outsidesource.oskitcompose.geometry.PopupShape
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.modifier.outerShadow
@@ -27,6 +30,12 @@ fun PopupsScreen(
     interactor: PopupsScreenViewInteractor = rememberInjectForRoute(),
 ) {
     val state = interactor.collectAsState()
+    val popupShape = remember {
+        PopupShape(
+            cornerRadius = 4.dp,
+            caretAlignment = PopupCaretAlignment.Top,
+        )
+    }
 
     Screen("Popup") {
         Column(
@@ -43,14 +52,14 @@ fun PopupsScreen(
                 Popover(
                     isVisible = state.isPopoverVisible,
                     onDismissRequest = interactor::popoverDismissed,
-                    anchors = PopoverAnchors.ExternalBottomAlignStart,
+                    anchors = PopoverAnchors.ExternalBottomAlignCenter,
                     offset = DpOffset((-4).dp, (-4).dp)
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(4.dp)
-                            .outerShadow(4.dp, shape = RoundedCornerShape(4.dp))
-                            .background(Color(0xFF333333), shape = RoundedCornerShape(4.dp))
+                            .padding(top = 16.dp, bottom = 4.dp, end = 4.dp, start = 4.dp)
+                            .outerShadow(4.dp, shape = popupShape)
+                            .background(Color(0xFF333333), shape = popupShape)
                             .padding(8.dp)
                     ) {
                         Text("Popover", color = Color.White)

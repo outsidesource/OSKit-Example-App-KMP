@@ -24,7 +24,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "composeUI"
             isStatic = true // https://youtrack.jetbrains.com/issue/KT-42254
-            export("com.outsidesource:oskit-kmp:4.2.0")
+            export("com.outsidesource:oskit-kmp:4.3.0")
             export("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
             export(project(":common"))
         }
@@ -40,9 +40,9 @@ kotlin {
                 api(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
-                api("com.outsidesource:oskit-kmp:4.2.0")
+                api("com.outsidesource:oskit-kmp:4.3.0")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-                api("com.outsidesource:oskit-compose:3.2.1")
+                api("com.outsidesource:oskit-compose:3.3.0")
                 api("com.squareup.okio:okio:3.7.0")
                 api(project(":common"))
             }
