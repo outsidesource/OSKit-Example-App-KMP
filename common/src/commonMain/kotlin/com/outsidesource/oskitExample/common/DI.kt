@@ -8,10 +8,10 @@ import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
-fun initKoin(appDeclaration: KoinAppDeclaration = {}, extraModules: Array<Module> = emptyArray()) =
+fun initKoin(appDeclaration: KoinAppDeclaration = {}, platformContext: PlatformContext, extraModules: Array<Module> = emptyArray()) =
     startKoin {
         appDeclaration()
-        modules(commonModule(), platformModule(), *extraModules)
+        modules(commonModule(), platformModule(platformContext), *extraModules)
     }
 
 fun commonModule() = module {

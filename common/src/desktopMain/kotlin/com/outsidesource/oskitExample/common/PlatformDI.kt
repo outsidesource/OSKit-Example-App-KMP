@@ -7,7 +7,9 @@ import com.outsidesource.oskitExample.common.service.swift.NoOpSwiftExampleServi
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-actual fun platformModule() = module {
+actual fun platformModule(platformContext: PlatformContext) = module {
     single { NoOpS3Service() } bind IS3Service::class
     single { NoOpSwiftExampleService() } bind ISwiftExampleService::class
 }
+
+actual class PlatformContext

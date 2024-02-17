@@ -3,7 +3,6 @@ package com.outsidesource.oskitExample.composeUI.ui.popups
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -15,8 +14,8 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitExample.composeUI.ui.app.theme.AppTheme
 import com.outsidesource.oskitExample.composeUI.ui.common.Screen
-import com.outsidesource.oskitcompose.geometry.PopupCaretAlignment
 import com.outsidesource.oskitcompose.geometry.PopupShape
+import com.outsidesource.oskitcompose.geometry.PopupShapeCaretPosition
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.modifier.outerShadow
@@ -33,7 +32,7 @@ fun PopupsScreen(
     val popupShape = remember {
         PopupShape(
             cornerRadius = 4.dp,
-            caretAlignment = PopupCaretAlignment.Top,
+            caretPosition = PopupShapeCaretPosition.Top,
         )
     }
 

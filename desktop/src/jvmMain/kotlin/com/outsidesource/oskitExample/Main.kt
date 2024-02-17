@@ -4,6 +4,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.application
+import com.outsidesource.oskitExample.common.PlatformContext
 import com.outsidesource.oskitExample.common.initKoin
 import com.outsidesource.oskitExample.composeUI.composeUIModule
 import com.outsidesource.oskitExample.composeUI.ui.app.App
@@ -17,7 +18,10 @@ import com.outsidesource.oskitkmp.file.KMPFileHandlerContext
 import org.koin.core.component.inject
 import java.awt.Dimension
 
-private val koin = initKoin(extraModules = composeUIModule.toTypedArray()).koin
+private val koin = initKoin(
+    platformContext = PlatformContext(),
+    extraModules = composeUIModule.toTypedArray()
+).koin
 
 fun main() = application {
     val fileHandler by koinInjector.inject<IKMPFileHandler>()
