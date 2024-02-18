@@ -36,6 +36,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation("co.touchlab:stately-common:2.0.5") // For some reason without this iOS wouldn't build
                 api("com.outsidesource:oskit-kmp:4.4.0")
                 api("io.insert-koin:koin-core:3.4.3")
                 api("co.touchlab:kermit:2.0.2")

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalOSKitAPI::class)
-
 package com.outsidesource.oskitExample.composeUI.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +17,7 @@ import com.outsidesource.oskitkmp.annotation.ExperimentalOSKitAPI
 
 @Composable
 fun HomeScreen(
-    interactor: HomeViewInteractor = rememberInjectForRoute()
+    interactor: HomeViewInteractor = rememberInjectForRoute(),
 ) {
     Screen("Home") {
         Column(
