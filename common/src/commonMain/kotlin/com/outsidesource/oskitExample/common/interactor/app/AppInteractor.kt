@@ -3,6 +3,7 @@ package com.outsidesource.oskitExample.common.interactor.app
 import com.outsidesource.oskitExample.common.service.preferences.AppTheme
 import com.outsidesource.oskitExample.common.service.preferences.IPreferencesService
 import com.outsidesource.oskitkmp.interactor.Interactor
+import kotlinx.coroutines.launch
 
 data class AppState(
     val isDarkTheme: Boolean = false
@@ -17,7 +18,9 @@ class AppInteractor(
 ) {
 
     fun onThemeToggled() {
-        update { state -> state.copy(isDarkTheme = !state.isDarkTheme) }
-        preferencesService.setTheme(if (state.isDarkTheme) AppTheme.Dark else AppTheme.Light)
+        interactorScope.launch {
+            update { state -> state.copy(isDarkTheme = !state.isDarkTheme) }
+            preferencesService.setTheme(if (state.isDarkTheme) AppTheme.Dark else AppTheme.Light)
+        }
     }
 }

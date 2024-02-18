@@ -1,9 +1,10 @@
 package com.outsidesource.oskitExample.composeUI
 
-import com.outsidesource.oskitkmp.storage.KMPStorage
-import com.outsidesource.oskitkmp.storage.KMPStorageContext
+import com.outsidesource.oskitkmp.storage.DesktopKMPStorage
+import com.outsidesource.oskitkmp.storage.IKMPStorage
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 actual fun platformModule() = module {
-    single { KMPStorage(context = KMPStorageContext(appName = "OSKit-Example-App-KMP")) }
+    single { DesktopKMPStorage(appName = "OSKit-Example-App-KMP") } bind IKMPStorage::class
 }

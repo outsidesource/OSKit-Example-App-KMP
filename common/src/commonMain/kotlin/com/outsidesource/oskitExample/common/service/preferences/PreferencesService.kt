@@ -1,10 +1,10 @@
 package com.outsidesource.oskitExample.common.service.preferences
 
 import com.outsidesource.oskitkmp.outcome.unwrapOrNull
-import com.outsidesource.oskitkmp.storage.KMPStorage
+import com.outsidesource.oskitkmp.storage.IKMPStorage
 
 class PreferencesService(
-    private val storage: KMPStorage,
+    private val storage: IKMPStorage,
 ) : IPreferencesService {
     private val node = storage.openNode("preferences").unwrapOrNull()
 

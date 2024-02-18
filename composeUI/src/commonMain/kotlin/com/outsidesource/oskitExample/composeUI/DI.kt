@@ -12,7 +12,6 @@ import com.outsidesource.oskitExample.composeUI.ui.popups.PopupsScreenViewIntera
 import com.outsidesource.oskitExample.composeUI.ui.viewStateExample.ViewStateExampleViewInteractor
 import com.outsidesource.oskitkmp.file.IKMPFileHandler
 import com.outsidesource.oskitkmp.file.KMPFileHandler
-import com.outsidesource.oskitkmp.storage.KMPStorage
 import org.koin.dsl.bind
 import org.koin.dsl.module
 

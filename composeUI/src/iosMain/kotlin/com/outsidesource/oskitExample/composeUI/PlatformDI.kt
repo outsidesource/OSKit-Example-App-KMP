@@ -5,8 +5,8 @@ import com.outsidesource.oskitExample.common.initKoin
 import com.outsidesource.oskitExample.common.service.IOSS3Service
 import com.outsidesource.oskitExample.common.service.s3.IS3Service
 import com.outsidesource.oskitExample.common.service.swift.ISwiftExampleService
-import com.outsidesource.oskitkmp.storage.KMPStorage
-import com.outsidesource.oskitkmp.storage.KMPStorageContext
+import com.outsidesource.oskitkmp.storage.IKMPStorage
+import com.outsidesource.oskitkmp.storage.IOSKMPStorage
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -17,7 +17,7 @@ private val koin = initKoin(
 
 actual fun platformModule() = module {
     single { IOSS3Service() } bind IS3Service::class
-    single { KMPStorage(context = KMPStorageContext(appName = "OSKit-Example-App-KMP")) }
+    single { IOSKMPStorage() } bind IKMPStorage::class
 }
 
 fun loadKoinSwiftModules(swiftExampleService: ISwiftExampleService) {
