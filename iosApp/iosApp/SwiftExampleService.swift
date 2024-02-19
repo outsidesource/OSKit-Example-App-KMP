@@ -1,5 +1,5 @@
 import Foundation
-import composeUI
+import ComposeApp
 
 class SwiftExampleService : ISwiftExampleService {
     

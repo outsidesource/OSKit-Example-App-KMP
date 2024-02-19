@@ -35,8 +35,6 @@ kotlin {
 
     sourceSets {
         val desktopMain by getting
-        val desktopTest by getting
-        val androidInstrumentedTest by getting
 
         commonMain.dependencies {
             implementation(libs.stately.common) // For some reason without this iOS wouldn't build
@@ -53,9 +51,6 @@ kotlin {
         androidMain.dependencies {
             api(libs.androidx.appcompat)
             api(libs.androidx.core.ktx)
-        }
-        androidInstrumentedTest.dependencies {
-            implementation(libs.junit)
         }
     }
 }

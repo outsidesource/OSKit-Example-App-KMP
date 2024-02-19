@@ -8,18 +8,18 @@ class PreferencesService(
 ) : IPreferencesService {
     private val node = storage.openNode("preferences").unwrapOrNull()
 
-    override fun setTheme(theme: AppTheme) {
+    override fun setTheme(theme: AppColorTheme) {
         node?.putInt("theme", when (theme) {
-            AppTheme.Light -> 0
-            AppTheme.Dark -> 1
+            AppColorTheme.Light -> 0
+            AppColorTheme.Dark -> 1
         })
     }
 
-    override fun getTheme(): AppTheme {
+    override fun getTheme(): AppColorTheme {
         return when (node?.getInt("theme")) {
-            0 -> AppTheme.Light
-            1 -> AppTheme.Dark
-            else -> AppTheme.Light
+            0 -> AppColorTheme.Light
+            1 -> AppColorTheme.Dark
+            else -> AppColorTheme.Light
         }
     }
 }

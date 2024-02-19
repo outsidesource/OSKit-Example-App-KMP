@@ -1,11 +1,11 @@
 package com.outsidesource.oskitExample.common.service.preferences
 
-enum class AppTheme {
+enum class AppColorTheme {
     Dark,
     Light,
 }
 
 interface IPreferencesService {
-    fun setTheme(theme: AppTheme)
-    fun getTheme(): AppTheme
+    fun setTheme(theme: AppColorTheme)
+    fun getTheme(): AppColorTheme
 }

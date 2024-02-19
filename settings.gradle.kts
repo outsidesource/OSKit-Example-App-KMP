@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "OSKit-Example-App-KMP"
 
-include(":common", ":composeUI")
+include(":common", ":composeApp")
