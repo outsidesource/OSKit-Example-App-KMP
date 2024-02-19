@@ -1,9 +1,8 @@
-package com.outsidesource.oskitExample
+package com.outsidesource.oskitExample.composeUI
 
 import android.app.Application
 import com.outsidesource.oskitExample.common.PlatformContext
 import com.outsidesource.oskitExample.common.initKoin
-import com.outsidesource.oskitExample.composeUI.composeUIModule
 
 class MainApplication: Application() {
     override fun onCreate() {

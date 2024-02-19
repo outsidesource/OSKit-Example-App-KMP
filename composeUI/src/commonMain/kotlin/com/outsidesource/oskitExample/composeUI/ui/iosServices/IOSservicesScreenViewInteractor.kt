@@ -3,7 +3,7 @@ package com.outsidesource.oskitExample.composeUI.ui.iosServices
 import com.outsidesource.oskitExample.common.service.s3.IS3Service
 import com.outsidesource.oskitExample.common.service.swift.ISwiftExampleService
 import com.outsidesource.oskitkmp.interactor.Interactor
-import com.outsidesource.oskitkmp.outcome.unwrapOrElse
+import com.outsidesource.oskitkmp.outcome.unwrapOrReturn
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ class IOSServicesScreenViewInteractor(
         interactorScope.launch {
             update { state -> state.copy(s3BucketListText = "Loading...") }
 
-            val files = s3Service.listS3Files().unwrapOrElse {
+            val files = s3Service.listS3Files().unwrapOrReturn {
                 update { state -> state.copy(s3BucketListText = "Error") }
                 return@launch
             }

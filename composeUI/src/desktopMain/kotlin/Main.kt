@@ -1,5 +1,3 @@
-package com.outsidesource.oskitExample
-
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.unit.dp

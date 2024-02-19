@@ -1,8 +1,9 @@
-package com.outsidesource.oskitExample
+package com.outsidesource.oskitExample.composeUI
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+
 import androidx.core.view.WindowCompat
 import com.outsidesource.oskitExample.composeUI.ui.app.App
 import com.outsidesource.oskitcompose.lib.koinInjector

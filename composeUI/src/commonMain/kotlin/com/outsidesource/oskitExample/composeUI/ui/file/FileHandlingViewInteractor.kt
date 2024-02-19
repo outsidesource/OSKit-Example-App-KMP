@@ -3,7 +3,7 @@ package com.outsidesource.oskitExample.composeUI.ui.file
 import com.outsidesource.oskitkmp.file.*
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.outcome.Outcome
-import com.outsidesource.oskitkmp.outcome.unwrapOrElse
+import com.outsidesource.oskitkmp.outcome.unwrapOrReturn
 import kotlinx.coroutines.launch
 import okio.buffer
 import okio.use
@@ -81,12 +81,12 @@ class FileHandlingViewInteractor(
     fun createFile() {
         interactorScope.launch {
             val folder = state.selectedFolder ?: return@launch
-            val file = fileHandler.resolveFile(folder, state.createFileName, create = true).unwrapOrElse {
+            val file = fileHandler.resolveFile(folder, state.createFileName, create = true).unwrapOrReturn {
                 update { state -> state.copy(createFileResult = this) }
                 return@launch
             }
 
-            val sink = file.sink().unwrapOrElse {
+            val sink = file.sink().unwrapOrReturn {
                 update { state -> state.copy(createFileResult = this) }
                 return@launch
             }
@@ -108,7 +108,7 @@ class FileHandlingViewInteractor(
     fun appendToFile() {
        interactorScope.launch {
             val file = state.selectedFile ?: return@launch
-            val sink = file.sink(mode = KMPFileWriteMode.Append).unwrapOrElse {
+            val sink = file.sink(mode = KMPFileWriteMode.Append).unwrapOrReturn {
                 update { state -> state.copy(appendFileResult = this) }
                 return@launch
             }
@@ -128,7 +128,7 @@ class FileHandlingViewInteractor(
     fun createFolder() {
         interactorScope.launch {
             val folder = state.selectedFolder ?: return@launch
-            val createdFolder = fileHandler.resolveDirectory(folder, state.createFolderName, create = true).unwrapOrElse {
+            val createdFolder = fileHandler.resolveDirectory(folder, state.createFolderName, create = true).unwrapOrReturn {
                 update { state -> state.copy(createFolderResult = this) }
                 return@launch
             }
@@ -163,7 +163,7 @@ class FileHandlingViewInteractor(
     fun list() {
         interactorScope.launch {
             val folder = state.selectedFolder ?: return@launch
-            val files = fileHandler.list(folder, isRecursive = true).unwrapOrElse { return@launch }
+            val files = fileHandler.list(folder, isRecursive = true).unwrapOrReturn { return@launch }
             update { state -> state.copy(fileList = files) }
         }
     }

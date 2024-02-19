@@ -1,8 +1,10 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.compose") version "1.5.11"
-    id("com.android.library")
-    id("co.touchlab.skie") version "0.6.1"
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.skie)
 }
 
 group = "com.outsidesource.oskitExample.composeUI"
@@ -33,52 +35,67 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(compose.runtime)
-                api(compose.foundation)
-                api(compose.material)
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
-                api("com.outsidesource:oskit-kmp:4.4.0")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-                api("com.outsidesource:oskit-compose:3.3.0")
-                api("com.squareup.okio:okio:3.7.0")
-                api(project(":common"))
-            }
+        val desktopMain by getting
+        val desktopTest by getting
+        val androidInstrumentedTest by getting
+
+        commonMain.dependencies {
+            api(compose.runtime)
+            api(compose.foundation)
+            api(compose.material)
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            implementation(compose.components.resources)
+            api(libs.oskit.kmp)
+            api(libs.kotlinx.coroutines.core)
+            api(libs.oskit.compose)
+            api(libs.okio)
+            api(project(":common"))
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
-        val androidMain by getting {
-            dependencies {
-                implementation("androidx.compose.ui:ui:1.6.0")
-                implementation("androidx.appcompat:appcompat:1.6.1")
-                implementation("androidx.core:core-ktx:1.12.0")
-            }
+        androidMain.dependencies {
+            implementation(libs.ui)
+            implementation(libs.androidx.appcompat)
+            implementation(libs.androidx.core.ktx)
+            implementation(libs.androidx.activity.compose)
         }
-        val androidInstrumentedTest by getting {
-            dependencies {
-                implementation("junit:junit:4.13.2")
-            }
+        androidInstrumentedTest.dependencies {
+            implementation(libs.junit)
+        }
+        desktopMain.dependencies {
+            implementation(project(":common"))
+            implementation(compose.desktop.currentOs)
         }
     }
 }
 
 android {
     namespace = "com.outsidesource.oskitExample.composeUI"
-    compileSdk = 34
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
 //    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+
     defaultConfig {
-        minSdk = 24
-        targetSdk = 34
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
         kotlin.jvmToolchain(17)
+    }
+}
+
+compose.desktop {
+    application {
+        mainClass = "MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "OSKit-KMP-Example"
+            packageVersion = "1.0.0"
+        }
     }
 }
