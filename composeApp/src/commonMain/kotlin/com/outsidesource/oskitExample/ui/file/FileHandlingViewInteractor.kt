@@ -1,5 +1,6 @@
 package com.outsidesource.oskitExample.ui.file
 
+import com.outsidesource.oskitExample.common.service.preferences.PreferencesService
 import com.outsidesource.oskitkmp.file.*
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.outcome.Outcome
@@ -23,22 +24,31 @@ data class FileHandlingViewState(
     val createFolderName: String = "",
     val createFolderResult: Outcome<KMPFileRef, Exception>? = null,
     val saveFile: Outcome<KMPFileRef?, Exception>? = null,
-    val storedFile: KMPFileRef? = null,
-    val storedFolder: KMPFileRef? = null,
     val appendFileResult: Outcome<Unit, Exception>? = null,
     val appendFileContent: String = "",
 )
 
 class FileHandlingViewInteractor(
     private val fileHandler: IKMPFileHandler,
+    private val preferencesService: PreferencesService,
 ): Interactor<FileHandlingViewState>(
     initialState = FileHandlingViewState()
 ) {
 
+    fun onMounted() {
+        interactorScope.launch {
+            val storedFile = preferencesService.getSelectedFile()
+            val storedFolder = preferencesService.getSelectedFolder()
+
+            update { state -> state.copy(selectedFile = storedFile, selectedFolder = storedFolder) }
+        }
+    }
+
     fun pickFile() {
         interactorScope.launch {
-            val outcome = fileHandler.pickFile()
-            if (outcome is Outcome.Ok) update { state -> state.copy(selectedFile = outcome.value) }
+            val file = fileHandler.pickFile().unwrapOrReturn { return@launch }
+            update { state -> state.copy(selectedFile = file) }
+            preferencesService.setSelectedFile(file)
         }
     }
 
@@ -51,23 +61,10 @@ class FileHandlingViewInteractor(
 
     fun pickFolder() {
         interactorScope.launch {
-            val outcome = fileHandler.pickDirectory()
-            if (outcome is Outcome.Ok) update { state -> state.copy(selectedFolder = outcome.value) }
+            val folder = fileHandler.pickDirectory().unwrapOrReturn { return@launch }
+            update { state -> state.copy(selectedFolder = folder) }
+            preferencesService.setSelectedFolder(folder)
         }
-    }
-
-    fun storeFile() {
-        // TODO: Actually store
-        val string = state.selectedFile?.toPersistableString() ?: return
-        println(string)
-        println(KMPFileRef.fromPersistableString(string))
-    }
-
-    fun storeFolder() {
-        // TODO: Actually store
-        val string = state.selectedFolder?.toPersistableString() ?: return
-        println(string)
-        println(KMPFileRef.fromPersistableString(string))
     }
 
     fun createFileNameChanged(value: String) {

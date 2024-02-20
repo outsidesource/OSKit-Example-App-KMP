@@ -7,6 +7,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -22,6 +23,10 @@ fun FileHandlingScreen(
     interactor: FileHandlingViewInteractor = rememberInjectForRoute()
 ) {
     val state = interactor.collectAsState()
+
+    LaunchedEffect(Unit) {
+        interactor.onMounted()
+    }
 
     Screen("File Handling") {
         Box {
@@ -64,24 +69,6 @@ fun FileHandlingScreen(
                         onClick = interactor::pickSaveFile
                     ) {
                         Text("Pick Save File")
-                    }
-                }
-
-                Column {
-                    Text("Store Selected File: ${state.storedFile ?: "None"}")
-                    Button(
-                        onClick = interactor::storeFile
-                    ) {
-                        Text("Store File")
-                    }
-                }
-
-                Column {
-                    Text("Store Selected Folder: ${state.storedFolder ?: "None"}")
-                    Button(
-                        onClick = interactor::storeFolder
-                    ) {
-                        Text("Store Folder")
                     }
                 }
 

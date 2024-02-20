@@ -25,7 +25,7 @@ val composeAppModule = module {
     factory { ViewStateExampleViewInteractor(get()) }
     factory { AppStateExampleViewInteractor(get(), get()) }
     factory { params -> DeviceHomeViewInteractor(params[0], get()) }
-    factory { FileHandlingViewInteractor(get()) }
+    factory { FileHandlingViewInteractor(get(), get()) }
     factory { PopupsScreenViewInteractor() }
     factory { IOSServicesScreenViewInteractor(get(), get()) }
 } + platformModule()
