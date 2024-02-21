@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitExample.ui.common.Screen
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.pointer.awaitFirstUp
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -74,9 +73,9 @@ fun HomeScreen(
 //                onClick = interactor::iosServicesButtonClicked,
 //            )
 
-            val wheelPickerState = rememberWheelPickerState(isInfinite = true)
+            val wheelPickerState = rememberKmpWheelPickerState(isInfinite = true)
 
-            WheelPicker(
+            KMPWheelPicker(
                 modifier = Modifier
                     .width(100.dp)
                     .height(175.dp),
@@ -101,7 +100,7 @@ fun HomeScreen(
 
 
 @Stable
-data class WheelPickerState(
+data class KMPWheelPickerState(
     val initiallySelectedItemIndex: Int = 0,
     val isInfinite: Boolean = true,
 ): ScrollableState {
@@ -159,10 +158,10 @@ data class WheelPickerState(
     }
 
     companion object {
-        fun Saver(): Saver<WheelPickerState, *> = Saver(
+        fun Saver(): Saver<KMPWheelPickerState, *> = Saver(
             save = { listOf(it.isInfinite, it.selectedItemRawIndex) },
             restore = {
-                WheelPickerState(
+                KMPWheelPickerState(
                     isInfinite = it[0] as Boolean,
                     initiallySelectedItemIndex = it[1] as Int
                 )
@@ -172,11 +171,11 @@ data class WheelPickerState(
 }
 
 @Composable
-fun rememberWheelPickerState(
+fun rememberKmpWheelPickerState(
     isInfinite: Boolean = true,
     initiallySelectedItemIndex: Int = 0,
-) = rememberSaveable(initiallySelectedItemIndex, isInfinite, saver = WheelPickerState.Saver()) {
-    WheelPickerState(
+) = rememberSaveable(initiallySelectedItemIndex, isInfinite, saver = KMPWheelPickerState.Saver()) {
+    KMPWheelPickerState(
         initiallySelectedItemIndex = initiallySelectedItemIndex,
         isInfinite = isInfinite
     )
@@ -185,14 +184,14 @@ fun rememberWheelPickerState(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun <T : Any> WheelPicker(
+fun <T : Any> KMPWheelPicker(
     items: List<T>,
     key: (T) -> Any,
-    state: WheelPickerState,
+    state: KMPWheelPickerState,
     modifier: Modifier = Modifier,
     enabled : Boolean = true,
     onChange: (T) -> Unit,
-    scrollEffect: WheelPickerScrollEffect = WheelPickerDefaults.ScrollEffectWheel,
+    scrollEffect: KMPWheelPickerScrollEffect = KMPWheelPickerDefaults.ScrollEffectWheel,
     content: @Composable LazyItemScope.(T) -> Unit,
 ) {
     val velocityTracker = remember { VelocityTracker() }
@@ -208,8 +207,6 @@ fun <T : Any> WheelPicker(
     // TODO: Both pointerInputs should only happen on desktop, but need to make sure that scroll cancellation and letting go still adjusts
     // TODO: Add scroll wheel debouncer to fix scroll after it's done or disable scroll
     // TODO: Need to add indicators
-    // TODO: Add alpha mask
-    // TODO: animation with mult only when item starts to enter selection
     LazyColumn(
         modifier = modifier
             .pointerInput(Unit) {
@@ -297,19 +294,20 @@ fun <T : Any> WheelPicker(
     }
 }
 
-typealias WheelPickerScrollEffect = GraphicsLayerScope.(index: Int, multiplier: Float, state: WheelPickerState) -> Unit
+typealias KMPWheelPickerScrollEffect =
+        GraphicsLayerScope.(index: Int, multiplier: Float, state: KMPWheelPickerState) -> Unit
 
-object WheelPickerDefaults {
-    val ScrollEffectWheel: WheelPickerScrollEffect =
-        fun GraphicsLayerScope.(_: Int, multiplier: Float, _: WheelPickerState) {
+object KMPWheelPickerDefaults {
+    val ScrollEffectWheel: KMPWheelPickerScrollEffect =
+        fun GraphicsLayerScope.(_: Int, multiplier: Float, _: KMPWheelPickerState) {
             rotationX = 60f * multiplier
             scaleX = 1f - .5f * abs(multiplier)
             scaleY = 1f - .5f * abs(multiplier)
             alpha = 1f - .5f * abs(multiplier)
         }
 
-    val ScrollEffectMagnify: WheelPickerScrollEffect =
-        fun GraphicsLayerScope.(_: Int, multiplier: Float, state: WheelPickerState) {
+    val ScrollEffectMagnify: KMPWheelPickerScrollEffect =
+        fun GraphicsLayerScope.(_: Int, multiplier: Float, state: KMPWheelPickerState) {
             val scaleMult = multiplier / (1f / (((state.viewportHeight / state.itemHeight) + 1f) / 2f))
             scaleX = (1f - .6f * abs(scaleMult)).coerceAtLeast(.6f)
             scaleY = (1f - .6f * abs(scaleMult)).coerceAtLeast(.6f)
@@ -317,7 +315,7 @@ object WheelPickerDefaults {
         }
 }
 
-private fun <T> getItemsIndex(index: Int, state: WheelPickerState, items: List<T>) =
+private fun <T> getItemsIndex(index: Int, state: KMPWheelPickerState, items: List<T>) =
     if (state.isInfinite) {
         val mod = ((index - INFINITE_OFFSET) % items.size)
         if (mod < 0) items.size + mod else mod
