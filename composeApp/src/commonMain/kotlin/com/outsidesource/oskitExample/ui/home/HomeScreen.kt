@@ -296,7 +296,7 @@ fun <T : Any> KMPWheelPicker(
             .drawWithContent {
                 drawRoundRect(
                     color = Color(0x20000000),
-                    topLeft = Offset(0f, (size.height / 2) - (14.dp.toPx())),
+                    topLeft = Offset(0f, (size.height / 2) - (state.itemHeight / 2)),
                     size = Size(size.width, state.itemHeight),
                     cornerRadius = CornerRadius(8.dp.toPx(), 8.dp.toPx())
                 )
