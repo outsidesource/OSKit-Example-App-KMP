@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
@@ -28,6 +29,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitExample.ui.common.Screen
+import com.outsidesource.oskitcompose.lib.VarRef
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.pointer.awaitFirstUp
 import kotlinx.coroutines.launch
@@ -73,17 +75,24 @@ fun HomeScreen(
 //                onClick = interactor::iosServicesButtonClicked,
 //            )
 
-            val wheelPickerState = rememberKmpWheelPickerState(isInfinite = true)
+            val wheelPickerState = rememberKmpWheelPickerState(isInfinite = true, initiallySelectedItemIndex = 0)
+            var index by remember { mutableStateOf(0) }
+
+            Button(onClick = { index = 5}) {
+                Text("Hello")
+            }
 
             KMPWheelPicker(
                 modifier = Modifier
                     .width(100.dp)
                     .height(175.dp),
                 items = (0..105).toList(),
+                selectedIndex = index,
                 key = { it },
                 state = wheelPickerState,
                 onChange = {
                     println("On Change: $it")
+                    index = it
                 }
             ) {
                 Text(
@@ -186,6 +195,7 @@ fun rememberKmpWheelPickerState(
 @Composable
 fun <T : Any> KMPWheelPicker(
     items: List<T>,
+    selectedIndex: Int,
     key: (T) -> Any,
     state: KMPWheelPickerState,
     modifier: Modifier = Modifier,
@@ -197,11 +207,27 @@ fun <T : Any> KMPWheelPicker(
     val velocityTracker = remember { VelocityTracker() }
     val scope = rememberCoroutineScope()
     val flingBehavior = rememberSnapFlingBehavior(state.lazyListState)
+    val lastOnChangeValue = remember { VarRef(items[selectedIndex]) }
 
     val paddingValues = with(LocalDensity.current) {
         remember(state.verticalPadding) {
             PaddingValues(vertical = state.verticalPadding.toDp())
         }
+    }
+
+    val handleOnChange = remember(items, state) {
+        handleOnChange@ { index: Int ->
+            val newValue = items[getItemsIndex(index, state, items.size)]
+            if (lastOnChangeValue.value == newValue) return@handleOnChange
+            lastOnChangeValue.value = newValue
+            onChange(newValue)
+        }
+    }
+
+    LaunchedEffect(selectedIndex) {
+        if (state.isScrollInProgress || lastOnChangeValue.value == items[selectedIndex]) return@LaunchedEffect
+        lastOnChangeValue.value = items[selectedIndex]
+        state.animateScrollToItem(selectedIndex)
     }
 
     // TODO: Both pointerInputs should only happen on desktop, but need to make sure that scroll cancellation and letting go still adjusts
@@ -222,7 +248,7 @@ fun <T : Any> KMPWheelPicker(
                         state.lazyListState.scroll {
                             with(flingBehavior) {
                                 performFling(0f)
-                                onChange(items[getItemsIndex(state.selectedItemRawIndex, state, items)])
+                                handleOnChange(state.selectedItemRawIndex)
                             }
                         }
                     }
@@ -243,7 +269,7 @@ fun <T : Any> KMPWheelPicker(
                             state.lazyListState.scroll {
                                 with(flingBehavior) {
                                     performFling(velocity)
-                                    onChange(items[getItemsIndex(state.selectedItemRawIndex, state, items)])
+                                    handleOnChange(state.selectedItemRawIndex)
                                 }
                             }
                         }
@@ -266,18 +292,18 @@ fun <T : Any> KMPWheelPicker(
     ) {
         items(
             count = if (state.isInfinite) Int.MAX_VALUE else items.size,
-            key = { key(items[getItemsIndex(it, state, items)]) }
+            key = { key(items[getItemsIndex(it, state, items.size)]) }
         ) { index ->
             Box(
                 modifier = Modifier
-//                    .pointerInput(Unit) {
-//                        detectTapGestures {
-//                            scope.launch {
-//                                // TODO: This is wrong
-//                                state.lazyListState.animateScrollToItem(getInfiniteIndex(index, state, items))
-//                            }
-//                        }
-//                    }
+                    .pointerInput(Unit) {
+                        detectTapGestures {
+                            scope.launch {
+                                state.lazyListState.animateScrollToItem(index)
+                                handleOnChange(index)
+                            }
+                        }
+                    }
                     .graphicsLayer {
                         val stepsFromSelected = index - state.selectedItemBasedOnTopRawIndex
                         val offset = state.lazyListState.firstVisibleItemScrollOffset.toFloat()
@@ -288,7 +314,7 @@ fun <T : Any> KMPWheelPicker(
                         scrollEffect(this, index, mult, state)
                     }
             ) {
-                content(items[getItemsIndex(index, state, items)])
+                content(items[getItemsIndex(index, state, items.size)])
             }
         }
     }
@@ -315,10 +341,10 @@ object KMPWheelPickerDefaults {
         }
 }
 
-private fun <T> getItemsIndex(index: Int, state: KMPWheelPickerState, items: List<T>) =
+private fun getItemsIndex(index: Int, state: KMPWheelPickerState, itemCount: Int) =
     if (state.isInfinite) {
-        val mod = ((index - INFINITE_OFFSET) % items.size)
-        if (mod < 0) items.size + mod else mod
+        val mod = ((index - INFINITE_OFFSET) % itemCount)
+        if (mod < 0) itemCount + mod else mod
     } else {
         index
     }
