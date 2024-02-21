@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
@@ -31,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitExample.ui.common.Screen
 import com.outsidesource.oskitcompose.lib.VarRef
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
+import com.outsidesource.oskitcompose.modifier.kmpMouseScrollFilter
 import com.outsidesource.oskitcompose.pointer.awaitFirstUp
+import com.outsidesource.oskitkmp.concurrency.Debouncer
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -190,8 +193,12 @@ fun rememberKmpWheelPickerState(
     )
 }
 
-
-@OptIn(ExperimentalFoundationApi::class)
+/**
+ * [KMPWheelPicker] is a cross-platform wheel picker.
+ *
+ * Note: All items must be the same height.
+ */
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun <T : Any> KMPWheelPicker(
     items: List<T>,
@@ -208,6 +215,7 @@ fun <T : Any> KMPWheelPicker(
     val scope = rememberCoroutineScope()
     val flingBehavior = rememberSnapFlingBehavior(state.lazyListState)
     val lastOnChangeValue = remember { VarRef(items[selectedIndex]) }
+    val scrollDebouncer = remember { Debouncer(timeoutMillis = 250, scope = scope) }
 
     val paddingValues = with(LocalDensity.current) {
         remember(state.verticalPadding) {
@@ -230,11 +238,17 @@ fun <T : Any> KMPWheelPicker(
         state.animateScrollToItem(selectedIndex)
     }
 
-    // TODO: Both pointerInputs should only happen on desktop, but need to make sure that scroll cancellation and letting go still adjusts
-    // TODO: Add scroll wheel debouncer to fix scroll after it's done or disable scroll
-    // TODO: Need to add indicators
+    // TODO: Both pointerInputs and mouse scroll should only happen on desktop, but need to make sure that scroll cancellation and letting go still adjusts
+    // TODO: Add indicators
     LazyColumn(
         modifier = modifier
+            .kmpMouseScrollFilter { _, _ ->
+                scrollDebouncer.emit {
+                    val index = if (state.isInfinite) state.selectedItemRawIndex - INFINITE_OFFSET else state.selectedItemRawIndex
+                    state.animateScrollToItem(index)
+                    handleOnChange(state.selectedItemRawIndex)
+                }
+            }
             .pointerInput(Unit) {
                 awaitEachGesture {
                     awaitFirstDown()
@@ -278,10 +292,10 @@ fun <T : Any> KMPWheelPicker(
             }
             .drawWithContent {
                 drawRoundRect(
-                    color = Color(0x22000000),
-                    topLeft = Offset(0f, (size.height / 2) - (14f * density)),
-                    size = Size(size.width, 25 * density),
-                    cornerRadius = CornerRadius(20f, 20f)
+                    color = Color(0x20000000),
+                    topLeft = Offset(0f, (size.height / 2) - (14.dp.toPx())),
+                    size = Size(size.width, state.itemHeight),
+                    cornerRadius = CornerRadius(8.dp.toPx(), 8.dp.toPx())
                 )
                 drawContent()
             },
