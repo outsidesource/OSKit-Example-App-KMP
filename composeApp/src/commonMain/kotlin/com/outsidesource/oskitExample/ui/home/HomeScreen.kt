@@ -193,6 +193,10 @@ fun rememberKmpWheelPickerState(
     )
 }
 
+// TODO: Both pointerInputs and mouse scroll should only happen on desktop, but need to make sure that scroll cancellation and letting go still adjusts
+// TODO: Add indicators
+// TODO: Test changing values but not letting the value change in an interactor and make sure the wheel scrolls back
+
 /**
  * [KMPWheelPicker] is a cross-platform wheel picker.
  *
@@ -232,14 +236,13 @@ fun <T : Any> KMPWheelPicker(
         }
     }
 
+    // Handle value changing outside WheelPicker
     LaunchedEffect(selectedIndex) {
         if (state.isScrollInProgress || lastOnChangeValue.value == items[selectedIndex]) return@LaunchedEffect
         lastOnChangeValue.value = items[selectedIndex]
         state.animateScrollToItem(selectedIndex)
     }
 
-    // TODO: Both pointerInputs and mouse scroll should only happen on desktop, but need to make sure that scroll cancellation and letting go still adjusts
-    // TODO: Add indicators
     LazyColumn(
         modifier = modifier
             .kmpMouseScrollFilter { _, _ ->
