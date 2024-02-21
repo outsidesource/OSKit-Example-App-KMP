@@ -342,11 +342,12 @@ typealias KMPWheelPickerScrollEffect =
 
 object KMPWheelPickerDefaults {
     val ScrollEffectWheel: KMPWheelPickerScrollEffect =
-        fun GraphicsLayerScope.(_: Int, multiplier: Float, _: KMPWheelPickerState) {
-            rotationX = 60f * multiplier
-            scaleX = 1f - .5f * abs(multiplier)
-            scaleY = 1f - .5f * abs(multiplier)
+        fun GraphicsLayerScope.(_: Int, multiplier: Float, state: KMPWheelPickerState) {
+            rotationX = 90f * multiplier
+            scaleX = 1f - .1f * abs(multiplier)
+            scaleY = 1f - .1f * abs(multiplier)
             alpha = 1f - .5f * abs(multiplier)
+            transformOrigin = TransformOrigin(.5f, .5f - multiplier)
         }
 
     val ScrollEffectMagnify: KMPWheelPickerScrollEffect =
