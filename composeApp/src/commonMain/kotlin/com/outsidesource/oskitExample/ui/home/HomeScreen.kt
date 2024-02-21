@@ -7,7 +7,6 @@ import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -25,13 +24,10 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.input.pointer.util.addPointerInputChange
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitExample.ui.common.Screen
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.pointer.awaitFirstUp
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -114,44 +110,28 @@ data class WheelPickerState(
         }
     )
 
-    internal val itemHeight by derivedStateOf {
-        lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.size ?: 0
-    }
+    internal val itemHeight by derivedStateOf { lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.size ?: 0 }
+    internal val viewportHeight by derivedStateOf { lazyListState.layoutInfo.viewportSize.height }
 
-    internal val viewportHeight by derivedStateOf {
-        lazyListState.layoutInfo.viewportSize.height
-    }
-
-    internal val selectedItemIndex by derivedStateOf {
-        (if (isInfinite) {
-            selectedItem?.index?.minus(INFINITE_OFFSET)
-        } else {
-            selectedItem?.index
-        }) ?: initiallySelectedItemIndex
-    }
-
-    internal val selectedItem by derivedStateOf {
+    internal val selectedItemRawIndex by derivedStateOf {
         val layoutInfo = lazyListState.layoutInfo
-        layoutInfo.visibleItemsInfo.firstOrNull {
+        layoutInfo.visibleItemsInfo.find {
             it.offset + it.size - layoutInfo.viewportStartOffset > layoutInfo.viewportSize.height / 2
-        }
+        }?.index ?: initiallySelectedItemIndex
     }
 
-    // TODO: Fix this (rename this is for the animation)
-    internal val selectedItemIndex2 by derivedStateOf {
-        (if (isInfinite) {
-            selectedItem2?.index?.minus(INFINITE_OFFSET)
-        } else {
-            selectedItem2?.index
-        }) ?: initiallySelectedItemIndex
-    }
-
-    // TODO: Fix this (rename this is for the animation)
-    internal val selectedItem2 by derivedStateOf {
+    // TODO: Try to remove the need for this
+    internal val selectedAnimatedItemRawIndex by derivedStateOf {
         val layoutInfo = lazyListState.layoutInfo
         layoutInfo.visibleItemsInfo.firstOrNull {
             it.offset + it.size - layoutInfo.viewportStartOffset > (layoutInfo.viewportSize.height / 2) - (it.size / 2)
-        }
+        }?.index ?: initiallySelectedItemIndex
+    }
+
+    internal val verticalPadding by derivedStateOf {
+        val viewportHeight = lazyListState.layoutInfo.viewportSize.height.toFloat()
+        val itemHeight = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.size?.toFloat() ?: 0f
+        (((viewportHeight) - itemHeight) / 2).coerceAtLeast(0f)
     }
 
     override val isScrollInProgress: Boolean
@@ -168,15 +148,19 @@ data class WheelPickerState(
 
     override fun dispatchRawDelta(delta: Float): Float = lazyListState.dispatchRawDelta(delta)
 
+    // TODO: This index is probably wrong because of how the user is passing in the index. Need to find the closest index that matches the passed in value
     suspend fun scrollToItem(index: Int) {
         lazyListState.scrollToItem(if (isInfinite) INFINITE_OFFSET + index else index)
     }
 
-    suspend fun animateScrollToItem(index: Int) = lazyListState.animateScrollToItem(index)
+    // TODO: This index is probably wrong because of how the user is passing in the index. Need to find the closest index that matches the passed in value
+    suspend fun animateScrollToItem(index: Int) {
+        lazyListState.animateScrollToItem(if (isInfinite) INFINITE_OFFSET + index else index)
+    }
 
     companion object {
         fun Saver(): Saver<WheelPickerState, *> = Saver(
-            save = { listOf(it.isInfinite, it.selectedItemIndex) },
+            save = { listOf(it.isInfinite, it.selectedItemRawIndex) },
             restore = {
                 WheelPickerState(
                     isInfinite = it[0] as Boolean,
@@ -204,10 +188,8 @@ fun <T : Any> WheelPicker(
     val flingBehavior = rememberSnapFlingBehavior(state.lazyListState)
 
     val paddingValues = with(LocalDensity.current) {
-        remember(state.lazyListState.layoutInfo.viewportSize) {
-            val viewportHeight = state.lazyListState.layoutInfo.viewportSize.height.toDp()
-            val itemHeight = state.lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.size?.toDp() ?: 0.dp
-            PaddingValues(vertical = (((viewportHeight) - itemHeight) / 2).coerceAtLeast(0.dp))
+        remember(state.verticalPadding) {
+            PaddingValues(vertical = state.verticalPadding.toDp())
         }
     }
 
@@ -217,6 +199,8 @@ fun <T : Any> WheelPicker(
     // TODO: Implement saver
     // TODO: Add alpha mask
     // TODO: Need to snap on initial load
+    // TODO: animation with mult only when item starts to enter selection
+    // TODO: Not a fan of using so much derivedState
     LazyColumn(
         modifier = modifier
             .pointerInput(Unit) {
@@ -232,7 +216,7 @@ fun <T : Any> WheelPicker(
                         state.lazyListState.scroll {
                             with(flingBehavior) {
                                 performFling(0f)
-                                onChange(items[getItemsIndex(state.selectedItemIndex, state, items)])
+                                onChange(items[getItemsIndex(state.selectedItemRawIndex, state, items)])
                             }
                         }
                     }
@@ -253,7 +237,7 @@ fun <T : Any> WheelPicker(
                             state.lazyListState.scroll {
                                 with(flingBehavior) {
                                     performFling(velocity)
-                                    onChange(items[getItemsIndex(state.selectedItemIndex, state, items)])
+                                    onChange(items[getItemsIndex(state.selectedItemRawIndex, state, items)])
                                 }
                             }
                         }
@@ -276,7 +260,7 @@ fun <T : Any> WheelPicker(
     ) {
         items(
             count = if (state.isInfinite) Int.MAX_VALUE else items.size,
-            key = { key(items[getLazyListIndex(it, state, items)]) }
+            key = { key(items[getItemsIndex(it, state, items)]) }
         ) { index ->
             Box(
                 modifier = Modifier
@@ -289,9 +273,8 @@ fun <T : Any> WheelPicker(
 //                        }
 //                    }
                     .graphicsLayer {
-                        val adjust = if (state.isInfinite) INFINITE_OFFSET else 0
-                        val stepsFromSelected = index - adjust - state.selectedItemIndex2 // Halfway point
-                        val offset = state.lazyListState.firstVisibleItemScrollOffset.toFloat() // When bottom reaches top
+                        val stepsFromSelected = index - state.selectedAnimatedItemRawIndex
+                        val offset = state.lazyListState.firstVisibleItemScrollOffset.toFloat()
                         val pixelsFromSelected = (stepsFromSelected.toFloat() * state.itemHeight.toFloat()) - offset
                         val maxPixelsFromSelected = (state.viewportHeight.toFloat() / 2) + (state.itemHeight.toFloat() / 2)
                         val mult = (pixelsFromSelected / maxPixelsFromSelected)
@@ -302,23 +285,15 @@ fun <T : Any> WheelPicker(
                         alpha = 1f - .5f * abs(mult)
                     }
             ) {
-                content(items[getLazyListIndex(index, state, items)])
+                content(items[getItemsIndex(index, state, items)])
             }
         }
     }
 }
 
-private fun <T> getLazyListIndex(index: Int, state: WheelPickerState, items: List<T>) =
-    if (state.isInfinite) {
-        val mod = ((index - INFINITE_OFFSET) % items.size)
-        if (mod < 0) items.size + mod else mod
-    } else {
-        index
-    }
-
 private fun <T> getItemsIndex(index: Int, state: WheelPickerState, items: List<T>) =
     if (state.isInfinite) {
-        val mod = index % items.size
+        val mod = ((index - INFINITE_OFFSET) % items.size)
         if (mod < 0) items.size + mod else mod
     } else {
         index
