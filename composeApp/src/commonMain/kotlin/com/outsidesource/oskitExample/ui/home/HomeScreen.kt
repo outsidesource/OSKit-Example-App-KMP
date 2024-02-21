@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -18,6 +19,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitExample.ui.common.Screen
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.pointer.awaitFirstUp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -71,7 +74,7 @@ fun HomeScreen(
 //                onClick = interactor::iosServicesButtonClicked,
 //            )
 
-            val wheelPickerState = remember { WheelPickerState(isInfinite = true, initiallySelectedItemIndex = 4) }
+            val wheelPickerState = rememberWheelPickerState(isInfinite = true)
 
             WheelPicker(
                 modifier = Modifier
@@ -110,18 +113,17 @@ data class WheelPickerState(
         }
     )
 
-    internal val itemHeight by derivedStateOf { lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.size ?: 0 }
-    internal val viewportHeight by derivedStateOf { lazyListState.layoutInfo.viewportSize.height }
+    val itemHeight by derivedStateOf { lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.size?.toFloat() ?: 0f }
+    val viewportHeight by derivedStateOf { lazyListState.layoutInfo.viewportSize.height.toFloat() }
 
-    internal val selectedItemRawIndex by derivedStateOf {
+    val selectedItemRawIndex by derivedStateOf {
         val layoutInfo = lazyListState.layoutInfo
         layoutInfo.visibleItemsInfo.find {
             it.offset + it.size - layoutInfo.viewportStartOffset > layoutInfo.viewportSize.height / 2
         }?.index ?: initiallySelectedItemIndex
     }
 
-    // TODO: Try to remove the need for this
-    internal val selectedAnimatedItemRawIndex by derivedStateOf {
+    val selectedItemBasedOnTopRawIndex by derivedStateOf {
         val layoutInfo = lazyListState.layoutInfo
         layoutInfo.visibleItemsInfo.firstOrNull {
             it.offset + it.size - layoutInfo.viewportStartOffset > (layoutInfo.viewportSize.height / 2) - (it.size / 2)
@@ -148,14 +150,12 @@ data class WheelPickerState(
 
     override fun dispatchRawDelta(delta: Float): Float = lazyListState.dispatchRawDelta(delta)
 
-    // TODO: This index is probably wrong because of how the user is passing in the index. Need to find the closest index that matches the passed in value
     suspend fun scrollToItem(index: Int) {
-        lazyListState.scrollToItem(if (isInfinite) INFINITE_OFFSET + index else index)
+        lazyListState.scrollToItem(if (isInfinite) index + INFINITE_OFFSET else index)
     }
 
-    // TODO: This index is probably wrong because of how the user is passing in the index. Need to find the closest index that matches the passed in value
     suspend fun animateScrollToItem(index: Int) {
-        lazyListState.animateScrollToItem(if (isInfinite) INFINITE_OFFSET + index else index)
+        lazyListState.animateScrollToItem(if (isInfinite) index + INFINITE_OFFSET else index)
     }
 
     companion object {
@@ -171,6 +171,17 @@ data class WheelPickerState(
     }
 }
 
+@Composable
+fun rememberWheelPickerState(
+    isInfinite: Boolean = true,
+    initiallySelectedItemIndex: Int = 0,
+) = rememberSaveable(initiallySelectedItemIndex, isInfinite, saver = WheelPickerState.Saver()) {
+    WheelPickerState(
+        initiallySelectedItemIndex = initiallySelectedItemIndex,
+        isInfinite = isInfinite
+    )
+}
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -181,7 +192,8 @@ fun <T : Any> WheelPicker(
     modifier: Modifier = Modifier,
     enabled : Boolean = true,
     onChange: (T) -> Unit,
-    content: @Composable LazyItemScope.(T) -> Unit
+    scrollEffect: WheelPickerScrollEffect = WheelPickerDefaults.ScrollEffectWheel,
+    content: @Composable LazyItemScope.(T) -> Unit,
 ) {
     val velocityTracker = remember { VelocityTracker() }
     val scope = rememberCoroutineScope()
@@ -196,11 +208,8 @@ fun <T : Any> WheelPicker(
     // TODO: Both pointerInputs should only happen on desktop, but need to make sure that scroll cancellation and letting go still adjusts
     // TODO: Add scroll wheel debouncer to fix scroll after it's done or disable scroll
     // TODO: Need to add indicators
-    // TODO: Implement saver
     // TODO: Add alpha mask
-    // TODO: Need to snap on initial load
     // TODO: animation with mult only when item starts to enter selection
-    // TODO: Not a fan of using so much derivedState
     LazyColumn(
         modifier = modifier
             .pointerInput(Unit) {
@@ -273,22 +282,39 @@ fun <T : Any> WheelPicker(
 //                        }
 //                    }
                     .graphicsLayer {
-                        val stepsFromSelected = index - state.selectedAnimatedItemRawIndex
+                        val stepsFromSelected = index - state.selectedItemBasedOnTopRawIndex
                         val offset = state.lazyListState.firstVisibleItemScrollOffset.toFloat()
-                        val pixelsFromSelected = (stepsFromSelected.toFloat() * state.itemHeight.toFloat()) - offset
-                        val maxPixelsFromSelected = (state.viewportHeight.toFloat() / 2) + (state.itemHeight.toFloat() / 2)
+                        val pixelsFromSelected = (stepsFromSelected.toFloat() * state.itemHeight) - offset
+                        val maxPixelsFromSelected = (state.viewportHeight / 2) + (state.itemHeight / 2)
                         val mult = (pixelsFromSelected / maxPixelsFromSelected)
 
-                        rotationX = 60f * mult
-                        scaleX = 1f - .5f * abs(mult)
-                        scaleY = 1f - .5f * abs(mult)
-                        alpha = 1f - .5f * abs(mult)
+                        scrollEffect(this, index, mult, state)
                     }
             ) {
                 content(items[getItemsIndex(index, state, items)])
             }
         }
     }
+}
+
+typealias WheelPickerScrollEffect = GraphicsLayerScope.(index: Int, multiplier: Float, state: WheelPickerState) -> Unit
+
+object WheelPickerDefaults {
+    val ScrollEffectWheel: WheelPickerScrollEffect =
+        fun GraphicsLayerScope.(_: Int, multiplier: Float, _: WheelPickerState) {
+            rotationX = 60f * multiplier
+            scaleX = 1f - .5f * abs(multiplier)
+            scaleY = 1f - .5f * abs(multiplier)
+            alpha = 1f - .5f * abs(multiplier)
+        }
+
+    val ScrollEffectMagnify: WheelPickerScrollEffect =
+        fun GraphicsLayerScope.(_: Int, multiplier: Float, state: WheelPickerState) {
+            val scaleMult = multiplier / (1f / (((state.viewportHeight / state.itemHeight) + 1f) / 2f))
+            scaleX = (1f - .6f * abs(scaleMult)).coerceAtLeast(.6f)
+            scaleY = (1f - .6f * abs(scaleMult)).coerceAtLeast(.6f)
+            alpha = 1f - .5f * abs(multiplier)
+        }
 }
 
 private fun <T> getItemsIndex(index: Int, state: WheelPickerState, items: List<T>) =
