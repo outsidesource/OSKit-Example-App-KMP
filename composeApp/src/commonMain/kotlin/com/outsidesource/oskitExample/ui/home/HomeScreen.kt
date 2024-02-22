@@ -272,16 +272,15 @@ fun <T : Any> KMPWheelPicker(
             .pointerInput(Unit) {
                 if (!enabled) return@pointerInput
 
-                // Cancel fling if user taps while a fling is occurring
                 awaitEachGesture {
+                    // Cancel fling on down if actively flinging
                     awaitFirstDown(requireUnconsumed = false)
-                    scope.launch {
-                        state.lazyListState.scrollBy(0f)
-                    }
+                    if (!state.lazyListState.isScrollInProgress) return@awaitEachGesture
+                    scope.launch { state.lazyListState.scrollBy(0f) }
 
+                    // Adjust to correct value
                     awaitFirstUp(requireUnconsumed = false)
                     scope.launch {
-                        if (state.lazyListState.isScrollInProgress) return@launch // Is flinging from the drag gesture
                         state.lazyListState.scroll {
                             with(flingBehavior) {
                                 performFling(0f)
@@ -306,6 +305,7 @@ fun <T : Any> KMPWheelPicker(
                     onDragEnd = {
                         isDragging.value = false
                         val velocity = -velocityTracker.calculateVelocity().y
+
                         scope.launch {
                             state.lazyListState.scroll {
                                 with(flingBehavior) {
