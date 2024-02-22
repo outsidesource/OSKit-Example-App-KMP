@@ -22,6 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.GraphicsLayerScope
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -134,11 +135,12 @@ data class KMPWheelPickerState(
         }?.index ?: initiallySelectedItemIndex
     }
 
-    val selectedItemBasedOnTopRawIndex by derivedStateOf {
+    internal val selectedItemBasedOnTop by derivedStateOf {
         val layoutInfo = lazyListState.layoutInfo
-        layoutInfo.visibleItemsInfo.firstOrNull {
+        val item = layoutInfo.visibleItemsInfo.firstOrNull {
             it.offset + it.size - layoutInfo.viewportStartOffset > (layoutInfo.viewportSize.height / 2) - (it.size / 2)
-        }?.index ?: initiallySelectedItemIndex
+        }
+        ScrollEffectAnimationData(index = item?.index ?: initiallySelectedItemIndex, offset = item?.offset ?: 0)
     }
 
     internal val verticalPadding by derivedStateOf {
@@ -175,12 +177,18 @@ data class KMPWheelPickerState(
             restore = {
                 KMPWheelPickerState(
                     isInfinite = it[0] as Boolean,
-                    initiallySelectedItemIndex = it[1] as Int
+                    initiallySelectedItemIndex = it[1] as Int,
                 )
             }
         )
     }
 }
+
+@Immutable
+internal data class ScrollEffectAnimationData(
+    val offset: Int,
+    val index: Int,
+)
 
 @Composable
 fun rememberKmpWheelPickerState(
@@ -322,11 +330,11 @@ fun <T : Any> KMPWheelPicker(
                         }
                     }
                     .graphicsLayer {
-                        val stepsFromSelected = index - state.selectedItemBasedOnTopRawIndex
-                        val offset = state.lazyListState.firstVisibleItemScrollOffset.toFloat()
+                        val stepsFromSelected = index - state.selectedItemBasedOnTop.index
+                        val offset = abs(state.selectedItemBasedOnTop.offset)
                         val pixelsFromSelected = (stepsFromSelected.toFloat() * state.itemHeight) - offset
                         val maxPixelsFromSelected = (state.viewportHeight / 2) + (state.itemHeight / 2)
-                        val mult = (pixelsFromSelected / maxPixelsFromSelected)
+                        val mult = (pixelsFromSelected / maxPixelsFromSelected).coerceIn(-1f..1f)
 
                         scrollEffect(this, index, mult, state)
                     }
@@ -342,12 +350,12 @@ typealias KMPWheelPickerScrollEffect =
 
 object KMPWheelPickerDefaults {
     val ScrollEffectWheel: KMPWheelPickerScrollEffect =
-        fun GraphicsLayerScope.(_: Int, multiplier: Float, state: KMPWheelPickerState) {
-            rotationX = 90f * multiplier
-            scaleX = 1f - .1f * abs(multiplier)
-            scaleY = 1f - .1f * abs(multiplier)
-            alpha = 1f - .5f * abs(multiplier)
-            transformOrigin = TransformOrigin(.5f, .5f - multiplier)
+        fun GraphicsLayerScope.(_: Int, multiplier: Float, _: KMPWheelPickerState) {
+            rotationX = (90f * multiplier).coerceIn(-360f..360f)
+            scaleX = (1f - .1f * abs(multiplier)).coerceIn(0f..1f)
+            scaleY = (1f - .1f * abs(multiplier)).coerceIn(0f..1f)
+            alpha = (1f - .5f * abs(multiplier)).coerceIn(0f..1f)
+            transformOrigin = TransformOrigin(.5f, (.5f - multiplier).coerceIn(0f..1f))
         }
 
     val ScrollEffectMagnify: KMPWheelPickerScrollEffect =
