@@ -36,6 +36,8 @@ import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.modifier.kmpMouseScrollFilter
 import com.outsidesource.oskitcompose.pointer.awaitFirstUp
 import com.outsidesource.oskitkmp.concurrency.Debouncer
+import com.outsidesource.oskitkmp.lib.Platform
+import com.outsidesource.oskitkmp.lib.current
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -79,33 +81,35 @@ fun HomeScreen(
 //                onClick = interactor::iosServicesButtonClicked,
 //            )
 
-            val wheelPickerState = rememberKmpWheelPickerState(isInfinite = true, initiallySelectedItemIndex = 0)
             var index by remember { mutableStateOf(0) }
 
-            Button(onClick = { index = 5}) {
+            Button(onClick = { index = 5 }) {
                 Text("Hello")
             }
 
-            KMPWheelPicker(
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(175.dp),
-                items = (0..105).toList(),
-                selectedIndex = index,
-                key = { it },
-                state = wheelPickerState,
-                onChange = {
-                    println("On Change: $it")
-                    index = it
-                }
-            ) {
-                Text(
+            Row {
+                KMPWheelPicker(
                     modifier = Modifier
-                        .height(25.dp)
-                        .fillMaxWidth(),
-                    text = it.toString(),
-                    textAlign = TextAlign.Center,
-                )
+                        .width(100.dp)
+                        .height(175.dp),
+                    items = (0..105).toList(),
+                    selectedIndex = index,
+                    key = { it },
+                    state = rememberKmpWheelPickerState(isInfinite = true, initiallySelectedItemIndex = 0),
+                    onChange = {
+                        println("On Change: $it")
+                        index = it
+                        true
+                    },
+                ) {
+                    Box(modifier = Modifier.height(40.dp), contentAlignment = Alignment.Center) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = it.toString(),
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
             }
         }
     }
@@ -115,7 +119,7 @@ fun HomeScreen(
 @Stable
 data class KMPWheelPickerState(
     val initiallySelectedItemIndex: Int = 0,
-    val isInfinite: Boolean = true,
+    val isInfinite: Boolean = false,
 ): ScrollableState {
     val lazyListState: LazyListState = LazyListState(
         firstVisibleItemIndex = if (isInfinite) {
@@ -146,7 +150,7 @@ data class KMPWheelPickerState(
     internal val verticalPadding by derivedStateOf {
         val viewportHeight = lazyListState.layoutInfo.viewportSize.height.toFloat()
         val itemHeight = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.size?.toFloat() ?: 0f
-        (((viewportHeight) - itemHeight) / 2).coerceAtLeast(0f)
+        ((viewportHeight - itemHeight) / 2).coerceAtLeast(0f)
     }
 
     override val isScrollInProgress: Boolean
@@ -192,7 +196,7 @@ internal data class ScrollEffectAnimationData(
 
 @Composable
 fun rememberKmpWheelPickerState(
-    isInfinite: Boolean = true,
+    isInfinite: Boolean = false,
     initiallySelectedItemIndex: Int = 0,
 ) = rememberSaveable(initiallySelectedItemIndex, isInfinite, saver = KMPWheelPickerState.Saver()) {
     KMPWheelPickerState(
@@ -201,9 +205,8 @@ fun rememberKmpWheelPickerState(
     )
 }
 
-// TODO: Both pointerInputs and mouse scroll should only happen on desktop, but need to make sure that scroll cancellation and letting go still adjusts
 // TODO: Add indicators
-// TODO: Test changing values but not letting the value change in an interactor and make sure the wheel scrolls back
+// TODO: Support changing values but not letting the value change in an interactor and make sure the picker scrolls back
 
 /**
  * [KMPWheelPicker] is a cross-platform wheel picker.
@@ -216,17 +219,18 @@ fun <T : Any> KMPWheelPicker(
     items: List<T>,
     selectedIndex: Int,
     key: (T) -> Any,
-    state: KMPWheelPickerState,
+    state: KMPWheelPickerState = rememberKmpWheelPickerState(isInfinite = false, initiallySelectedItemIndex = 0),
     modifier: Modifier = Modifier,
     enabled : Boolean = true,
     onChange: (T) -> Unit,
     scrollEffect: KMPWheelPickerScrollEffect = KMPWheelPickerDefaults.ScrollEffectWheel,
     content: @Composable LazyItemScope.(T) -> Unit,
 ) {
+    val isDragging = remember { VarRef(false) }
     val velocityTracker = remember { VelocityTracker() }
     val scope = rememberCoroutineScope()
     val flingBehavior = rememberSnapFlingBehavior(state.lazyListState)
-    val lastOnChangeValue = remember { VarRef(items[selectedIndex]) }
+    val lastOnChangeIndex = remember { VarRef(selectedIndex) }
     val scrollDebouncer = remember { Debouncer(timeoutMillis = 250, scope = scope) }
 
     val paddingValues = with(LocalDensity.current) {
@@ -237,23 +241,28 @@ fun <T : Any> KMPWheelPicker(
 
     val handleOnChange = remember(items, state) {
         handleOnChange@ { index: Int ->
+            val oldIndex = lastOnChangeIndex.value
             val newValue = items[getItemsIndex(index, state, items.size)]
-            if (lastOnChangeValue.value == newValue) return@handleOnChange
-            lastOnChangeValue.value = newValue
-            onChange(newValue)
+            if (getItemsIndex(oldIndex, state, items.size) == getItemsIndex(index, state, items.size)) return@handleOnChange
+            lastOnChangeIndex.value = index
+
+            val accepted = onChange(newValue)
         }
     }
 
     // Handle value changing outside WheelPicker
     LaunchedEffect(selectedIndex) {
-        if (state.isScrollInProgress || lastOnChangeValue.value == items[selectedIndex]) return@LaunchedEffect
-        lastOnChangeValue.value = items[selectedIndex]
+        // If the new value equals the old value don't do anything
+        if (isDragging.value || items[getItemsIndex(lastOnChangeIndex.value, state, items.size)] == items[selectedIndex]) return@LaunchedEffect
+        lastOnChangeIndex.value = selectedIndex
         state.animateScrollToItem(selectedIndex)
     }
 
     LazyColumn(
         modifier = modifier
             .kmpMouseScrollFilter { _, _ ->
+                if (!enabled) return@kmpMouseScrollFilter
+
                 scrollDebouncer.emit {
                     val index = if (state.isInfinite) state.selectedItemRawIndex - INFINITE_OFFSET else state.selectedItemRawIndex
                     state.animateScrollToItem(index)
@@ -261,15 +270,18 @@ fun <T : Any> KMPWheelPicker(
                 }
             }
             .pointerInput(Unit) {
+                if (!enabled) return@pointerInput
+
+                // Cancel fling if user taps while a fling is occurring
                 awaitEachGesture {
-                    awaitFirstDown()
+                    awaitFirstDown(requireUnconsumed = false)
                     scope.launch {
                         state.lazyListState.scrollBy(0f)
                     }
 
-                    awaitFirstUp()
+                    awaitFirstUp(requireUnconsumed = false)
                     scope.launch {
-                        if (state.lazyListState.isScrollInProgress) return@launch // Is flinging
+                        if (state.lazyListState.isScrollInProgress) return@launch // Is flinging from the drag gesture
                         state.lazyListState.scroll {
                             with(flingBehavior) {
                                 performFling(0f)
@@ -280,8 +292,11 @@ fun <T : Any> KMPWheelPicker(
                 }
             }
             .pointerInput(Unit) {
+                if (!enabled) return@pointerInput
+
                 detectDragGestures(
                     onDragStart = {
+                        isDragging.value = true
                         velocityTracker.resetTracking()
                     },
                     onDrag = { change, delta ->
@@ -289,6 +304,7 @@ fun <T : Any> KMPWheelPicker(
                         state.lazyListState.dispatchRawDelta(-delta.y)
                     },
                     onDragEnd = {
+                        isDragging.value = false
                         val velocity = -velocityTracker.calculateVelocity().y
                         scope.launch {
                             state.lazyListState.scroll {
@@ -310,7 +326,7 @@ fun <T : Any> KMPWheelPicker(
                 )
                 drawContent()
             },
-        userScrollEnabled = enabled,
+        userScrollEnabled = Platform.current.isDesktop, // Allow wheel scroll if Desktop, otherwise the scrolling is handled via the pointerInput modifier
         state = state.lazyListState,
         contentPadding = paddingValues,
         flingBehavior = flingBehavior,
@@ -322,6 +338,8 @@ fun <T : Any> KMPWheelPicker(
             Box(
                 modifier = Modifier
                     .pointerInput(Unit) {
+                        if (!enabled) return@pointerInput
+
                         detectTapGestures {
                             scope.launch {
                                 state.lazyListState.animateScrollToItem(index)
