@@ -253,7 +253,7 @@ fun <T : Any> KMPWheelPicker(
     // Handle value changing outside WheelPicker
     LaunchedEffect(selectedIndex) {
         // If the new value equals the old value don't do anything
-        if (isDragging.value || items[getItemsIndex(lastOnChangeIndex.value, state, items.size)] == items[selectedIndex]) return@LaunchedEffect
+        if (isDragging.value || getItemsIndex(lastOnChangeIndex.value, state, items.size) == selectedIndex) return@LaunchedEffect
         lastOnChangeIndex.value = selectedIndex
         state.animateScrollToItem(selectedIndex)
     }
