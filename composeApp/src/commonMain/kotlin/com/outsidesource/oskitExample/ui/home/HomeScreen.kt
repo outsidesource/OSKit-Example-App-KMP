@@ -87,6 +87,9 @@ fun HomeScreen(
                 Text("Hello")
             }
 
+            val wheelPickerState = rememberKmpWheelPickerState(isInfinite = true, initiallySelectedItemIndex = 0)
+            val scope = rememberCoroutineScope()
+
             Row {
                 KMPWheelPicker(
                     modifier = Modifier
@@ -95,11 +98,15 @@ fun HomeScreen(
                     items = (0..105).toList(),
                     selectedIndex = index,
                     key = { it },
-                    state = rememberKmpWheelPickerState(isInfinite = true, initiallySelectedItemIndex = 0),
+                    state = wheelPickerState,
                     onChange = {
-                        println("On Change: $it")
-                        index = it
-                        true
+                        if (it % 2 == 0) {
+                            index = it
+                        } else {
+                            scope.launch {
+                                wheelPickerState.resetToIndex(index)
+                            }
+                        }
                     },
                 ) {
                     Box(modifier = Modifier.height(40.dp), contentAlignment = Alignment.Center) {
@@ -121,6 +128,9 @@ data class KMPWheelPickerState(
     val initiallySelectedItemIndex: Int = 0,
     val isInfinite: Boolean = false,
 ): ScrollableState {
+
+    internal var lastOnChangeIndex = if (isInfinite) initiallySelectedItemIndex + INFINITE_OFFSET else initiallySelectedItemIndex
+
     val lazyListState: LazyListState = LazyListState(
         firstVisibleItemIndex = if (isInfinite) {
             INFINITE_OFFSET + initiallySelectedItemIndex
@@ -175,6 +185,11 @@ data class KMPWheelPickerState(
         lazyListState.animateScrollToItem(if (isInfinite) index + INFINITE_OFFSET else index)
     }
 
+    suspend fun resetToIndex(index: Int) {
+        lastOnChangeIndex = if (isInfinite) index + INFINITE_OFFSET else index
+        animateScrollToItem(index)
+    }
+
     companion object {
         fun Saver(): Saver<KMPWheelPickerState, *> = Saver(
             save = { listOf(it.isInfinite, it.selectedItemRawIndex) },
@@ -206,7 +221,6 @@ fun rememberKmpWheelPickerState(
 }
 
 // TODO: Add indicators
-// TODO: Support changing values but not letting the value change in an interactor and make sure the picker scrolls back
 
 /**
  * [KMPWheelPicker] is a cross-platform wheel picker.
@@ -226,11 +240,11 @@ fun <T : Any> KMPWheelPicker(
     scrollEffect: KMPWheelPickerScrollEffect = KMPWheelPickerDefaults.ScrollEffectWheel,
     content: @Composable LazyItemScope.(T) -> Unit,
 ) {
+    val internalSelectedIndex = remember(selectedIndex, state) { if (state.isInfinite) selectedIndex + INFINITE_OFFSET else selectedIndex }
     val isDragging = remember { VarRef(false) }
     val velocityTracker = remember { VelocityTracker() }
     val scope = rememberCoroutineScope()
     val flingBehavior = rememberSnapFlingBehavior(state.lazyListState)
-    val lastOnChangeIndex = remember { VarRef(selectedIndex) }
     val scrollDebouncer = remember { Debouncer(timeoutMillis = 250, scope = scope) }
 
     val paddingValues = with(LocalDensity.current) {
@@ -241,21 +255,21 @@ fun <T : Any> KMPWheelPicker(
 
     val handleOnChange = remember(items, state) {
         handleOnChange@ { index: Int ->
-            val oldIndex = lastOnChangeIndex.value
-            val newValue = items[getItemsIndex(index, state, items.size)]
-            if (getItemsIndex(oldIndex, state, items.size) == getItemsIndex(index, state, items.size)) return@handleOnChange
-            lastOnChangeIndex.value = index
+            val oldItemIndex = getItemsIndex(state.lastOnChangeIndex, state, items.size)
+            val newItemIndex = getItemsIndex(index, state, items.size)
+            if (oldItemIndex == newItemIndex) return@handleOnChange
 
-            val accepted = onChange(newValue)
+            state.lastOnChangeIndex = index
+            onChange(items[newItemIndex])
         }
     }
 
     // Handle value changing outside WheelPicker
-    LaunchedEffect(selectedIndex) {
+    LaunchedEffect(internalSelectedIndex, selectedIndex) {
         // If the new value equals the old value don't do anything
-        if (isDragging.value || getItemsIndex(lastOnChangeIndex.value, state, items.size) == selectedIndex) return@LaunchedEffect
-        lastOnChangeIndex.value = selectedIndex
-        state.animateScrollToItem(selectedIndex)
+        if (isDragging.value || getItemsIndex(state.lastOnChangeIndex, state, items.size) == selectedIndex) return@LaunchedEffect
+        state.lastOnChangeIndex = internalSelectedIndex
+        state.animateScrollToItem(getItemsIndex(internalSelectedIndex, state, items.size))
     }
 
     LazyColumn(
