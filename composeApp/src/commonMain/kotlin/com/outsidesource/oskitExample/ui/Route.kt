@@ -12,4 +12,5 @@ sealed class Route: IRoute {
     data object Popups: Route()
     data object Resources: Route()
     data object IOSServices: Route()
+    data object Widgets: Route()
 }

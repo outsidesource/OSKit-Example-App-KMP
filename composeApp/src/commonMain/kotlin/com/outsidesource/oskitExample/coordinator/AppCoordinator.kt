@@ -26,4 +26,5 @@ class AppCoordinator: Coordinator(
     fun popupsClicked() = push(Route.Popups)
     fun resourcesClicked() = push(Route.Resources)
     fun iosServicesClicked() = push(Route.IOSServices)
+    fun widgetsClicked() = push(Route.Widgets)
 }

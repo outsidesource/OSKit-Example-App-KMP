@@ -11,6 +11,7 @@ import com.outsidesource.oskitExample.resources.Fonts
 interface IAppTypography {
     val defaultFontFamily: FontFamily
     val sectionHeader: TextStyle
+    val label: TextStyle
 }
 
 @Immutable
@@ -19,6 +20,11 @@ data class AppTypography(val colors: IAppColors, val dimensions: IAppDimensions)
     override val sectionHeader = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
+        color = colors.fontColor,
+    )
+    override val label = TextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
         color = colors.fontColor,
     )
 }

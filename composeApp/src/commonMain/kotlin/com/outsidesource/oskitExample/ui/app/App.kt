@@ -14,6 +14,7 @@ import com.outsidesource.oskitExample.ui.iosServices.IOSServicesScreen
 import com.outsidesource.oskitExample.ui.markdown.MarkdownScreen
 import com.outsidesource.oskitExample.ui.popups.PopupsScreen
 import com.outsidesource.oskitExample.ui.viewStateExample.ViewStateExampleScreen
+import com.outsidesource.oskitExample.ui.widgets.WidgetsScreen
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInject
 import com.outsidesource.oskitcompose.router.RouteSwitch
@@ -44,6 +45,7 @@ fun App(
                 is Route.Markdown -> MarkdownScreen()
                 is Route.Popups -> PopupsScreen()
                 is Route.IOSServices -> IOSServicesScreen()
+                is Route.Widgets -> WidgetsScreen()
             }
         }
     }

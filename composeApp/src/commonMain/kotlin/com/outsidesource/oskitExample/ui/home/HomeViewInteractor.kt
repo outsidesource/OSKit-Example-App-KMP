@@ -34,4 +34,8 @@ class HomeViewInteractor(
     fun iosServicesButtonClicked() {
         coordinator.iosServicesClicked()
     }
+
+    fun widgetsButtonClicked() {
+        coordinator.widgetsClicked()
+    }
 }
