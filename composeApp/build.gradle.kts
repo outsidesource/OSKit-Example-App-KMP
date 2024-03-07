@@ -26,7 +26,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true // https://youtrack.jetbrains.com/issue/KT-42254
-            export("com.outsidesource:oskit-kmp:4.4.0")
+            export("com.outsidesource:oskit-kmp:4.4.1")
             export("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
             export(project(":common"))
         }
