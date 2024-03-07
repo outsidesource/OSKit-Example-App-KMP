@@ -86,6 +86,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
         kotlin.jvmToolchain(17)
     }
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
 }
 
 compose.desktop {
