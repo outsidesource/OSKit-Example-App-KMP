@@ -15,8 +15,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        val handler by koinInjector.inject<KMPFileHandler>()
-        handler.init(KMPFileHandlerContext(application, this))
+        val fileHandler by koinInjector.inject<KMPFileHandler>()
+        fileHandler.init(KMPFileHandlerContext(application, this))
 
         setContent {
             App()
