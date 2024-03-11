@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.skie)
 }
 
-group = "com.outsidesource.oskitExample"
 version = "1.0-SNAPSHOT"
 
 kotlin {
