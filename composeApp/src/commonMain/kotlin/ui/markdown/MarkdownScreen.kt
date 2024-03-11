@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package ui.markdown
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,11 +17,16 @@ import com.outsidesource.oskitcompose.markdown.Markdown
 import com.outsidesource.oskitcompose.markdown.MarkdownStyles
 import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
 import com.outsidesource.oskitcompose.systemui.bottomInsets
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import oskit_example_app_kmp.composeapp.generated.resources.Res
+import oskit_example_app_kmp.composeapp.generated.resources.penguin
+import oskit_example_app_kmp.composeapp.generated.resources.tux
 
 @Composable
 fun MarkdownScreen() {
-//    val penguin = rememberKmpImagePainter(Images.Penguin)
-//    val tux = rememberKmpImagePainter(Images.TuxXML)
+    val penguin = painterResource(Res.drawable.penguin)
+    val tux = painterResource(Res.drawable.tux)
     val defaultFontFamily = AppTheme.typography.defaultFontFamily
     val colors = AppTheme.colors
 
@@ -44,8 +51,8 @@ fun MarkdownScreen() {
             loadAsync = true,
             localImageMap = remember {
                 mapOf(
-//                    "penguin" to penguin,
-//                    "tux" to tux,
+                    "penguin" to penguin,
+                    "tux" to tux,
                 )
             },
         )

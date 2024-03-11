@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package ui.images
 
 import androidx.compose.foundation.Image
@@ -23,6 +25,12 @@ import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import oskit_example_app_kmp.composeapp.generated.resources.Res
+import oskit_example_app_kmp.composeapp.generated.resources.penguin
+import oskit_example_app_kmp.composeapp.generated.resources.tux
 
 @Composable
 fun ResourcesScreen() {
@@ -84,8 +92,8 @@ fun ResourcesScreen() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                 ) {
-//                    ImageWithCaption(Images.Penguin, rememberKmpString(Strings.pngImage))
-//                    ImageWithCaption(Images.TuxXML, rememberKmpString(Strings.vectorDrawableImages))
+                    ImageWithCaption(Res.drawable.penguin, rememberKmpString(Strings.pngImage))
+                    ImageWithCaption(Res.drawable.tux, rememberKmpString(Strings.vectorDrawableImages))
                 }
             }
         }
@@ -104,13 +112,13 @@ private fun Section(
     }
 }
 
-//@Composable
-//private fun ImageWithCaption(resource: KMPImage, caption: String) {
-//    Column(
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.spacedBy(4.dp)
-//    ) {
-//        Image(modifier = Modifier.size(200.dp), painter = rememberKmpImagePainter(resource), contentDescription = "")
-//        Text(caption, fontSize = 12.sp)
-//    }
-//}
+@Composable
+private fun ImageWithCaption(resource: DrawableResource, caption: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Image(modifier = Modifier.size(200.dp), painter = painterResource(resource), contentDescription = "")
+        Text(caption, fontSize = 12.sp)
+    }
+}

@@ -1,5 +1,6 @@
 package ui.app.theme
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -10,13 +11,17 @@ import resources.Fonts
 @Immutable
 interface IAppTypography {
     val defaultFontFamily: FontFamily
+        @Composable
+        get
     val sectionHeader: TextStyle
     val label: TextStyle
 }
 
 @Immutable
 data class AppTypography(val colors: IAppColors, val dimensions: IAppDimensions) : IAppTypography {
-    override val defaultFontFamily = Fonts.SansSerifPro
+    override val defaultFontFamily
+        @Composable
+        get() = Fonts.SansSerifPro
     override val sectionHeader = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,

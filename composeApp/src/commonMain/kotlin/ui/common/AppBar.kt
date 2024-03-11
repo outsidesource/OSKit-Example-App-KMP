@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package ui.common
 
 import androidx.compose.foundation.Image
@@ -22,6 +24,10 @@ import com.outsidesource.oskitcompose.modifier.outerShadow
 import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
 import com.outsidesource.oskitcompose.systemui.horizontalInsets
 import com.outsidesource.oskitcompose.systemui.topInsets
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import oskit_example_app_kmp.composeapp.generated.resources.Res
+import oskit_example_app_kmp.composeapp.generated.resources.dark_mode
 
 @Composable
 fun AppBar(
@@ -59,12 +65,12 @@ fun AppBar(
             },
             actions = {
                 Switch(checked = isDarkTheme, onCheckedChange = onThemeToggled)
-//                Image(
-//                    modifier = Modifier.padding(end = 8.dp).size(24.dp),
-//                    painter = rememberKmpImagePainter(Images.DarkMode),
-//                    contentDescription = "Dark Mode",
-//                    colorFilter = ColorFilter.tint(Color.White),
-//                )
+                Image(
+                    modifier = Modifier.padding(end = 8.dp).size(24.dp),
+                    painter = painterResource(Res.drawable.dark_mode),
+                    contentDescription = "Dark Mode",
+                    colorFilter = ColorFilter.tint(Color.White),
+                )
             }
         )
     }
