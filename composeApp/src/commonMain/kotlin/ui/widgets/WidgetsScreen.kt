@@ -2,13 +2,19 @@ package ui.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -16,7 +22,10 @@ import androidx.compose.ui.unit.sp
 import ui.app.theme.AppTheme
 import ui.common.Screen
 import com.outsidesource.oskitcompose.form.*
+import com.outsidesource.oskitcompose.modifier.consumePointerInput
 import com.outsidesource.oskitcompose.modifier.defaultMaxSize
+import com.outsidesource.oskitcompose.modifier.preventClickPropagationToParent
+import com.outsidesource.oskitcompose.pointer.awaitForUpOrCancellationEvent
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -53,11 +62,14 @@ fun WidgetsScreen() {
                 var date by remember { mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date) }
 
                 WidgetLabel("Date Picker")
-                TextField(
-                    modifier = Modifier.clickable { isVisible = !isVisible },
-                    value = "$date",
-                    enabled = false,
-                    onValueChange = {}
+                Text(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .clickable { isVisible = !isVisible }
+                        .background(Color(0x1A000000))
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                    text = "$date",
+                    lineHeight = 24.sp,
                 )
                 KMPDatePickerModal(
                     isVisible = isVisible,
@@ -72,13 +84,15 @@ fun WidgetsScreen() {
                 var time by remember { mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time) }
 
                 WidgetLabel("Time Picker")
-                TextField(
-                    modifier = Modifier.clickable { isVisible = !isVisible },
-                    value = "$time",
-                    enabled = false,
-                    onValueChange = {}
+                Text(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .clickable { isVisible = !isVisible }
+                        .background(Color(0x1A000000))
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                    text = "$time",
+                    lineHeight = 24.sp,
                 )
-
                 KMPTimePickerModal(
                     isVisible = isVisible,
                     time = time,
