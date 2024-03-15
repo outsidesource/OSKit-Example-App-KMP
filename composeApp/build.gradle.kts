@@ -44,6 +44,7 @@ kotlin {
             api(compose.material)
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
             api(libs.oskit.kmp)
             api(libs.kotlinx.coroutines.core)
             api(libs.oskit.compose)

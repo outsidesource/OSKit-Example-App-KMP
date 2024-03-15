@@ -8,10 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.Font
 import oskit_example_app_kmp.composeapp.generated.resources.*
-import oskit_example_app_kmp.composeapp.generated.resources.Res
-import oskit_example_app_kmp.composeapp.generated.resources.SourceSansPro_Bold
-import oskit_example_app_kmp.composeapp.generated.resources.SourceSansPro_Light
-import oskit_example_app_kmp.composeapp.generated.resources.SourceSansPro_Regular
 
 object Fonts {
     val Default = FontFamily.Default
