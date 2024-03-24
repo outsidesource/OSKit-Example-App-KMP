@@ -4,8 +4,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.application
 import com.outsidesource.oskitExample.common.PlatformContext
 import com.outsidesource.oskitExample.common.initKoin
-import com.outsidesource.oskitExample.composeAppModule
-import com.outsidesource.oskitExample.ui.app.App
 import com.outsidesource.oskitcompose.lib.koinInjector
 import com.outsidesource.oskitcompose.systemui.KMPWindowInsetsHolder
 import com.outsidesource.oskitcompose.systemui.LocalKMPWindowInsets
@@ -14,6 +12,7 @@ import com.outsidesource.oskitcompose.window.rememberPersistedWindowState
 import com.outsidesource.oskitkmp.file.IKMPFileHandler
 import com.outsidesource.oskitkmp.file.KMPFileHandlerContext
 import org.koin.core.component.inject
+import ui.app.App
 import java.awt.Dimension
 
 private val koin = initKoin(

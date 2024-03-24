@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.skie)
 }
 
-group = "com.outsidesource.oskitExample"
 version = "1.0-SNAPSHOT"
 
 kotlin {
@@ -26,8 +25,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true // https://youtrack.jetbrains.com/issue/KT-42254
-            export("com.outsidesource:oskit-kmp:4.4.0")
-            export("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+            export("com.outsidesource:oskit-kmp:4.5.0")
+            export("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
             export(project(":common"))
         }
     }
@@ -45,6 +44,7 @@ kotlin {
             api(compose.material)
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
             api(libs.oskit.kmp)
             api(libs.kotlinx.coroutines.core)
             api(libs.oskit.compose)
@@ -85,6 +85,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
         kotlin.jvmToolchain(17)
+    }
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("debug")
+        }
     }
 }
 

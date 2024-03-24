@@ -7,19 +7,18 @@ androidx-activityCompose = "1.8.2"
 androidx-appcompat = "1.6.1"
 androidx-core-ktx = "1.12.0"
 atomicfu = "0.23.2"
-compose-plugin = "1.5.12"
+compose-plugin = "1.6.1"
 junit = "4.13.2"
 kermit = "2.0.2"
-koinCore = "3.4.3"
-kotlin = "1.9.22"
-kotlinxCoroutinesCore = "1.7.3"
+koinCore = "3.5.3"
+kotlin = "1.9.23"
+kotlinxCoroutinesCore = "1.8.0"
 kotlinxDatetime = "0.5.0"
 okio = "3.7.0"
-oskitCompose = "3.3.0"
-oskitKmp = "4.4.0"
-skie = "0.6.1"
-statelyCommon = "2.0.5"
-ui = "1.6.1"
+oskitCompose = "3.5.0"
+oskitKmp = "4.5.0"
+skie = "0.6.2"
+ui = "1.6.4"
 
 [libraries]
 atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
@@ -34,7 +33,6 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 oskit-compose = { module = "com.outsidesource:oskit-compose", version.ref = "oskitCompose" }
 oskit-kmp = { module = "com.outsidesource:oskit-kmp", version.ref = "oskitKmp" }
-stately-common = { module = "co.touchlab:stately-common", version.ref = "statelyCommon" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 
 [plugins]

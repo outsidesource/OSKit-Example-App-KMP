@@ -23,6 +23,7 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     cocoapods {
+        version = "1.12.1"
         ios.deploymentTarget = "15"
 
         pod("AWSCore") {
@@ -37,7 +38,6 @@ kotlin {
         val desktopMain by getting
 
         commonMain.dependencies {
-            implementation(libs.stately.common) // For some reason without this iOS wouldn't build
             api(libs.oskit.kmp)
             api(libs.koin.core)
             api(libs.kermit)
