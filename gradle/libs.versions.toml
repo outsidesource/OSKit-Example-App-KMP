@@ -15,10 +15,10 @@ kotlin = "1.9.23"
 kotlinxCoroutinesCore = "1.8.0"
 kotlinxDatetime = "0.5.0"
 okio = "3.7.0"
-oskitCompose = "3.4.0"
-oskitKmp = "4.4.1"
+oskitCompose = "3.5.0"
+oskitKmp = "4.5.0"
 skie = "0.6.2"
-ui = "1.6.3"
+ui = "1.6.4"
 
 [libraries]
 atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
