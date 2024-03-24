@@ -1,8 +1,8 @@
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.skie)
     kotlin("native.cocoapods")
-    id("co.touchlab.skie") version "0.6.1"
 }
 
 group = "com.outsidesource.oskitExample.common"
@@ -23,6 +23,7 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     cocoapods {
+        version = "1.12.1"
         ios.deploymentTarget = "15"
 
         pod("AWSCore") {
@@ -34,45 +35,36 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api("com.outsidesource:oskit-kmp:4.2.0")
-                api("io.insert-koin:koin-core:3.4.3")
-                api("co.touchlab:kermit:2.0.2")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-                api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
-                api("org.jetbrains.kotlinx:atomicfu:0.21.0")
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.12.0")
-            }
-        }
-        val androidInstrumentedTest by getting {
-            dependencies {
-                implementation("junit:junit:4.13.2")
-            }
-        }
         val desktopMain by getting
-        val desktopTest by getting
+
+        commonMain.dependencies {
+            api(libs.oskit.kmp)
+            api(libs.koin.core)
+            api(libs.kermit)
+            api(libs.kotlinx.coroutines.core)
+            api(libs.kotlinx.datetime)
+            api(libs.atomicfu)
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+        androidMain.dependencies {
+            api(libs.androidx.appcompat)
+            api(libs.androidx.core.ktx)
+        }
     }
 }
 
 android {
     namespace = "com.outsidesource.oskitExample.common"
-    compileSdk = 34
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+
     defaultConfig {
-        minSdk = 24
-        targetSdk = 34
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
