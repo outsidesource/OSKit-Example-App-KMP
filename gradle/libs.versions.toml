@@ -1,24 +1,24 @@
 [versions]
-agp = "8.2.2"
+agp = "8.5.2"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
-androidx-activityCompose = "1.8.2"
-androidx-appcompat = "1.6.1"
-androidx-core-ktx = "1.12.0"
-atomicfu = "0.23.2"
-compose-plugin = "1.6.1"
+androidx-activityCompose = "1.9.3"
+androidx-appcompat = "1.7.0"
+androidx-core-ktx = "1.15.0"
+atomicfu = "0.25.0"
+compose = "1.7.1"
 junit = "4.13.2"
 kermit = "2.0.2"
-koinCore = "3.5.3"
-kotlin = "1.9.23"
-kotlinxCoroutinesCore = "1.8.0"
-kotlinxDatetime = "0.5.0"
+koinCore = "4.0.0"
+kotlin = "2.0.21"
+kotlinxCoroutinesCore = "1.9.0"
+kotlinxDatetime = "0.6.1"
 okio = "3.9.0"
-oskitCompose = "3.6.1"
-oskitKmp = "4.6.3"
-skie = "0.6.2"
-ui = "1.6.7"
+oskitCompose = "3.8.0-wasm-experimental"
+oskitKmp = "4.7.0-wasm-experimental"
+skie = "0.9.3"
+ui = "1.7.5"
 
 [libraries]
 atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
@@ -38,6 +38,7 @@ ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }

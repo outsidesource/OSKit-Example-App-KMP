@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
@@ -9,16 +12,34 @@ group = "com.outsidesource.oskitExample.common"
 version = "1.0-SNAPSHOT"
 
 kotlin {
-    androidTarget {
-        jvmToolchain(17)
-    }
-    jvm("desktop") {
-        jvmToolchain(17)
-    }
+    jvmToolchain(17)
+
+    androidTarget()
+    jvm("desktop")
 
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        moduleName = "common"
+        browser {
+            val rootDirPath = project.rootDir.path
+            val projectDirPath = project.projectDir.path
+            commonWebpackConfig {
+                outputFileName = "common.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        // Serve sources to debug inside browser
+                        add(rootDirPath)
+                        add(projectDirPath)
+                    }
+                }
+            }
+        }
+        binaries.executable()
+    }
 
     applyDefaultHierarchyTemplate()
 
@@ -52,6 +73,8 @@ kotlin {
             api(libs.androidx.appcompat)
             api(libs.androidx.core.ktx)
         }
+
+        val wasmJsMain by getting
     }
 }
 
