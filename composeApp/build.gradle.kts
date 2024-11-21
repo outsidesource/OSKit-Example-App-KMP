@@ -1,4 +1,7 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
@@ -14,6 +17,11 @@ version = "1.0-SNAPSHOT"
 
 kotlin {
     jvmToolchain(17)
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.add("-Xconsistent-data-class-copy-visibility")
+    }
 
     androidTarget()
     jvm("desktop")
@@ -56,21 +64,20 @@ kotlin {
 
     sourceSets {
         val desktopMain by getting
-        val desktopTest by getting
         val androidInstrumentedTest by getting
 
         commonMain.dependencies {
-            api(compose.runtime)
-            api(compose.foundation)
-            api(compose.material)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material)
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            api(libs.oskit.kmp)
-            api(libs.kotlinx.coroutines.core)
-            api(libs.oskit.compose)
-            api(libs.okio)
-            api(project(":common"))
+            implementation(libs.oskit.kmp)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.oskit.compose)
+            implementation(libs.okio)
+            implementation(project(":common"))
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
@@ -85,11 +92,8 @@ kotlin {
             implementation(libs.junit)
         }
         desktopMain.dependencies {
-            implementation(project(":common"))
             implementation(compose.desktop.currentOs)
         }
-
-        val wasmJsMain by getting
     }
 }
 

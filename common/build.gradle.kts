@@ -1,3 +1,6 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
@@ -13,6 +16,11 @@ version = "1.0-SNAPSHOT"
 
 kotlin {
     jvmToolchain(17)
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.add("-Xconsistent-data-class-copy-visibility")
+    }
 
     androidTarget()
     jvm("desktop")
@@ -56,8 +64,6 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting
-
         commonMain.dependencies {
             api(libs.oskit.kmp)
             api(libs.koin.core)
@@ -73,8 +79,6 @@ kotlin {
             api(libs.androidx.appcompat)
             api(libs.androidx.core.ktx)
         }
-
-        val wasmJsMain by getting
     }
 }
 

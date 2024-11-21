@@ -1,4 +1,5 @@
 [versions]
+kotlin = "2.0.21"
 agp = "8.5.2"
 android-compileSdk = "34"
 android-minSdk = "24"
@@ -11,7 +12,6 @@ compose = "1.7.1"
 junit = "4.13.2"
 kermit = "2.0.2"
 koinCore = "4.0.0"
-kotlin = "2.0.21"
 kotlinxCoroutinesCore = "1.9.0"
 kotlinxDatetime = "0.6.1"
 okio = "3.9.1"
