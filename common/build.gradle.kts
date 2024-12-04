@@ -67,7 +67,6 @@ kotlin {
         commonMain.dependencies {
             api(libs.oskit.kmp)
             api(libs.koin.core)
-            api(libs.kermit)
             api(libs.kotlinx.coroutines.core)
             api(libs.kotlinx.datetime)
             api(libs.atomicfu)
@@ -76,8 +75,8 @@ kotlin {
             implementation(kotlin("test"))
         }
         androidMain.dependencies {
-            api(libs.androidx.appcompat)
-            api(libs.androidx.core.ktx)
+            implementation(libs.androidx.appcompat)
+            implementation(libs.androidx.core.ktx)
         }
     }
 }

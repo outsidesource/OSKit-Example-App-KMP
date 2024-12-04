@@ -1,17 +1,31 @@
 package com.outsidesource.oskitExample.common.service.preferences
 
-import com.outsidesource.oskitkmp.file.KMPFileRef
+import com.outsidesource.oskitkmp.file.KmpFileRef
 import com.outsidesource.oskitkmp.outcome.unwrapOrNull
-import com.outsidesource.oskitkmp.storage.IKMPStorage
+import com.outsidesource.oskitkmp.storage.IKmpKvStore
+import com.outsidesource.oskitkmp.storage.IKmpKvStoreNode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 private const val KEY_COLOR_THEME = "color-theme"
 private const val KEY_SELECTED_FILE = "selected-file"
 private const val KEY_SELECTED_FOLDER = "selected-folder"
 
+private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+
 class PreferencesService(
-    private val storage: IKMPStorage,
+    private val storage: IKmpKvStore,
 ) : IPreferencesService {
-    private val node = storage.openNode("preferences").unwrapOrNull()
+
+    private var node: IKmpKvStoreNode? = null
+
+    init {
+        scope.launch {
+            node = storage.openNode("preferences").unwrapOrNull()
+        }
+    }
 
     override suspend fun setTheme(theme: AppColorTheme) {
         node?.putInt(KEY_COLOR_THEME, when (theme) {
@@ -28,7 +42,7 @@ class PreferencesService(
         }
     }
 
-    override suspend fun setSelectedFile(ref: KMPFileRef?) {
+    override suspend fun setSelectedFile(ref: KmpFileRef?) {
         if (ref == null) {
             node?.remove(KEY_SELECTED_FILE)
             return
@@ -36,12 +50,12 @@ class PreferencesService(
         node?.putBytes(KEY_SELECTED_FILE, ref.toPersistableData())
     }
 
-    override suspend fun getSelectedFile(): KMPFileRef? {
+    override suspend fun getSelectedFile(): KmpFileRef? {
         val storedValue = node?.getBytes(KEY_SELECTED_FILE) ?: return null
-        return KMPFileRef.fromPersistableData(storedValue)
+        return KmpFileRef.fromPersistableData(storedValue)
     }
 
-    override suspend fun setSelectedFolder(ref: KMPFileRef?) {
+    override suspend fun setSelectedFolder(ref: KmpFileRef?) {
         if (ref == null) {
             node?.remove(KEY_SELECTED_FOLDER)
             return
@@ -49,8 +63,8 @@ class PreferencesService(
         node?.putBytes(KEY_SELECTED_FOLDER, ref.toPersistableData())
     }
 
-    override suspend fun getSelectedFolder(): KMPFileRef? {
+    override suspend fun getSelectedFolder(): KmpFileRef? {
         val storedValue = node?.getBytes(KEY_SELECTED_FOLDER) ?: return null
-        return KMPFileRef.fromPersistableData(storedValue)
+        return KmpFileRef.fromPersistableData(storedValue)
     }
 }

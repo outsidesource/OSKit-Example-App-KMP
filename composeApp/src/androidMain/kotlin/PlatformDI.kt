@@ -1,8 +1,8 @@
-import com.outsidesource.oskitkmp.storage.AndroidKMPStorage
-import com.outsidesource.oskitkmp.storage.IKMPStorage
+import com.outsidesource.oskitkmp.storage.AndroidKmpKvStore
+import com.outsidesource.oskitkmp.storage.IKmpKvStore
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 actual fun platformModule() = module {
-    single { AndroidKMPStorage(appContext = get()) } bind IKMPStorage::class
+    single { AndroidKmpKvStore(appContext = get()) } bind IKmpKvStore::class
 }

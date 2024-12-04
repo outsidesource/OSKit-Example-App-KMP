@@ -1,8 +1,9 @@
-import com.outsidesource.oskitkmp.storage.DesktopKMPStorage
-import com.outsidesource.oskitkmp.storage.IKMPStorage
+
+import com.outsidesource.oskitkmp.storage.IKmpKvStore
+import com.outsidesource.oskitkmp.storage.JvmKmpKvStore
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 actual fun platformModule() = module {
-    single { DesktopKMPStorage(appName = "OSKit-Example-App-KMP") } bind IKMPStorage::class
+    single { JvmKmpKvStore(appName = "OSKit-Example-App-KMP") } bind IKmpKvStore::class
 }

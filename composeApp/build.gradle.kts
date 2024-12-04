@@ -28,6 +28,10 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
+        compilerOptions {
+            freeCompilerArgs.add("-Xwasm-attach-js-exception")
+        }
+
         moduleName = "composeApp"
         browser {
             val rootDirPath = project.rootDir.path
@@ -74,8 +78,8 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.oskit.kmp)
-            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.oskit.compose)
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.okio)
             implementation(project(":common"))
         }

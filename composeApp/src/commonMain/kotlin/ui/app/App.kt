@@ -6,7 +6,7 @@ import com.outsidesource.oskitcompose.lib.rememberInject
 import com.outsidesource.oskitcompose.router.RouteSwitch
 import com.outsidesource.oskitcompose.systemui.SystemBarColorEffect
 import com.outsidesource.oskitcompose.systemui.SystemBarIconColor
-import com.outsidesource.oskitkmp.storage.IKMPStorageNode
+import com.outsidesource.oskitkmp.storage.IKmpKvStoreNode
 import ui.Route
 import ui.app.theme.AppTheme
 import ui.app.theme.DarkAppColors

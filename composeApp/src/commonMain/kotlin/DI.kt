@@ -8,14 +8,14 @@ import ui.home.HomeViewInteractor
 import ui.iosServices.IOSServicesScreenViewInteractor
 import ui.popups.PopupsScreenViewInteractor
 import ui.viewStateExample.ViewStateExampleViewInteractor
-import com.outsidesource.oskitkmp.file.IKMPFileHandler
-import com.outsidesource.oskitkmp.file.KMPFileHandler
+import com.outsidesource.oskitkmp.file.IKmpFileHandler
+import com.outsidesource.oskitkmp.file.KmpFileHandler
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val composeAppModule = module {
     single { AppCoordinator() }
-    single { KMPFileHandler() } bind IKMPFileHandler::class
+    single { KmpFileHandler() } bind IKmpFileHandler::class
 
     factory { AppViewInteractor(get()) }
     factory { ScreenViewInteractor(get(), get()) }

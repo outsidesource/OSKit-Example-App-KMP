@@ -10,26 +10,28 @@ import okio.buffer
 import okio.use
 
 data class FileHandlingViewState(
-    val selectedFile: KMPFileRef? = null,
-    val selectedFolder: KMPFileRef? = null,
+    val selectedFile: KmpFileRef? = null,
+    val selectedFiles: List<KmpFileRef>? = null,
+    val selectedDirectory: KmpFileRef? = null,
     val metadata: KMPFileMetadata? = null,
     val deleteFileResult: Outcome<Unit, Exception>? = null,
-    val deleteFolderResult: Outcome<Unit, Exception>? = null,
-    val fileList: List<KMPFileRef> = emptyList(),
+    val deleteDirectoryResult: Outcome<Unit, Exception>? = null,
+    val fileList: List<KmpFileRef> = emptyList(),
     val fileExistsResult: Boolean? = null,
-    val folderExistsResult: Boolean? = null,
+    val directoryExistsResult: Boolean? = null,
     val createFileName: String = "",
-    val createFileResult: Outcome<KMPFileRef, Exception>? = null,
+    val createFileResult: Outcome<KmpFileRef, Exception>? = null,
     val createFileContent: String = "",
-    val createFolderName: String = "",
-    val createFolderResult: Outcome<KMPFileRef, Exception>? = null,
-    val saveFile: Outcome<KMPFileRef?, Exception>? = null,
+    val createDirectoryName: String = "",
+    val createDirectoryResult: Outcome<KmpFileRef, Exception>? = null,
+    val saveFile: Outcome<KmpFileRef?, Exception>? = null,
     val appendFileResult: Outcome<Unit, Exception>? = null,
     val appendFileContent: String = "",
+    val selectedFileContent: String = "",
 )
 
 class FileHandlingViewInteractor(
-    private val fileHandler: IKMPFileHandler,
+    private val fileHandler: IKmpFileHandler,
     private val preferencesService: PreferencesService,
 ): Interactor<FileHandlingViewState>(
     initialState = FileHandlingViewState()
@@ -40,7 +42,7 @@ class FileHandlingViewInteractor(
             val storedFile = preferencesService.getSelectedFile()
             val storedFolder = preferencesService.getSelectedFolder()
 
-            update { state -> state.copy(selectedFile = storedFile, selectedFolder = storedFolder) }
+            update { state -> state.copy(selectedFile = storedFile, selectedDirectory = storedFolder) }
         }
     }
 
@@ -52,6 +54,13 @@ class FileHandlingViewInteractor(
         }
     }
 
+    fun pickFiles() {
+        interactorScope.launch {
+            val files = fileHandler.pickFiles().unwrapOrReturn { return@launch }
+            update { state -> state.copy(selectedFiles = files) }
+        }
+    }
+
     fun pickSaveFile() {
         interactorScope.launch {
             val saveFileOutcome = fileHandler.pickSaveFile("untitled.txt")
@@ -59,10 +68,10 @@ class FileHandlingViewInteractor(
         }
     }
 
-    fun pickFolder() {
+    fun pickDirectory() {
         interactorScope.launch {
             val folder = fileHandler.pickDirectory().unwrapOrReturn { return@launch }
-            update { state -> state.copy(selectedFolder = folder) }
+            update { state -> state.copy(selectedDirectory = folder) }
             preferencesService.setSelectedFolder(folder)
         }
     }
@@ -77,7 +86,7 @@ class FileHandlingViewInteractor(
 
     fun createFile() {
         interactorScope.launch {
-            val folder = state.selectedFolder ?: return@launch
+            val folder = state.selectedDirectory ?: return@launch
             val file = fileHandler.resolveFile(folder, state.createFileName, create = true).unwrapOrReturn {
                 update { state -> state.copy(createFileResult = this) }
                 return@launch
@@ -118,25 +127,35 @@ class FileHandlingViewInteractor(
        }
     }
 
-    fun createFolderNameChanged(value: String) {
-        update { state -> state.copy(createFolderName = value) }
+    fun createDirectoryNameChanged(value: String) {
+        update { state -> state.copy(createDirectoryName = value) }
     }
 
-    fun createFolder() {
+    fun createDirectory() {
         interactorScope.launch {
-            val folder = state.selectedFolder ?: return@launch
-            val createdFolder = fileHandler.resolveDirectory(folder, state.createFolderName, create = true).unwrapOrReturn {
-                update { state -> state.copy(createFolderResult = this) }
+            val folder = state.selectedDirectory ?: return@launch
+            val createdFolder = fileHandler.resolveDirectory(folder, state.createDirectoryName, create = true).unwrapOrReturn {
+                update { state -> state.copy(createDirectoryResult = this) }
                 return@launch
             }
 
-            update { state -> state.copy(createFolderResult = Outcome.Ok(createdFolder)) }
+            update { state -> state.copy(createDirectoryResult = Outcome.Ok(createdFolder)) }
+        }
+    }
+
+    fun readData() {
+        interactorScope.launch {
+            println("Starting")
+            val source = state.selectedFile?.source()?.unwrapOrReturn { return@launch } ?: return@launch
+            val content = source.use { it.buffer().readUtf8() }
+            println("Done")
+            update { state -> state.copy(selectedFileContent = content)}
         }
     }
 
     fun readMetaData() {
         interactorScope.launch {
-            val outcome = fileHandler.readMetadata(state.selectedFolder ?: return@launch)
+            val outcome = fileHandler.readMetadata(state.selectedFile ?: return@launch)
             if (outcome is Outcome.Ok) update { state -> state.copy(metadata = outcome.value) }
         }
     }
@@ -149,17 +168,17 @@ class FileHandlingViewInteractor(
         }
     }
 
-    fun deleteFolder() {
+    fun deleteDirectory() {
         interactorScope.launch {
-            val folder = state.selectedFolder ?: return@launch
+            val folder = state.selectedDirectory ?: return@launch
             val outcome = fileHandler.delete(folder)
-            update { state -> state.copy(deleteFolderResult = outcome) }
+            update { state -> state.copy(deleteDirectoryResult = outcome) }
         }
     }
 
     fun list() {
         interactorScope.launch {
-            val folder = state.selectedFolder ?: return@launch
+            val folder = state.selectedDirectory ?: return@launch
             val files = fileHandler.list(folder, isRecursive = true).unwrapOrReturn { return@launch }
             update { state -> state.copy(fileList = files) }
         }
@@ -168,12 +187,12 @@ class FileHandlingViewInteractor(
     fun exists() {
         interactorScope.launch {
             val file = state.selectedFile ?: return@launch
-            val folder = state.selectedFolder ?: return@launch
+            val folder = state.selectedDirectory ?: return@launch
             val fileExists = fileHandler.exists(file)
             val folderExists = fileHandler.exists(folder)
 
             update { state ->
-                state.copy(fileExistsResult = fileExists, folderExistsResult = folderExists)
+                state.copy(fileExistsResult = fileExists, directoryExistsResult = folderExists)
             }
         }
     }

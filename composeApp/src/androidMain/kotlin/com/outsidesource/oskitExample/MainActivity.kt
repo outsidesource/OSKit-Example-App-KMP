@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import ui.app.App
 import com.outsidesource.oskitcompose.lib.koinInjector
-import com.outsidesource.oskitkmp.file.KMPFileHandler
-import com.outsidesource.oskitkmp.file.KMPFileHandlerContext
+import com.outsidesource.oskitkmp.file.KmpFileHandler
+import com.outsidesource.oskitkmp.file.KmpFileHandlerContext
 import org.koin.core.component.inject
 
 class MainActivity : ComponentActivity() {
@@ -15,8 +15,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        val fileHandler by koinInjector.inject<KMPFileHandler>()
-        fileHandler.init(KMPFileHandlerContext(application, this))
+        val fileHandler by koinInjector.inject<KmpFileHandler>()
+        fileHandler.init(KmpFileHandlerContext(application, this))
 
         setContent {
             App()

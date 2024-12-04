@@ -55,11 +55,30 @@ fun FileHandlingScreen(
                 }
 
                 Column {
-                    Text("Selected Folder: ${state.selectedFolder?.name ?: "None"}")
+                    Text("Selected File Content")
+                    if (state.selectedFileContent.isNotEmpty()) Text(state.selectedFileContent)
                     Button(
-                        onClick = interactor::pickFolder
+                        onClick = interactor::readData
                     ) {
-                        Text("Pick Folder")
+                        Text("Read File")
+                    }
+                }
+
+                Column {
+                    Text("Selected Files: ${state.selectedFiles?.joinToString(",") { it.name } ?: "None"}")
+                    Button(
+                        onClick = interactor::pickFiles
+                    ) {
+                        Text("Pick Files")
+                    }
+                }
+
+                Column {
+                    Text("Selected Directory: ${state.selectedDirectory?.name ?: "None"}")
+                    Button(
+                        onClick = interactor::pickDirectory
+                    ) {
+                        Text("Pick Directory")
                     }
                 }
 
@@ -106,14 +125,14 @@ fun FileHandlingScreen(
                 }
 
                 Column {
-                    Text("Create Folder: ${state.createFolderResult ?: ""}")
+                    Text("Create Directory: ${state.createDirectoryResult ?: ""}")
                     TextField(
-                        value = state.createFolderName,
+                        value = state.createDirectoryName,
                         placeholder = { Text("Name") },
-                        onValueChange = interactor::createFolderNameChanged
+                        onValueChange = interactor::createDirectoryNameChanged
                     )
                     Button(
-                        onClick = interactor::createFolder
+                        onClick = interactor::createDirectory
                     ) {
                         Text("Create Folder")
                     }
@@ -138,16 +157,16 @@ fun FileHandlingScreen(
                 }
 
                 Column {
-                    Text("Delete Selected Folder: ${state.deleteFolderResult ?: ""}")
+                    Text("Delete Selected Directory: ${state.deleteDirectoryResult ?: ""}")
                     Button(
-                        onClick = interactor::deleteFolder
+                        onClick = interactor::deleteDirectory
                     ) {
-                        Text("Delete Folder")
+                        Text("Delete Directory")
                     }
                 }
 
                 Column {
-                    Text("List Files In Selected Folder")
+                    Text("List Files In Selected Directory")
                     Button(
                         onClick = interactor::list
                     ) {
@@ -161,8 +180,8 @@ fun FileHandlingScreen(
                 }
 
                 Column {
-                    Text("Check Selected File and Folder Exists")
-                    Text("File Exists: ${state.fileExistsResult}    Folder Exists: ${state.folderExistsResult}")
+                    Text("Check Selected File and Directory Exists")
+                    Text("File Exists: ${state.fileExistsResult}    Folder Exists: ${state.directoryExistsResult}")
                     Button(
                         onClick = interactor::exists
                     ) {
