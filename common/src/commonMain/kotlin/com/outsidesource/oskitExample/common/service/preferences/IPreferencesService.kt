@@ -1,6 +1,6 @@
 package com.outsidesource.oskitExample.common.service.preferences
 
-import com.outsidesource.oskitkmp.file.KmpFileRef
+import com.outsidesource.oskitkmp.filesystem.KmpFileRef
 
 enum class AppColorTheme {
     Dark,

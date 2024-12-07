@@ -5,8 +5,8 @@ import androidx.compose.ui.window.ComposeViewport
 import com.outsidesource.oskitExample.common.PlatformContext
 import com.outsidesource.oskitExample.common.initKoin
 import com.outsidesource.oskitcompose.lib.koinInjector
-import com.outsidesource.oskitkmp.file.IKmpFileHandler
-import com.outsidesource.oskitkmp.file.KmpFileHandlerContext
+import com.outsidesource.oskitkmp.filesystem.IKmpFileHandler
+import com.outsidesource.oskitkmp.filesystem.KmpFileHandlerContext
 import composeAppModule
 import kotlinx.browser.document
 import org.koin.core.component.inject

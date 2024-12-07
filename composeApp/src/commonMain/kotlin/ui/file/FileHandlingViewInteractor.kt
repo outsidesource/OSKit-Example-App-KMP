@@ -1,7 +1,7 @@
 package ui.file
 
 import com.outsidesource.oskitExample.common.service.preferences.PreferencesService
-import com.outsidesource.oskitkmp.file.*
+import com.outsidesource.oskitkmp.filesystem.*
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.outcome.Outcome
 import com.outsidesource.oskitkmp.outcome.unwrapOrReturn
@@ -13,7 +13,7 @@ data class FileHandlingViewState(
     val selectedFile: KmpFileRef? = null,
     val selectedFiles: List<KmpFileRef>? = null,
     val selectedDirectory: KmpFileRef? = null,
-    val metadata: KMPFileMetadata? = null,
+    val metadata: KmpFileMetadata? = null,
     val deleteFileResult: Outcome<Unit, Exception>? = null,
     val deleteDirectoryResult: Outcome<Unit, Exception>? = null,
     val fileList: List<KmpFileRef> = emptyList(),
@@ -114,7 +114,7 @@ class FileHandlingViewInteractor(
     fun appendToFile() {
        interactorScope.launch {
             val file = state.selectedFile ?: return@launch
-            val sink = file.sink(mode = KMPFileWriteMode.Append).unwrapOrReturn {
+            val sink = file.sink(mode = KmpFileWriteMode.Append).unwrapOrReturn {
                 update { state -> state.copy(appendFileResult = this) }
                 return@launch
             }

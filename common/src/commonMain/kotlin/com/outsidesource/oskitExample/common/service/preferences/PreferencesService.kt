@@ -1,6 +1,6 @@
 package com.outsidesource.oskitExample.common.service.preferences
 
-import com.outsidesource.oskitkmp.file.KmpFileRef
+import com.outsidesource.oskitkmp.filesystem.KmpFileRef
 import com.outsidesource.oskitkmp.outcome.unwrapOrNull
 import com.outsidesource.oskitkmp.storage.IKmpKvStore
 import com.outsidesource.oskitkmp.storage.IKmpKvStoreNode

@@ -8,8 +8,8 @@ import ui.home.HomeViewInteractor
 import ui.iosServices.IOSServicesScreenViewInteractor
 import ui.popups.PopupsScreenViewInteractor
 import ui.viewStateExample.ViewStateExampleViewInteractor
-import com.outsidesource.oskitkmp.file.IKmpFileHandler
-import com.outsidesource.oskitkmp.file.KmpFileHandler
+import com.outsidesource.oskitkmp.filesystem.IKmpFileHandler
+import com.outsidesource.oskitkmp.filesystem.KmpFileHandler
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
