@@ -92,7 +92,7 @@ fun FileHandlingScreen(
                 }
 
                 Column {
-                    Text("Create File: ${state.createFileResult ?: ""}")
+                    Text("Create File in Selected Folder: ${state.createFileResult ?: ""}")
                     TextField(
                         value = state.createFileName,
                         placeholder = { Text("Name") },

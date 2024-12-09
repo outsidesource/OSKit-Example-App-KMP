@@ -9,8 +9,8 @@ import com.outsidesource.oskitcompose.systemui.KMPWindowInsetsHolder
 import com.outsidesource.oskitcompose.systemui.LocalKMPWindowInsets
 import com.outsidesource.oskitcompose.window.SizedWindow
 import com.outsidesource.oskitcompose.window.rememberPersistedWindowState
-import com.outsidesource.oskitkmp.file.IKmpFileHandler
-import com.outsidesource.oskitkmp.file.KmpFileHandlerContext
+import com.outsidesource.oskitkmp.filesystem.IKmpFs
+import com.outsidesource.oskitkmp.filesystem.KmpFsContext
 import org.koin.core.component.inject
 import ui.app.App
 import java.awt.Dimension
@@ -21,7 +21,7 @@ private val koin = initKoin(
 ).koin
 
 fun main() = application {
-    val fileHandler by koinInjector.inject<IKmpFileHandler>()
+    val fileHandler by koinInjector.inject<IKmpFs>()
     val windowState = rememberPersistedWindowState("OSKit-KMP-Example", initialSize = Dimension(800, 600))
 
     SizedWindow(
@@ -31,7 +31,7 @@ fun main() = application {
         state = windowState,
     ) {
         DisposableEffect(Unit) {
-            fileHandler.init(KmpFileHandlerContext(this@SizedWindow.window))
+            fileHandler.init(KmpFsContext(this@SizedWindow.window))
             onDispose {  }
         }
 

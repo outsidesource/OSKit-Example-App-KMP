@@ -1,6 +1,6 @@
 package com.outsidesource.oskitExample.common.service.preferences
 
-import com.outsidesource.oskitkmp.filesystem.KmpFileRef
+import com.outsidesource.oskitkmp.filesystem.KmpFsRef
 
 enum class AppColorTheme {
     Dark,
@@ -10,8 +10,8 @@ enum class AppColorTheme {
 interface IPreferencesService {
     suspend fun setTheme(theme: AppColorTheme)
     suspend fun getTheme(): AppColorTheme
-    suspend fun setSelectedFile(ref: KmpFileRef?)
-    suspend fun getSelectedFile(): KmpFileRef?
-    suspend fun setSelectedFolder(ref: KmpFileRef?)
-    suspend fun getSelectedFolder(): KmpFileRef?
+    suspend fun setSelectedFile(ref: KmpFsRef?)
+    suspend fun getSelectedFile(): KmpFsRef?
+    suspend fun setSelectedFolder(ref: KmpFsRef?)
+    suspend fun getSelectedFolder(): KmpFsRef?
 }

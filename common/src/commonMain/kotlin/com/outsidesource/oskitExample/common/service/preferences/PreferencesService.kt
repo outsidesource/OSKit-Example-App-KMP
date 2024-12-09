@@ -1,6 +1,6 @@
 package com.outsidesource.oskitExample.common.service.preferences
 
-import com.outsidesource.oskitkmp.filesystem.KmpFileRef
+import com.outsidesource.oskitkmp.filesystem.KmpFsRef
 import com.outsidesource.oskitkmp.outcome.unwrapOrNull
 import com.outsidesource.oskitkmp.storage.IKmpKvStore
 import com.outsidesource.oskitkmp.storage.IKmpKvStoreNode
@@ -42,7 +42,7 @@ class PreferencesService(
         }
     }
 
-    override suspend fun setSelectedFile(ref: KmpFileRef?) {
+    override suspend fun setSelectedFile(ref: KmpFsRef?) {
         if (ref == null) {
             node?.remove(KEY_SELECTED_FILE)
             return
@@ -50,12 +50,12 @@ class PreferencesService(
         node?.putBytes(KEY_SELECTED_FILE, ref.toPersistableData())
     }
 
-    override suspend fun getSelectedFile(): KmpFileRef? {
+    override suspend fun getSelectedFile(): KmpFsRef? {
         val storedValue = node?.getBytes(KEY_SELECTED_FILE) ?: return null
-        return KmpFileRef.fromPersistableData(storedValue)
+        return KmpFsRef.fromPersistableData(storedValue)
     }
 
-    override suspend fun setSelectedFolder(ref: KmpFileRef?) {
+    override suspend fun setSelectedFolder(ref: KmpFsRef?) {
         if (ref == null) {
             node?.remove(KEY_SELECTED_FOLDER)
             return
@@ -63,8 +63,8 @@ class PreferencesService(
         node?.putBytes(KEY_SELECTED_FOLDER, ref.toPersistableData())
     }
 
-    override suspend fun getSelectedFolder(): KmpFileRef? {
+    override suspend fun getSelectedFolder(): KmpFsRef? {
         val storedValue = node?.getBytes(KEY_SELECTED_FOLDER) ?: return null
-        return KmpFileRef.fromPersistableData(storedValue)
+        return KmpFsRef.fromPersistableData(storedValue)
     }
 }

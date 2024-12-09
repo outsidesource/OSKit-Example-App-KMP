@@ -4,7 +4,7 @@ import com.outsidesource.oskitExample.common.service.IOSS3Service
 import com.outsidesource.oskitExample.common.service.s3.IS3Service
 import com.outsidesource.oskitExample.common.service.swift.ISwiftExampleService
 import com.outsidesource.oskitkmp.storage.IKmpKvStore
-import com.outsidesource.oskitkmp.storage.IOSKmpKvStore
+import com.outsidesource.oskitkmp.storage.IosKmpKvStore
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -15,7 +15,7 @@ private val koin = initKoin(
 
 actual fun platformModule() = module {
     single { IOSS3Service() } bind IS3Service::class
-    single { IOSKmpKvStore() } bind IKmpKvStore::class
+    single { IosKmpKvStore() } bind IKmpKvStore::class
 }
 
 fun loadKoinSwiftModules(swiftExampleService: ISwiftExampleService) {

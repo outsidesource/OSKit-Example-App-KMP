@@ -6,32 +6,30 @@ import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.outcome.Outcome
 import com.outsidesource.oskitkmp.outcome.unwrapOrReturn
 import kotlinx.coroutines.launch
-import okio.buffer
-import okio.use
 
 data class FileHandlingViewState(
-    val selectedFile: KmpFileRef? = null,
-    val selectedFiles: List<KmpFileRef>? = null,
-    val selectedDirectory: KmpFileRef? = null,
+    val selectedFile: KmpFsRef? = null,
+    val selectedFiles: List<KmpFsRef>? = null,
+    val selectedDirectory: KmpFsRef? = null,
     val metadata: KmpFileMetadata? = null,
     val deleteFileResult: Outcome<Unit, Exception>? = null,
     val deleteDirectoryResult: Outcome<Unit, Exception>? = null,
-    val fileList: List<KmpFileRef> = emptyList(),
+    val fileList: List<KmpFsRef> = emptyList(),
     val fileExistsResult: Boolean? = null,
     val directoryExistsResult: Boolean? = null,
     val createFileName: String = "",
-    val createFileResult: Outcome<KmpFileRef, Exception>? = null,
+    val createFileResult: Outcome<KmpFsRef, Exception>? = null,
     val createFileContent: String = "",
     val createDirectoryName: String = "",
-    val createDirectoryResult: Outcome<KmpFileRef, Exception>? = null,
-    val saveFile: Outcome<KmpFileRef?, Exception>? = null,
+    val createDirectoryResult: Outcome<KmpFsRef, Exception>? = null,
+    val saveFile: Outcome<KmpFsRef?, Exception>? = null,
     val appendFileResult: Outcome<Unit, Exception>? = null,
     val appendFileContent: String = "",
     val selectedFileContent: String = "",
 )
 
 class FileHandlingViewInteractor(
-    private val fileHandler: IKmpFileHandler,
+    private val fileHandler: IKmpFs,
     private val preferencesService: PreferencesService,
 ): Interactor<FileHandlingViewState>(
     initialState = FileHandlingViewState()
@@ -97,7 +95,7 @@ class FileHandlingViewInteractor(
                 return@launch
             }
 
-            sink.buffer().use {
+            sink.use {
                 it.writeUtf8(state.createFileContent)
             }
 
@@ -114,12 +112,12 @@ class FileHandlingViewInteractor(
     fun appendToFile() {
        interactorScope.launch {
             val file = state.selectedFile ?: return@launch
-            val sink = file.sink(mode = KmpFileWriteMode.Append).unwrapOrReturn {
+            val sink = file.sink(mode = KmpFileWriteMode.Overwrite).unwrapOrReturn {
                 update { state -> state.copy(appendFileResult = this) }
                 return@launch
             }
 
-           sink.buffer().use {
+           sink.use {
                it.writeUtf8(state.appendFileContent)
            }
 
@@ -145,10 +143,8 @@ class FileHandlingViewInteractor(
 
     fun readData() {
         interactorScope.launch {
-            println("Starting")
             val source = state.selectedFile?.source()?.unwrapOrReturn { return@launch } ?: return@launch
-            val content = source.use { it.buffer().readUtf8() }
-            println("Done")
+            val content = source.use { it.readAllUtf8() }
             update { state -> state.copy(selectedFileContent = content)}
         }
     }
