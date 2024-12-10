@@ -86,12 +86,12 @@ class FileHandlingViewInteractor(
         interactorScope.launch {
             val folder = state.selectedDirectory ?: return@launch
             val file = fileHandler.resolveFile(folder, state.createFileName, create = true).unwrapOrReturn {
-                update { state -> state.copy(createFileResult = this) }
+                update { state -> state.copy(createFileResult = it) }
                 return@launch
             }
 
             val sink = file.sink().unwrapOrReturn {
-                update { state -> state.copy(createFileResult = this) }
+                update { state -> state.copy(createFileResult = it) }
                 return@launch
             }
 
@@ -113,7 +113,7 @@ class FileHandlingViewInteractor(
        interactorScope.launch {
             val file = state.selectedFile ?: return@launch
             val sink = file.sink(mode = KmpFileWriteMode.Append).unwrapOrReturn {
-                update { state -> state.copy(appendFileResult = this) }
+                update { state -> state.copy(appendFileResult = it) }
                 return@launch
             }
 
@@ -133,7 +133,7 @@ class FileHandlingViewInteractor(
         interactorScope.launch {
             val folder = state.selectedDirectory ?: return@launch
             val createdFolder = fileHandler.resolveDirectory(folder, state.createDirectoryName, create = true).unwrapOrReturn {
-                update { state -> state.copy(createDirectoryResult = this) }
+                update { state -> state.copy(createDirectoryResult = it) }
                 return@launch
             }
 
