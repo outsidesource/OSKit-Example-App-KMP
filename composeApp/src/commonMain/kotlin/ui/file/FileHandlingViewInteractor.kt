@@ -112,7 +112,7 @@ class FileHandlingViewInteractor(
     fun appendToFile() {
        interactorScope.launch {
             val file = state.selectedFile ?: return@launch
-            val sink = file.sink(mode = KmpFileWriteMode.Overwrite).unwrapOrReturn {
+            val sink = file.sink(mode = KmpFileWriteMode.Append).unwrapOrReturn {
                 update { state -> state.copy(appendFileResult = this) }
                 return@launch
             }
