@@ -1,16 +1,20 @@
 package ui
 
 import com.outsidesource.oskitkmp.router.IRoute
+import com.outsidesource.oskitkmp.router.IWebRoute
 
-sealed class Route: IRoute {
-    data object Home: Route()
-    data class ViewStateExample(val depth: Int): Route()
-    data object AppStateExample: Route()
-    data class DeviceHome(val deviceId: Int): Route()
-    data object FileHandling: Route()
-    data object Markdown: Route()
-    data object Popups: Route()
-    data object Resources: Route()
-    data object IOSServices: Route()
-    data object Widgets: Route()
+sealed class Route(
+    override val path: String?,
+    override val title: String? = null
+): IRoute, IWebRoute {
+    data object Home: Route(path = "/")
+    data class ViewStateExample(val depth: Int): Route(path = "/view-state/$depth")
+    data object AppStateExample: Route(path = "/app-state")
+    data class DeviceHome(val deviceId: Int): Route(path = "/devices/$deviceId")
+    data object FileHandling: Route(path = "/files")
+    data object Markdown: Route(path = "/markdown")
+    data object Popups: Route(path = "/popups")
+    data object Resources: Route(path = "/resources")
+    data object IOSServices: Route(path = "/ios-services")
+    data object Widgets: Route(path = "/widgets")
 }
