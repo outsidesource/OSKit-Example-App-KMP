@@ -117,11 +117,11 @@ class FileHandlingViewInteractor(
                 return@launch
             }
 
-           sink.use {
+            sink.use {
                it.writeUtf8(state.appendFileContent)
-           }
+            }
 
-           update { state -> state.copy(appendFileResult = Outcome.Ok(Unit)) }
+            update { state -> state.copy(appendFileResult = Outcome.Ok(Unit)) }
        }
     }
 
