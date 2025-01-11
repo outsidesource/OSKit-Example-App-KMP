@@ -1,7 +1,7 @@
 package ui.viewStateExample
 
-import coordinator.AppCoordinator
 import com.outsidesource.oskitkmp.interactor.Interactor
+import coordinator.AppCoordinator
 
 data class StateExampleViewState(
     val count: Int = 0,
@@ -12,6 +12,7 @@ data class StateExampleViewState(
 
 class ViewStateExampleViewInteractor(
     private val coordinator: AppCoordinator,
+    private val depth: Int,
 ): Interactor<StateExampleViewState>(
     initialState = StateExampleViewState()
 ) {

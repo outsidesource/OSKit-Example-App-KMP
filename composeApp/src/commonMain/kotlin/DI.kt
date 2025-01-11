@@ -1,4 +1,8 @@
+import com.outsidesource.oskitkmp.filesystem.IKmpFs
+import com.outsidesource.oskitkmp.filesystem.KmpFs
 import coordinator.AppCoordinator
+import org.koin.dsl.bind
+import org.koin.dsl.module
 import ui.app.AppViewInteractor
 import ui.appStateExample.AppStateExampleViewInteractor
 import ui.common.ScreenViewInteractor
@@ -8,10 +12,6 @@ import ui.home.HomeViewInteractor
 import ui.iosServices.IOSServicesScreenViewInteractor
 import ui.popups.PopupsScreenViewInteractor
 import ui.viewStateExample.ViewStateExampleViewInteractor
-import com.outsidesource.oskitkmp.filesystem.IKmpFs
-import com.outsidesource.oskitkmp.filesystem.KmpFs
-import org.koin.dsl.bind
-import org.koin.dsl.module
 
 val composeAppModule = module {
     single { AppCoordinator() }
@@ -20,7 +20,7 @@ val composeAppModule = module {
     factory { AppViewInteractor(get()) }
     factory { ScreenViewInteractor(get(), get()) }
     factory { HomeViewInteractor(get()) }
-    factory { ViewStateExampleViewInteractor(get()) }
+    factory { params -> ViewStateExampleViewInteractor(get(), params[0]) }
     factory { AppStateExampleViewInteractor(get(), get()) }
     factory { params -> DeviceHomeViewInteractor(params[0], get()) }
     factory { FileHandlingViewInteractor(get(), get()) }
