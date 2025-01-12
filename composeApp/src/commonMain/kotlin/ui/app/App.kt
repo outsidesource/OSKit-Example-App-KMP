@@ -12,6 +12,7 @@ import ui.app.theme.AppTheme
 import ui.app.theme.DarkAppColors
 import ui.app.theme.LightAppColors
 import ui.appStateExample.AppStateExampleScreen
+import ui.capability.CapabilityScreen
 import ui.device.DeviceHomeScreen
 import ui.file.FileHandlingScreen
 import ui.home.HomeScreen
@@ -47,6 +48,7 @@ fun App(
                 is Route.Popups -> PopupsScreen()
                 is Route.IOSServices -> IOSServicesScreen()
                 is Route.Widgets -> WidgetsScreen()
+                is Route.Capability -> CapabilityScreen()
             }
         }
     }

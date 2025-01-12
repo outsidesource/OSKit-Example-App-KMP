@@ -17,4 +17,5 @@ sealed class Route(
     data object Resources: Route(path = "/resources")
     data object IOSServices: Route(path = "/ios-services")
     data object Widgets: Route(path = "/widgets")
+    data object Capability : Route(path = "/capability")
 }

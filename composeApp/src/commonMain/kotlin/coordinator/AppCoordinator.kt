@@ -27,4 +27,5 @@ class AppCoordinator: Coordinator(
     fun resourcesClicked() = push(Route.Resources)
     fun iosServicesClicked() = push(Route.IOSServices)
     fun widgetsClicked() = push(Route.Widgets)
+    fun capabilityClicked() = push(Route.Capability)
 }

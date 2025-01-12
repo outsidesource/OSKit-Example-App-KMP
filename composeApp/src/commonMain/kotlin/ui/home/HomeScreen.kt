@@ -56,6 +56,10 @@ fun HomeScreen(
                 content = { Text("Widgets") },
                 onClick = interactor::widgetsButtonClicked,
             )
+            Button(
+                content = { Text("Capability") },
+                onClick = interactor::capabilityButtonClicked,
+            )
         }
     }
 }

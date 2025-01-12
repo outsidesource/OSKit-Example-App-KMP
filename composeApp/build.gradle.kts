@@ -86,8 +86,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true // https://youtrack.jetbrains.com/issue/KT-42254
-            export("com.outsidesource:oskit-kmp:4.5.0")
-            export("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+            export(libs.oskit.kmp)
+            export(libs.kotlinx.coroutines.core)
             export(project(":common"))
         }
     }
@@ -99,17 +99,18 @@ kotlin {
         val androidInstrumentedTest by getting
 
         commonMain.dependencies {
+            api(libs.oskit.kmp)
+            api(libs.kotlinx.coroutines.core)
+            api(project(":common"))
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.oskit.kmp)
             implementation(libs.oskit.compose)
-            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.okio)
-            implementation(project(":common"))
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
