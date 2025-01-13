@@ -75,10 +75,10 @@ fun CapabilityScreen(
         }
         Spacer(modifier = Modifier.height(24.dp))
 
-        Item("Supports Open Enable Settings Screen", interactor.capability.supportsOpenCapabilitySettingsScreen.toString())
+        Item("Supports Open Enable Settings Screen", interactor.capability.supportsOpenServiceSettingsScreen.toString())
         Button(
-            enabled = interactor.capability.supportsOpenCapabilitySettingsScreen,
-            onClick = interactor::openCapabilitySettingsScreenClicked,
+            enabled = interactor.capability.supportsOpenServiceSettingsScreen,
+            onClick = interactor::openServiceSettingsScreenClicked,
         ) {
             Text("Open Enable Settings")
         }
