@@ -9,11 +9,14 @@ import com.outsidesource.oskitcompose.systemui.KMPWindowInsetsHolder
 import com.outsidesource.oskitcompose.systemui.LocalKMPWindowInsets
 import com.outsidesource.oskitcompose.window.SizedWindow
 import com.outsidesource.oskitcompose.window.rememberPersistedWindowState
+import com.outsidesource.oskitkmp.capability.KmpCapabilities
+import com.outsidesource.oskitkmp.capability.KmpCapabilityContext
 import com.outsidesource.oskitkmp.filesystem.IKmpFs
 import com.outsidesource.oskitkmp.filesystem.KmpFsContext
 import org.koin.core.component.inject
 import ui.app.App
 import java.awt.Dimension
+import kotlin.getValue
 
 private val koin = initKoin(
     platformContext = PlatformContext(),
@@ -23,6 +26,9 @@ private val koin = initKoin(
 fun main() = application {
     val fileHandler by koinInjector.inject<IKmpFs>()
     val windowState = rememberPersistedWindowState("OSKit-KMP-Example", initialSize = Dimension(800, 600))
+
+    val capabilities by koinInjector.inject<KmpCapabilities>()
+    capabilities.init(KmpCapabilityContext())
 
     SizedWindow(
         title = "OSKit-KMP Example",
