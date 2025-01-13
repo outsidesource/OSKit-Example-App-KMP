@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'common'
-    spec.version                  = '1.12.1'
+    spec.version                  = '1.15.2'
     spec.homepage                 = ''
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
@@ -8,9 +8,9 @@ Pod::Spec.new do |spec|
     spec.summary                  = ''
     spec.vendored_frameworks      = 'build/cocoapods/framework/common.framework'
     spec.libraries                = 'c++'
-    spec.ios.deployment_target    = '15'
-    spec.dependency 'AWSCore', '2.33.8'
-    spec.dependency 'AWSS3', '2.33.8'
+    spec.ios.deployment_target    = '16'
+    spec.dependency 'AWSCore', '2.39.0'
+    spec.dependency 'AWSS3', '2.39.0'
                 
     if !Dir.exist?('build/cocoapods/framework/common.framework') || Dir.empty?('build/cocoapods/framework/common.framework')
         raise "

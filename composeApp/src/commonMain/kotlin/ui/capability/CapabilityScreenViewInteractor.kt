@@ -57,9 +57,9 @@ class CapabilityScreenViewInteractor(
         }
     }
 
-    fun openEnableSettingsScreenClicked() {
+    fun openCapabilitySettingsScreenClicked() {
         interactorScope.launch {
-            capability.openEnableSettingsScreen()
+            capability.openCapabilitySettingsScreen()
         }
     }
 }

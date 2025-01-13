@@ -52,14 +52,14 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     cocoapods {
-        version = "1.12.1"
-        ios.deploymentTarget = "15"
+        version = "1.15.2"
+        ios.deploymentTarget = "16"
 
         pod("AWSCore") {
-            version = "2.33.8"
+            version = "2.39.0"
         }
         pod("AWSS3") {
-            version = "2.33.8"
+            version = "2.39.0"
         }
     }
 
