@@ -47,7 +47,7 @@ fun CapabilityScreen(
         Item("Status", state.status.toString())
         Spacer(modifier = Modifier.height(24.dp))
 
-        Item("Has Permissions", interactor.capability.hasPermissions.toString())
+        Item("Has Associated Permissions", interactor.capability.hasPermissions.toString())
         Button(
             enabled = interactor.capability.hasPermissions,
             onClick = interactor::requestPermissionsClicked,

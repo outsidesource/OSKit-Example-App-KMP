@@ -4,6 +4,7 @@ import com.outsidesource.oskitkmp.capability.CapabilityStatus
 import com.outsidesource.oskitkmp.capability.KmpCapabilities
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.outcome.unwrapOrReturn
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 data class CapabilityScreenViewState(
@@ -14,8 +15,10 @@ data class CapabilityScreenViewState(
 class CapabilityScreenViewInteractor(
     private val capabilityService: KmpCapabilities,
 ) : Interactor<CapabilityScreenViewState>(
-    initialState = CapabilityScreenViewState(status = capabilityService.bluetooth.status)
+    initialState = CapabilityScreenViewState(status = CapabilityStatus.Unknown)
 ) {
+
+    var capabilityStatusJob: Job? = null
 
     val capability
         get() = when (state.capabilityType) {
@@ -23,31 +26,33 @@ class CapabilityScreenViewInteractor(
             CapabilityType.Location -> capabilityService.location
         }
 
-    fun capabilityTypeClicked(type: CapabilityType) {
-        val capability = when (type) {
-            CapabilityType.Bluetooth -> capabilityService.bluetooth
-            CapabilityType.Location -> capabilityService.location
-        }
+    init {
+        listenToStatus()
+    }
 
-        update { state ->
-            state.copy(
-                capabilityType = type,
-                status = capability.status
-            )
+    fun capabilityTypeClicked(type: CapabilityType) {
+        update { state -> state.copy(capabilityType = type) }
+        listenToStatus()
+    }
+
+    fun listenToStatus() {
+        capabilityStatusJob?.cancel()
+        capabilityStatusJob = interactorScope.launch {
+            capability.status.collect {
+                update { state -> state.copy(status = it) }
+            }
         }
     }
 
     fun requestPermissionsClicked() {
         interactorScope.launch {
-            val status = capability.requestPermissions().unwrapOrReturn { return@launch }
-            update { state -> state.copy(status = status) }
+            capability.requestPermissions().unwrapOrReturn { return@launch }
         }
     }
 
     fun requestEnableClicked() {
         interactorScope.launch {
-            val status = capability.requestEnable().unwrapOrReturn { return@launch }
-            update { state -> state.copy(status = status) }
+            capability.requestEnable().unwrapOrReturn { return@launch }
         }
     }
 
