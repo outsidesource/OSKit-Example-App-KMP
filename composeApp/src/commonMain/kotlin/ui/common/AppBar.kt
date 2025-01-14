@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,15 +19,15 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import ui.app.theme.AppTheme
 import com.outsidesource.oskitcompose.modifier.outerShadow
-import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
-import com.outsidesource.oskitcompose.systemui.horizontalInsets
-import com.outsidesource.oskitcompose.systemui.topInsets
+import com.outsidesource.oskitcompose.systemui.KmpWindowInsets
+import com.outsidesource.oskitcompose.systemui.horizontal
+import com.outsidesource.oskitcompose.systemui.top
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import oskit_example_app_kmp.composeapp.generated.resources.Res
 import oskit_example_app_kmp.composeapp.generated.resources.dark_mode
+import ui.app.theme.AppTheme
 
 @Composable
 fun AppBar(
@@ -44,8 +43,8 @@ fun AppBar(
         modifier = modifier
             .outerShadow(blur = 8.dp, color = Color.Black.copy(alpha = .25f), offset = DpOffset(0.dp, 2.dp))
             .background(AppTheme.colors.primary)
-            .windowInsetsPadding(KMPWindowInsets.topInsets)
-            .windowInsetsPadding(KMPWindowInsets.horizontalInsets)
+            .windowInsetsPadding(KmpWindowInsets.top)
+            .windowInsetsPadding(KmpWindowInsets.horizontal)
     ) {
         TopAppBar(
             modifier = Modifier

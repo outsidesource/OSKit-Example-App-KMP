@@ -38,7 +38,7 @@ fun WidgetsScreen() {
         ) {
             Column {
                 WidgetLabel("Wheel Picker")
-                KMPWheelPicker(
+                KmpWheelPicker(
                     modifier = Modifier.width(150.dp).height(170.dp),
                     items = (0..10).toList(),
                     selectedIndex = 0,
@@ -69,7 +69,7 @@ fun WidgetsScreen() {
                     text = "$date",
                     lineHeight = 24.sp,
                 )
-                KMPDatePickerModal(
+                KmpDatePickerModal(
                     isVisible = isVisible,
                     date = date,
                     onChange = { date = it },
@@ -91,7 +91,7 @@ fun WidgetsScreen() {
                     text = "$time",
                     lineHeight = 24.sp,
                 )
-                KMPTimePickerModal(
+                KmpTimePickerModal(
                     isVisible = isVisible,
                     time = time,
                     minuteStep = 1,

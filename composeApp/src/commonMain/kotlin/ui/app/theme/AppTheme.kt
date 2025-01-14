@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.outsidesource.oskitcompose.systemui.rememberKMPWindowInfo
+import com.outsidesource.oskitcompose.systemui.rememberKmpWindowInfo
 import kotlin.math.min
 
 val LocalAppColors = staticCompositionLocalOf<IAppColors> { LightAppColors }
@@ -43,7 +43,7 @@ fun AppTheme(
     colorsOverride: IAppColors? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val windowInfo = rememberKMPWindowInfo()
+    val windowInfo = rememberKmpWindowInfo()
     val colors = when {
         colorsOverride != null -> colorsOverride
         !isSystemInDarkTheme() -> LightAppColors

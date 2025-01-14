@@ -1,10 +1,10 @@
 package resources
 
-import com.outsidesource.oskitcompose.resources.KMPStringKey
-import com.outsidesource.oskitcompose.resources.KMPStringSet
-import com.outsidesource.oskitcompose.resources.KMPStrings
+import com.outsidesource.oskitcompose.resources.KmpStringKey
+import com.outsidesource.oskitcompose.resources.KmpStringSet
+import com.outsidesource.oskitcompose.resources.KmpStrings
 
-object Strings : KMPStrings() {
+object Strings : KmpStrings() {
     val appInteractorExample = kmpStringKey()
     val viewInteractorExample = kmpStringKey()
     val fileHandling = kmpStringKey()
@@ -23,14 +23,14 @@ object Strings : KMPStrings() {
     val currentTime = kmpStringKey()
     val language = kmpStringKey()
 
-    override val locales: Map<String, KMPStringSet> = mapOf(
+    override val locales: Map<String, KmpStringSet> = mapOf(
         "en" to EnStrings,
         "es" to EsStrings,
     )
 }
 
-private object EnStrings : KMPStringSet() {
-    override val strings: Map<KMPStringKey, String> = mapOf(
+private object EnStrings : KmpStringSet() {
+    override val strings: Map<KmpStringKey, String> = mapOf(
         Strings.language to "English",
 
         Strings.appInteractorExample to "App Interactor Example",
@@ -52,8 +52,8 @@ private object EnStrings : KMPStringSet() {
     )
 }
 
-private object EsStrings : KMPStringSet() {
-    override val strings: Map<KMPStringKey, String> = mapOf(
+private object EsStrings : KmpStringSet() {
+    override val strings: Map<KmpStringKey, String> = mapOf(
         Strings.language to "Spanish",
         Strings.currentTime to "La hora actual es %s. ¡Qué hay sobre eso!",
     )

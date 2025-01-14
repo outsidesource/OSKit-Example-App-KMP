@@ -15,7 +15,7 @@ import androidx.compose.ui.zIndex
 import ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
-import com.outsidesource.oskitcompose.scrollbars.KMPVerticalScrollbar
+import com.outsidesource.oskitcompose.scrollbars.KmpVerticalScrollbar
 import com.outsidesource.oskitcompose.scrollbars.rememberKmpScrollbarAdapter
 
 @Composable
@@ -32,7 +32,7 @@ fun FileHandlingScreen(
         Box {
             val scrollState = rememberScrollState()
 
-            KMPVerticalScrollbar(
+            KmpVerticalScrollbar(
                 modifier = Modifier
                     .fillMaxHeight()
                     .align(Alignment.TopEnd)
