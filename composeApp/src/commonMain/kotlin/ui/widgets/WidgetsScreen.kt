@@ -12,12 +12,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.outsidesource.oskitcompose.form.*
+import com.outsidesource.oskitcompose.modifier.KmpExternalDropData
+import com.outsidesource.oskitcompose.modifier.kmpOnExternalDragAndDrop
+import com.outsidesource.oskitcompose.modifier.outerShadow
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import okio.FileSystem
+import okio.buffer
 import ui.app.theme.AppTheme
 import ui.common.Screen
 
@@ -92,6 +99,44 @@ fun WidgetsScreen() {
                     onDismissRequest = { isVisible = false },
                     timePickerStyles = rememberKmpTimePickerStyles().copy(buttonStyle = TextStyle(color = AppTheme.colors.fontColor))
                 )
+            }
+
+            var dropInfo by remember { mutableStateOf("") }
+            var dragStarted by remember { mutableStateOf(false) }
+            var dragEntered by remember { mutableStateOf(false) }
+
+            Box(
+                modifier = Modifier
+                    .size(200.dp)
+                    .then(if (dragEntered || dragStarted) {
+                        Modifier.outerShadow(8.dp, color = if (dragEntered) Color.Green else Color.Black)
+                    } else {
+                        Modifier
+                    })
+                    .background(Color(0xFFCCCCCC), RoundedCornerShape(8.dp))
+                    .kmpOnExternalDragAndDrop(
+                        isEnabled = { true },
+                        onStarted = { dragStarted = true },
+                        onEnded =  { dragStarted = false },
+                        onEntered = { dragEntered = true },
+                        onExited = { dragEntered = false },
+                        onDrop = {
+                            dropInfo = when (val data = it.data) {
+                                is KmpExternalDropData.Text -> data.text
+                                is KmpExternalDropData.Files -> data.files.joinToString(", ") { it.name }
+                                else -> ""
+                            }
+                            dragStarted = false
+                            dragEntered = false
+                            true
+                        }
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column {
+                    Text(text = "External Drag and Drop (Desktop only)", textAlign = TextAlign.Center)
+                    Text(text = dropInfo, overflow = TextOverflow.Ellipsis)
+                }
             }
         }
     }
