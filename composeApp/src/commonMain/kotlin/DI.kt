@@ -19,7 +19,7 @@ import ui.viewStateExample.ViewStateExampleViewInteractor
 
 val composeAppModule = module {
     single { AppCoordinator() }
-    single { KmpFs() } bind IKmpFs::class
+    single { KmpFs() }
     single {
         KmpCapabilities(
             bluetoothFlags = BluetoothCapabilityFlags.entries.toTypedArray(),
