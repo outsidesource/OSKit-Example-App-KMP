@@ -5,16 +5,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
-import ui.app.theme.AppTheme
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInject
-import com.outsidesource.oskitcompose.systemui.KmpWindowInsets
-import com.outsidesource.oskitcompose.systemui.horizontal
+import ui.app.theme.AppTheme
 
 @Composable
 fun Screen(
     title: String,
     interactor: ScreenViewInteractor = rememberInject(),
+    paddingValues: PaddingValues = AppTheme.dimensions.screenPadding,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val state = interactor.collectAsState()
@@ -32,8 +31,7 @@ fun Screen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(brush = AppTheme.colors.screenBackground())
-                .windowInsetsPadding(KmpWindowInsets.horizontal)
-                .padding(AppTheme.dimensions.screenPadding),
+                .padding(paddingValues),
             content = content
         )
     }

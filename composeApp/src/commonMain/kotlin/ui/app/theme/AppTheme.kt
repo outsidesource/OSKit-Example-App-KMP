@@ -81,8 +81,10 @@ fun AppTheme(
             ),
             colors = MaterialTheme.colors.copy(
                 primary = AppTheme.colors.primary,
+                secondary = AppTheme.colors.primary,
                 secondaryVariant = AppTheme.colors.switchOn,
                 surface = AppTheme.colors.switchOff,
+                onSurface = AppTheme.colors.fontColor,
             )
         ) {
             ProvideTextStyle(

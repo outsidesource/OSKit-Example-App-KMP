@@ -110,7 +110,6 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.oskit.compose)
-            implementation(libs.okio)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))

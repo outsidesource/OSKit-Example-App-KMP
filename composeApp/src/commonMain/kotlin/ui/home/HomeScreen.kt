@@ -33,7 +33,7 @@ fun HomeScreen(
                 onClick = interactor::viewStateExampleButtonClicked,
             )
             Button(
-                content = { Text(rememberKmpString(Strings.fileHandling)) },
+                content = { Text(rememberKmpString(Strings.fileSystem)) },
                 onClick = interactor::fileHandlingButtonClicked,
             )
             Button(

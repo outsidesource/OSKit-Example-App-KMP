@@ -7,7 +7,7 @@ import com.outsidesource.oskitcompose.resources.KmpStrings
 object Strings : KmpStrings() {
     val appInteractorExample = kmpStringKey()
     val viewInteractorExample = kmpStringKey()
-    val fileHandling = kmpStringKey()
+    val fileSystem = kmpStringKey()
     val markdown = kmpStringKey()
     val popups = kmpStringKey()
     val resources = kmpStringKey()
@@ -35,7 +35,7 @@ private object EnStrings : KmpStringSet() {
 
         Strings.appInteractorExample to "App Interactor Example",
         Strings.viewInteractorExample to "View Interactor Example",
-        Strings.fileHandling to "File Handling",
+        Strings.fileSystem to "File System",
         Strings.markdown to "Markdown",
         Strings.popups to "Popups",
         Strings.resources to "Resources",
