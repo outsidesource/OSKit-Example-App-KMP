@@ -4,10 +4,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,6 +25,7 @@ fun Tab(
     Box(
         modifier = Modifier
             .width(150.dp)
+            .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
             .then(if (isActive) Modifier.borderBottom(AppTheme.colors.primary, 2.dp) else Modifier)
             .height(40.dp)
             .clickable(onClick = onClick),
