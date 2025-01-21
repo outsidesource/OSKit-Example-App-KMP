@@ -1,6 +1,7 @@
 package com.outsidesource.oskitExample.common.service.preferences
 
 import com.outsidesource.oskitkmp.filesystem.KmpFsRef
+import com.outsidesource.oskitkmp.filesystem.KmpFsType
 import com.outsidesource.oskitkmp.outcome.unwrapOrNull
 import com.outsidesource.oskitkmp.storage.IKmpKvStore
 import com.outsidesource.oskitkmp.storage.IKmpKvStoreNode
@@ -11,8 +12,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 private const val KEY_COLOR_THEME = "color-theme"
-private const val KEY_SELECTED_FILE = "selected-file"
-private const val KEY_SELECTED_FOLDER = "selected-folder"
+private const val KEY_PERSISTED_INTERNAL_KMPFS_REF = "persisted-internal-ref"
+private const val KEY_PERSISTED_EXTERNAL_KMPFS_REF = "persisted-external-ref"
 
 private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -44,29 +45,26 @@ class PreferencesService(
         }
     }
 
-    override suspend fun setSelectedFile(ref: KmpFsRef?) {
+    override suspend fun setPersistedRef(ref: KmpFsRef?, type: KmpFsType) {
+        val key = when (type) {
+            KmpFsType.Internal -> KEY_PERSISTED_INTERNAL_KMPFS_REF
+            KmpFsType.External -> KEY_PERSISTED_EXTERNAL_KMPFS_REF
+        }
+
         if (ref == null) {
-            node.await()?.remove(KEY_SELECTED_FILE)
+            node.await()?.remove(key)
             return
         }
-        node.await()?.putBytes(KEY_SELECTED_FILE, ref.toPersistableData())
+        node.await()?.putBytes(key, ref.toPersistableData())
     }
 
-    override suspend fun getSelectedFile(): KmpFsRef? {
-        val storedValue = node.await()?.getBytes(KEY_SELECTED_FILE) ?: return null
-        return KmpFsRef.fromPersistableData(storedValue)
-    }
-
-    override suspend fun setSelectedFolder(ref: KmpFsRef?) {
-        if (ref == null) {
-            node.await()?.remove(KEY_SELECTED_FOLDER)
-            return
+    override suspend fun getPersistedRef(type: KmpFsType): KmpFsRef? {
+        val key = when (type) {
+            KmpFsType.Internal -> KEY_PERSISTED_INTERNAL_KMPFS_REF
+            KmpFsType.External -> KEY_PERSISTED_EXTERNAL_KMPFS_REF
         }
-        node.await()?.putBytes(KEY_SELECTED_FOLDER, ref.toPersistableData())
-    }
 
-    override suspend fun getSelectedFolder(): KmpFsRef? {
-        val storedValue = node.await()?.getBytes(KEY_SELECTED_FOLDER) ?: return null
+        val storedValue = node.await()?.getBytes(key) ?: return null
         return KmpFsRef.fromPersistableData(storedValue)
     }
 }

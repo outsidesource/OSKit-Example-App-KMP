@@ -31,6 +31,10 @@ fun FileSystemScreen(
 ) {
     val state = interactor.collectAsState()
 
+    LaunchedEffect(Unit) {
+        interactor.onMounted()
+    }
+
     Screen(
         title = "FileSystem",
         paddingValues = PaddingValues(0.dp),
@@ -80,10 +84,6 @@ private fun InternalFs(interactor: FileSystemViewInteractor, scrollState: Scroll
 @Composable
 private fun ExternalFs(interactor: FileSystemViewInteractor, scrollState: ScrollState) {
     val state = interactor.collectAsState()
-
-    LaunchedEffect(Unit) {
-        interactor.onExternalMounted()
-    }
 
     SharedFileSystemControls(interactor, scrollState) {
         Column {
@@ -140,6 +140,21 @@ private fun ExternalFs(interactor: FileSystemViewInteractor, scrollState: Scroll
                 Text("Save File")
             }
         }
+
+        Column {
+            Text("Resolve (create or open) Ref from Path (only supported on JVM):")
+            if (state.resolveRefFromPathResult != null) Text(state.resolveRefFromPathResult.toString())
+            TextField(
+                value = state.resolveRefFromPathPath,
+                placeholder = { Text("Path") },
+                onValueChange = interactor::resolveRefFromPathChanged
+            )
+            Button(
+                onClick = interactor::resolveRefFromPath
+            ) {
+                Text("Resolve Ref")
+            }
+        }
     }
 }
 
@@ -157,7 +172,7 @@ private fun SharedFileSystemControls(
             .padding(AppTheme.dimensions.screenPadding)
     ) {
         Row(
-            modifier = Modifier.padding(bottom = 12.dp),
+            modifier = Modifier.padding(bottom = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -246,6 +261,25 @@ private fun SharedFileSystemControls(
                 .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
+            Column {
+                Text("Persisted Ref:")
+                Text("${state.persistedRef ?: "None"}")
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = interactor::loadPersistedRef
+                    ) {
+                        Text("Load Persisted Ref")
+                    }
+                    Button(
+                        onClick = interactor::persistRef
+                    ) {
+                        Text("Persist Active Ref")
+                    }
+                }
+            }
+
             content()
 
             Column {
@@ -275,21 +309,6 @@ private fun SharedFileSystemControls(
                     onClick = interactor::resolveDirectory
                 ) {
                     Text("Resolve Directory")
-                }
-            }
-
-            Column {
-                Text("Resolve (create or open) Ref from Path:")
-                if (state.resolveRefFromPathResult != null) Text(state.resolveRefFromPathResult.toString())
-                TextField(
-                    value = state.resolveRefFromPathPath,
-                    placeholder = { Text("Path") },
-                    onValueChange = interactor::resolveRefFromPathChanged
-                )
-                Button(
-                    onClick = interactor::resolveRefFromPath
-                ) {
-                    Text("Resolve Ref")
                 }
             }
 

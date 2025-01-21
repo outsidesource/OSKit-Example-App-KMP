@@ -16,6 +16,7 @@ data class FileSystemScreenViewState(
     val activeRefType: ActiveRefType = ActiveRefType.InternalRoot,
     val activeRef: KmpFsRef? = null,
 
+    val persistedRef: KmpFsRef? = null,
     val activeRefMetadataResult: Outcome<KmpFileMetadata, Any>? = null,
     val pickedFileResult: Outcome<KmpFsRef?, Any>? = null,
     val pickedFilesResult: Outcome<List<KmpFsRef>?, Any>? = null,
@@ -76,18 +77,8 @@ class FileSystemViewInteractor(
         )
     }
 
-    fun onExternalMounted() {
-        interactorScope.launch {
-            val storedFile = preferencesService.getSelectedFile()
-            val storedFolder = preferencesService.getSelectedFolder()
-
-            update { state ->
-                state.copy(
-                    pickedFileResult = Outcome.Ok(storedFile),
-                    pickedDirectoryResult = Outcome.Ok(storedFolder)
-                )
-            }
-        }
+    fun onMounted() {
+        loadPersistedRef()
     }
 
     fun fsTypeClicked(type: KmpFsType) {
@@ -98,6 +89,7 @@ class FileSystemViewInteractor(
                     KmpFsType.Internal -> ActiveRefType.InternalRoot
                     KmpFsType.External -> ActiveRefType.PickedFile
                 },
+                persistedRef = null,
                 activeRefMetadataResult = null,
                 pickedFileResult = null,
                 pickedFilesResult = null,
@@ -114,17 +106,32 @@ class FileSystemViewInteractor(
                 writeFileResult = null,
             )
         }
+
+        loadPersistedRef()
     }
 
     fun activeRefTypeChanged(type: ActiveRefType) {
         update { state -> state.copy(activeRefType = type) }
     }
 
+    fun persistRef() {
+        interactorScope.launch {
+            preferencesService.setPersistedRef(state.activeRef, state.fsType)
+            update { state -> state.copy(persistedRef = state.activeRef) }
+        }
+    }
+
+    fun loadPersistedRef() {
+        interactorScope.launch {
+            val ref = preferencesService.getPersistedRef(state.fsType)
+            update { state -> state.copy(persistedRef = ref) }
+        }
+    }
+
     fun pickFile() {
         interactorScope.launch {
             val result = externalFs.pickFile()
             update { state -> state.copy(pickedFileResult = result) }
-            if (result is Outcome.Ok) preferencesService.setSelectedFile(result.value)
         }
     }
 
@@ -157,7 +164,6 @@ class FileSystemViewInteractor(
         interactorScope.launch {
             val result = externalFs.pickDirectory()
             update { state -> state.copy(pickedDirectoryResult = result) }
-            if (result is Outcome.Ok) preferencesService.setSelectedFolder(result.value)
         }
     }
 
@@ -226,7 +232,7 @@ class FileSystemViewInteractor(
 
     fun resolveRefFromPath() {
         interactorScope.launch {
-            val result = fs.resolveRefFromPath(state.resolveRefFromPathPath)
+            val result = externalFs.resolveRefFromPath(state.resolveRefFromPathPath)
             update { state -> state.copy(resolveRefFromPathResult = result)}
         }
     }
