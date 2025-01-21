@@ -3,6 +3,7 @@ package ui.file
 import com.outsidesource.oskitExample.common.service.preferences.PreferencesService
 import com.outsidesource.oskitkmp.filesystem.*
 import com.outsidesource.oskitkmp.filesystem.KmpFileMetadata
+import com.outsidesource.oskitkmp.filesystem.KmpFsRef
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.io.use
 import com.outsidesource.oskitkmp.outcome.Outcome
@@ -12,7 +13,8 @@ import kotlinx.coroutines.launch
 
 data class FileSystemScreenViewState(
     val fsType: KmpFsType = KmpFsType.Internal,
-    val activeRefType: ActiveRefType = ActiveRefType.ResolvedFile,
+    val activeRefType: ActiveRefType = ActiveRefType.InternalRoot,
+    val activeRef: KmpFsRef? = null,
 
     val activeRefMetadataResult: Outcome<KmpFileMetadata, Any>? = null,
     val pickedFileResult: Outcome<KmpFsRef?, Any>? = null,
@@ -36,18 +38,10 @@ data class FileSystemScreenViewState(
     val writeFileMode: KmpFsWriteMode = KmpFsWriteMode.Append,
     val writeFileContent: String = "",
     val writeFileResult: Outcome<Unit, Any>? = null,
-) {
-
-    val activeRef: KmpFsRef? = when (activeRefType) {
-        ActiveRefType.PickedFile -> pickedFileResult?.unwrapOrNull()
-        ActiveRefType.PickedDirectory -> pickedDirectoryResult?.unwrapOrNull()
-        ActiveRefType.ResolvedFile -> resolveFileResult?.unwrapOrNull()
-        ActiveRefType.ResolvedDirectory -> resolveDirectoryResult?.unwrapOrNull()
-        ActiveRefType.ResolvedFromPath -> resolveRefFromPathResult?.unwrapOrNull()
-    }
-}
+)
 
 enum class ActiveRefType {
+    InternalRoot,
     PickedFile,
     PickedDirectory,
     ResolvedFile,
@@ -69,12 +63,30 @@ class FileSystemViewInteractor(
             KmpFsType.External -> externalFs
         }
 
+    override fun computed(state: FileSystemScreenViewState): FileSystemScreenViewState {
+        return state.copy(
+            activeRef = when (state.activeRefType) {
+                ActiveRefType.PickedFile -> state.pickedFileResult?.unwrapOrNull()
+                ActiveRefType.PickedDirectory -> state.pickedDirectoryResult?.unwrapOrNull()
+                ActiveRefType.ResolvedFile -> state.resolveFileResult?.unwrapOrNull()
+                ActiveRefType.ResolvedDirectory -> state.resolveDirectoryResult?.unwrapOrNull()
+                ActiveRefType.ResolvedFromPath -> state.resolveRefFromPathResult?.unwrapOrNull()
+                ActiveRefType.InternalRoot -> internalFs.root
+            }
+        )
+    }
+
     fun onExternalMounted() {
         interactorScope.launch {
             val storedFile = preferencesService.getSelectedFile()
             val storedFolder = preferencesService.getSelectedFolder()
 
-            update { state -> state.copy(pickedFileResult = Outcome.Ok(storedFile), pickedDirectoryResult = Outcome.Ok(storedFolder)) }
+            update { state ->
+                state.copy(
+                    pickedFileResult = Outcome.Ok(storedFile),
+                    pickedDirectoryResult = Outcome.Ok(storedFolder)
+                )
+            }
         }
     }
 
@@ -83,7 +95,7 @@ class FileSystemViewInteractor(
             state.copy(
                 fsType = type,
                 activeRefType = when (type) {
-                    KmpFsType.Internal -> ActiveRefType.ResolvedFile
+                    KmpFsType.Internal -> ActiveRefType.InternalRoot
                     KmpFsType.External -> ActiveRefType.PickedFile
                 },
                 activeRefMetadataResult = null,
@@ -208,7 +220,7 @@ class FileSystemViewInteractor(
         }
     }
 
-    fun resolveFromRefPathChanged(value: String) {
+    fun resolveRefFromPathChanged(value: String) {
         update { state -> state.copy(resolveRefFromPathPath = value) }
     }
 

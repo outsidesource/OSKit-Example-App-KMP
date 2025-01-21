@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.zIndex
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
@@ -204,6 +203,15 @@ private fun SharedFileSystemControls(
                             }
                         )
                     }
+                    if (state.fsType == KmpFsType.Internal) {
+                        DropdownMenuItem(
+                            content = { Text("InternalRoot") },
+                            onClick = {
+                                interactor.activeRefTypeChanged(ActiveRefType.InternalRoot)
+                                isExpanded = false
+                            }
+                        )
+                    }
                     DropdownMenuItem(
                         content = { Text("ResolvedFile") },
                         onClick = {
@@ -227,11 +235,15 @@ private fun SharedFileSystemControls(
                     )
                 }
             }
+
+            Text(state.activeRef?.toString() ?: "None")
         }
 
         Column(
             modifier = Modifier
-                .verticalScroll(scrollState),
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             content()
@@ -272,7 +284,7 @@ private fun SharedFileSystemControls(
                 TextField(
                     value = state.resolveRefFromPathPath,
                     placeholder = { Text("Path") },
-                    onValueChange = interactor::resolveFromRefPathChanged
+                    onValueChange = interactor::resolveRefFromPathChanged
                 )
                 Button(
                     onClick = interactor::resolveRefFromPath
@@ -348,34 +360,6 @@ private fun SharedFileSystemControls(
                     Text("Delete Ref")
                 }
             }
-            Modal(
-                modifier = Modifier
-                    .widthIn(max = 400.dp)
-                    .fillMaxWidth(),
-                isVisible = state.isDeleteModalVisible,
-                onDismissRequest = interactor::deleteModalDismissed,
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    Text("Are you sure you want to delete this ref: ${state.activeRef?.name}")
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
-                    ) {
-                        Button(
-                            onClick = interactor::deleteModalDismissed,
-                        ) {
-                            Text("Cancel")
-                        }
-                        Button(
-                            onClick = interactor::deleteModalConfirmed
-                        ) {
-                            Text("Delete")
-                        }
-                    }
-                }
-            }
 
             Column {
                 Text("List Files In Active Ref (active ref must be directory):")
@@ -389,7 +373,7 @@ private fun SharedFileSystemControls(
                     when (val result = state.listResult) {
                         is Outcome.Error -> Text(text = state.listResult.toString())
                         is Outcome.Ok -> {
-                            Text(text = "Ok: ${result.value.size} Files")
+                            Text(text = "Ok: ${result.value.size} Refs")
                             result.value.forEach { Text(it.name) }
                         }
                         null -> {}
@@ -409,6 +393,35 @@ private fun SharedFileSystemControls(
                     onClick = interactor::exists
                 ) {
                     Text("Check Exists")
+                }
+            }
+        }
+    }
+
+    Modal(
+        modifier = Modifier
+            .widthIn(max = 400.dp)
+            .fillMaxWidth(),
+        isVisible = state.isDeleteModalVisible,
+        onDismissRequest = interactor::deleteModalDismissed,
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            Text("Are you sure you want to delete this ref: ${state.activeRef?.name}")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
+            ) {
+                Button(
+                    onClick = interactor::deleteModalDismissed,
+                ) {
+                    Text("Cancel")
+                }
+                Button(
+                    onClick = interactor::deleteModalConfirmed
+                ) {
+                    Text("Delete")
                 }
             }
         }
