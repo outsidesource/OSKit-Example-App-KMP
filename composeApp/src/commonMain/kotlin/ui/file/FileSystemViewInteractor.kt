@@ -25,8 +25,10 @@ data class FileSystemScreenViewState(
     val saveFileContent: String = "",
     val saveFileResult: Outcome<Unit, Any>? = null,
     val resolveFileName: String = "",
+    val resolveFileCreate: Boolean = false,
     val resolveFileResult: Outcome<KmpFsRef, Any>? = null,
     val resolveDirectoryName: String = "",
+    val resolveDirectoryCreate: Boolean = false,
     val resolveDirectoryResult: Outcome<KmpFsRef, Any>? = null,
     val resolveRefFromPathPath: String = "",
     val resolveRefFromPathResult: Outcome<KmpFsRef, Any>? = null,
@@ -171,11 +173,15 @@ class FileSystemViewInteractor(
         update { state -> state.copy(resolveFileName = value) }
     }
 
+    fun resolveFileCreateChanged(value: Boolean) {
+        update { state -> state.copy(resolveFileCreate = value) }
+    }
+
     fun resolveFile() {
         interactorScope.launch {
             val folder = state.activeRef ?: return@launch
 
-            val file = fs.resolveFile(folder, state.resolveFileName, create = true).unwrapOrReturn {
+            val file = fs.resolveFile(folder, state.resolveFileName, create = state.resolveFileCreate).unwrapOrReturn {
                 update { state -> state.copy(resolveFileResult = it) }
                 return@launch
             }
@@ -214,10 +220,18 @@ class FileSystemViewInteractor(
         update { state -> state.copy(resolveDirectoryName = value) }
     }
 
+    fun resolveDirectoryCreateChanged(value: Boolean) {
+        update { state -> state.copy(resolveDirectoryCreate = value) }
+    }
+
     fun resolveDirectory() {
         interactorScope.launch {
             val folder = state.activeRef ?: return@launch
-            val createdFolder = fs.resolveDirectory(folder, state.resolveDirectoryName, create = true).unwrapOrReturn {
+            val createdFolder = fs.resolveDirectory(
+                dir = folder,
+                name = state.resolveDirectoryName,
+                create = state.resolveDirectoryCreate
+            ).unwrapOrReturn {
                 update { state -> state.copy(resolveDirectoryResult = it) }
                 return@launch
             }

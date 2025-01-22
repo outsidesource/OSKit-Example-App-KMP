@@ -283,7 +283,13 @@ private fun SharedFileSystemControls(
             content()
 
             Column {
-                Text("Resolve (create or open) File in Active Ref (active ref must be directory):")
+                Text("Resolve File in Active Ref (active ref must be directory):")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("Create: ")
+                    Checkbox(checked = state.resolveFileCreate, onCheckedChange = interactor::resolveFileCreateChanged)
+                }
                 if (state.resolveFileResult != null) Text(state.resolveFileResult.toString())
                 TextField(
                     value = state.resolveFileName,
@@ -298,8 +304,14 @@ private fun SharedFileSystemControls(
             }
 
             Column {
-                Text("Resolve (create or open) Directory in Active Ref (active ref must be directory):")
+                Text("Resolve Directory in Active Ref (active ref must be directory):")
                 if (state.resolveDirectoryResult != null) Text(state.resolveDirectoryResult.toString())
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("Create: ")
+                    Checkbox(checked = state.resolveDirectoryCreate, onCheckedChange = interactor::resolveDirectoryCreateChanged)
+                }
                 TextField(
                     value = state.resolveDirectoryName,
                     placeholder = { Text("Name") },
