@@ -142,7 +142,7 @@ private fun ExternalFs(interactor: FileSystemViewInteractor, scrollState: Scroll
         }
 
         Column {
-            Text("Resolve (create or open) Ref from Path (only supported on JVM):")
+            Text("Resolve Ref from Path (only supported on JVM):")
             if (state.resolveRefFromPathResult != null) Text(state.resolveRefFromPathResult.toString())
             TextField(
                 value = state.resolveRefFromPathPath,
