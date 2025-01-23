@@ -18,6 +18,8 @@ import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.popup.Modal
 import com.outsidesource.oskitcompose.scrollbars.KmpVerticalScrollbar
 import com.outsidesource.oskitcompose.scrollbars.rememberKmpScrollbarAdapter
+import com.outsidesource.oskitkmp.filesystem.KmpFsRef
+import com.outsidesource.oskitkmp.filesystem.KmpFsRefListItem
 import com.outsidesource.oskitkmp.filesystem.KmpFsType
 import com.outsidesource.oskitkmp.filesystem.KmpFsWriteMode
 import com.outsidesource.oskitkmp.outcome.Outcome
@@ -202,52 +204,15 @@ private fun SharedFileSystemControls(
                     expanded = isExpanded,
                     onDismissRequest = { isExpanded = false }
                 ) {
-                    if (state.fsType == KmpFsType.External) {
+                    ActiveRefType.forFsType(state.fsType).forEach {
                         DropdownMenuItem(
-                            content = { Text("PickedFile") },
+                            content = { Text(it.name) },
                             onClick = {
-                                interactor.activeRefTypeChanged(ActiveRefType.PickedFile)
-                                isExpanded = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            content = { Text("PickedDirectory") },
-                            onClick = {
-                                interactor.activeRefTypeChanged(ActiveRefType.PickedDirectory)
+                                interactor.activeRefTypeChanged(it)
                                 isExpanded = false
                             }
                         )
                     }
-                    if (state.fsType == KmpFsType.Internal) {
-                        DropdownMenuItem(
-                            content = { Text("InternalRoot") },
-                            onClick = {
-                                interactor.activeRefTypeChanged(ActiveRefType.InternalRoot)
-                                isExpanded = false
-                            }
-                        )
-                    }
-                    DropdownMenuItem(
-                        content = { Text("ResolvedFile") },
-                        onClick = {
-                            interactor.activeRefTypeChanged(ActiveRefType.ResolvedFile)
-                            isExpanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        content = { Text("ResolvedDirectory") },
-                        onClick = {
-                            interactor.activeRefTypeChanged(ActiveRefType.ResolvedDirectory)
-                            isExpanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        content = { Text("ResolvedFromPath") },
-                        onClick = {
-                            interactor.activeRefTypeChanged(ActiveRefType.ResolvedFromPath)
-                            isExpanded = false
-                        }
-                    )
                 }
             }
 
@@ -405,7 +370,18 @@ private fun SharedFileSystemControls(
                         is Outcome.Error -> Text(text = state.listResult.toString())
                         is Outcome.Ok -> {
                             Text(text = "Ok: ${result.value.size} Refs")
-                            result.value.forEach { Text(it.name) }
+                            result.value.forEach {
+                                when (it) {
+                                    is KmpFsRefListItem -> {
+                                        val text = when {
+                                            it.depth == 0 -> it.ref.name
+                                            else -> "${"    ".repeat(it.depth)}\u2514 ${it.ref.name}"
+                                        }
+                                        Text(text)
+                                    }
+                                    is KmpFsRef -> Text(it.name)
+                                }
+                            }
                         }
                         null -> {}
                     }

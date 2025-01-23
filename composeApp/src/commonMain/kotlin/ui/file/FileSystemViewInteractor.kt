@@ -35,7 +35,7 @@ data class FileSystemScreenViewState(
     val deleteRefResult: Outcome<Unit, Any>? = null,
     val isDeleteModalVisible: Boolean = false,
     val listRecursive: Boolean = false,
-    val listResult: Outcome<List<KmpFsRef>, Any>? = null,
+    val listResult: Outcome<List<Any>, Any>? = null,
     val refExistsResult: Boolean? = null,
     val readFileResult: Outcome<String, Any>? = null,
     val writeFileMode: KmpFsWriteMode = KmpFsWriteMode.Append,
@@ -47,9 +47,31 @@ enum class ActiveRefType {
     InternalRoot,
     PickedFile,
     PickedDirectory,
+    PersistedRef,
     ResolvedFile,
     ResolvedDirectory,
     ResolvedFromPath,
+    ;
+
+    companion object {
+        fun forFsType(type: KmpFsType): List<ActiveRefType> = when (type) {
+            KmpFsType.Internal -> listOf(
+                InternalRoot,
+                PersistedRef,
+                ResolvedFile,
+                ResolvedDirectory,
+            )
+
+            KmpFsType.External -> listOf(
+                PickedFile,
+                PickedDirectory,
+                PersistedRef,
+                ResolvedFile,
+                ResolvedDirectory,
+                ResolvedFromPath,
+            )
+        }
+    }
 }
 
 class FileSystemViewInteractor(
@@ -72,6 +94,7 @@ class FileSystemViewInteractor(
                 ActiveRefType.PickedFile -> state.pickedFileResult?.unwrapOrNull()
                 ActiveRefType.PickedDirectory -> state.pickedDirectoryResult?.unwrapOrNull()
                 ActiveRefType.ResolvedFile -> state.resolveFileResult?.unwrapOrNull()
+                ActiveRefType.PersistedRef -> state.persistedRef
                 ActiveRefType.ResolvedDirectory -> state.resolveDirectoryResult?.unwrapOrNull()
                 ActiveRefType.ResolvedFromPath -> state.resolveRefFromPathResult?.unwrapOrNull()
                 ActiveRefType.InternalRoot -> internalFs.root
@@ -293,7 +316,12 @@ class FileSystemViewInteractor(
     fun list() {
         interactorScope.launch {
             val folder = state.activeRef ?: return@launch
-            val result = fs.list(folder, isRecursive = state.listRecursive)
+            val result = if (state.listRecursive) {
+                fs.listWithDepth(folder)
+            } else {
+                fs.list(folder, isRecursive = false)
+            }
+
             update { state -> state.copy(listResult = result) }
         }
     }
