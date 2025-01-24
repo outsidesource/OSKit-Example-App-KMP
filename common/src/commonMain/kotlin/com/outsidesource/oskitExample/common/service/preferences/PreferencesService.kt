@@ -55,7 +55,7 @@ class PreferencesService(
             node.await()?.remove(key)
             return
         }
-        node.await()?.putBytes(key, ref.toPersistableData())
+        node.await()?.putBytes(key, ref.toPersistableBytes())
     }
 
     override suspend fun getPersistedRef(type: KmpFsType): KmpFsRef? {
@@ -65,6 +65,6 @@ class PreferencesService(
         }
 
         val storedValue = node.await()?.getBytes(key) ?: return null
-        return KmpFsRef.fromPersistableData(storedValue)
+        return KmpFsRef.fromPersistableBytes(storedValue)
     }
 }
