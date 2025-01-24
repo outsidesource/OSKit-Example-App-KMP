@@ -10,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -88,6 +90,9 @@ private fun ExternalFs(interactor: FileSystemViewInteractor, scrollState: Scroll
     val state = interactor.collectAsState()
 
     SharedFileSystemControls(interactor, scrollState) {
+
+        SectionDivider("Picking Files/Directories")
+
         Column {
             Text("Picked File:")
             if (state.pickedFileResult != null) Text(state.pickedFileResult.toString())
@@ -226,6 +231,8 @@ private fun SharedFileSystemControls(
                 .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
+            SectionDivider("Persisting File/Directory Refs")
+
             Column {
                 Text("Persisted Ref:")
                 Text("${state.persistedRef ?: "None"}")
@@ -246,6 +253,8 @@ private fun SharedFileSystemControls(
             }
 
             content()
+
+            SectionDivider("Resolve Files/Directories")
 
             Column {
                 Text("Resolve File in Active Ref (active ref must be directory):")
@@ -269,6 +278,30 @@ private fun SharedFileSystemControls(
             }
 
             Column {
+                Text("Resolve File with Path in Active Ref (active ref must be directory):")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("Create: ")
+                    Checkbox(
+                        checked = state.resolveNestedFileCreate,
+                        onCheckedChange = interactor::resolveNestedFileCreateChanged
+                    )
+                }
+                if (state.resolveNestedFileResult != null) Text(state.resolveNestedFileResult.toString())
+                TextField(
+                    value = state.resolveNestedFilePath,
+                    placeholder = { Text("Relative Path") },
+                    onValueChange = interactor::resolveNestedFilePathChanged
+                )
+                Button(
+                    onClick = interactor::resolveNestedFile
+                ) {
+                    Text("Resolve Nested File")
+                }
+            }
+
+            Column {
                 Text("Resolve Directory in Active Ref (active ref must be directory):")
                 if (state.resolveDirectoryResult != null) Text(state.resolveDirectoryResult.toString())
                 Row(
@@ -288,6 +321,32 @@ private fun SharedFileSystemControls(
                     Text("Resolve Directory")
                 }
             }
+
+            Column {
+                Text("Resolve Directory with Path in Active Ref (active ref must be directory):")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("Create: ")
+                    Checkbox(
+                        checked = state.resolveNestedDirectoryCreate,
+                        onCheckedChange = interactor::resolveNestedDirectoryCreateChanged
+                    )
+                }
+                if (state.resolveNestedDirectoryResult != null) Text(state.resolveNestedDirectoryResult.toString())
+                TextField(
+                    value = state.resolveNestedDirectoryPath,
+                    placeholder = { Text("Relative Path") },
+                    onValueChange = interactor::resolveNestedDirectoryPathChanged
+                )
+                Button(
+                    onClick = interactor::resolveNestedDirectory
+                ) {
+                    Text("Resolve Nested Directory")
+                }
+            }
+
+            SectionDivider("Reading/Writing to Files")
 
             Column {
                 Text("Read Active Ref Content (active ref must be file):")
@@ -336,6 +395,8 @@ private fun SharedFileSystemControls(
                     Text("Write")
                 }
             }
+
+            SectionDivider("Misc")
 
             Column {
                 Text("Read Active Ref Metadata:")
@@ -432,5 +493,41 @@ private fun SharedFileSystemControls(
                 }
             }
         }
+    }
+
+    Modal(
+        modifier = Modifier
+            .widthIn(max = 400.dp)
+            .fillMaxWidth(),
+        isVisible = state.isNoRefSelectedModalVisible,
+        onDismissRequest = interactor::dismissNoRefSelectedModal,
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            Text("There is no active ref selected")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
+            ) {
+                Button(
+                    onClick = interactor::dismissNoRefSelectedModal,
+                ) {
+                    Text("Ok")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SectionDivider(
+    label: String
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(text = label, fontWeight = FontWeight.Bold, color = AppTheme.colors.fontColor)
+        Divider(color = AppTheme.colors.fontColor, thickness = 1.dp)
     }
 }

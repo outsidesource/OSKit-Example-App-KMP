@@ -27,9 +27,15 @@ data class FileSystemScreenViewState(
     val resolveFileName: String = "",
     val resolveFileCreate: Boolean = false,
     val resolveFileResult: Outcome<KmpFsRef, Any>? = null,
+    val resolveNestedFilePath: String = "",
+    val resolveNestedFileCreate: Boolean = false,
+    val resolveNestedFileResult: Outcome<KmpFsRef, Any>? = null,
     val resolveDirectoryName: String = "",
     val resolveDirectoryCreate: Boolean = false,
     val resolveDirectoryResult: Outcome<KmpFsRef, Any>? = null,
+    val resolveNestedDirectoryPath: String = "",
+    val resolveNestedDirectoryCreate: Boolean = false,
+    val resolveNestedDirectoryResult: Outcome<KmpFsRef, Any>? = null,
     val resolveRefFromPathPath: String = "",
     val resolveRefFromPathResult: Outcome<KmpFsRef, Any>? = null,
     val deleteRefResult: Outcome<Unit, Any>? = null,
@@ -41,13 +47,14 @@ data class FileSystemScreenViewState(
     val writeFileMode: KmpFsWriteMode = KmpFsWriteMode.Append,
     val writeFileContent: String = "",
     val writeFileResult: Outcome<Unit, Any>? = null,
+    val isNoRefSelectedModalVisible: Boolean = false,
 )
 
 enum class ActiveRefType {
+    PersistedRef,
     InternalRoot,
     PickedFile,
     PickedDirectory,
-    PersistedRef,
     ResolvedFile,
     ResolvedDirectory,
     ResolvedFromPath,
@@ -192,27 +199,6 @@ class FileSystemViewInteractor(
         }
     }
 
-    fun resolveFileNameChanged(value: String) {
-        update { state -> state.copy(resolveFileName = value) }
-    }
-
-    fun resolveFileCreateChanged(value: Boolean) {
-        update { state -> state.copy(resolveFileCreate = value) }
-    }
-
-    fun resolveFile() {
-        interactorScope.launch {
-            val folder = state.activeRef ?: return@launch
-
-            val file = fs.resolveFile(folder, state.resolveFileName, create = state.resolveFileCreate).unwrapOrReturn {
-                update { state -> state.copy(resolveFileResult = it) }
-                return@launch
-            }
-
-            update { state -> state.copy(resolveFileResult = Outcome.Ok(file)) }
-        }
-    }
-
     fun appendToFileContentChanged(value: String) {
         interactorScope.launch {
             update { state -> state.copy(writeFileContent = value) }
@@ -221,8 +207,8 @@ class FileSystemViewInteractor(
 
     fun writeToFile() {
        interactorScope.launch {
-            val file = state.activeRef ?: return@launch
-            val sink = file.sink(mode = state.writeFileMode).unwrapOrReturn {
+            val ref = getActiveRef() ?: return@launch
+            val sink = ref.sink(mode = state.writeFileMode).unwrapOrReturn {
                 update { state -> state.copy(writeFileResult = it) }
                 return@launch
             }
@@ -239,6 +225,52 @@ class FileSystemViewInteractor(
         update { state -> state.copy(writeFileMode = value) }
     }
 
+    fun resolveFileNameChanged(value: String) {
+        update { state -> state.copy(resolveFileName = value) }
+    }
+
+    fun resolveFileCreateChanged(value: Boolean) {
+        update { state -> state.copy(resolveFileCreate = value) }
+    }
+
+    fun resolveFile() {
+        interactorScope.launch {
+            val ref = getActiveRef() ?: return@launch
+
+            val file = fs.resolveFile(ref, state.resolveFileName, create = state.resolveFileCreate).unwrapOrReturn {
+                update { state -> state.copy(resolveFileResult = it) }
+                return@launch
+            }
+
+            update { state -> state.copy(resolveFileResult = Outcome.Ok(file)) }
+        }
+    }
+
+    fun resolveNestedFilePathChanged(value: String) {
+        update { state -> state.copy(resolveNestedFilePath = value) }
+    }
+
+    fun resolveNestedFileCreateChanged(value: Boolean) {
+        update { state -> state.copy(resolveNestedFileCreate = value) }
+    }
+
+    fun resolveNestedFile() {
+        interactorScope.launch {
+            val ref = getActiveRef() ?: return@launch
+
+            val file = fs.resolveFileWithPath(
+                dir = ref,
+                path = state.resolveNestedFilePath,
+                create = state.resolveNestedFileCreate
+            ).unwrapOrReturn {
+                update { state -> state.copy(resolveNestedFileResult = it) }
+                return@launch
+            }
+
+            update { state -> state.copy(resolveNestedFileResult = Outcome.Ok(file)) }
+        }
+    }
+
     fun resolveDirectoryNameChanged(value: String) {
         update { state -> state.copy(resolveDirectoryName = value) }
     }
@@ -249,9 +281,9 @@ class FileSystemViewInteractor(
 
     fun resolveDirectory() {
         interactorScope.launch {
-            val folder = state.activeRef ?: return@launch
+            val ref = getActiveRef() ?: return@launch
             val createdFolder = fs.resolveDirectory(
-                dir = folder,
+                dir = ref,
                 name = state.resolveDirectoryName,
                 create = state.resolveDirectoryCreate
             ).unwrapOrReturn {
@@ -260,6 +292,31 @@ class FileSystemViewInteractor(
             }
 
             update { state -> state.copy(resolveDirectoryResult = Outcome.Ok(createdFolder)) }
+        }
+    }
+
+    fun resolveNestedDirectoryPathChanged(value: String) {
+        update { state -> state.copy(resolveNestedDirectoryPath = value) }
+    }
+
+    fun resolveNestedDirectoryCreateChanged(value: Boolean) {
+        update { state -> state.copy(resolveNestedDirectoryCreate = value) }
+    }
+
+    fun resolveNestedDirectory() {
+        interactorScope.launch {
+            val ref = getActiveRef() ?: return@launch
+
+            val file = fs.resolveDirectoryWithPath(
+                dir = ref,
+                path = state.resolveNestedDirectoryPath,
+                create = state.resolveNestedDirectoryCreate,
+            ).unwrapOrReturn {
+                update { state -> state.copy(resolveNestedDirectoryResult = it) }
+                return@launch
+            }
+
+            update { state -> state.copy(resolveNestedDirectoryResult = Outcome.Ok(file)) }
         }
     }
 
@@ -276,7 +333,7 @@ class FileSystemViewInteractor(
 
     fun readRef() {
         interactorScope.launch {
-            val source = state.activeRef?.source()?.unwrapOrReturn {
+            val source = getActiveRef()?.source()?.unwrapOrReturn {
                 update { state -> state.copy(readFileResult = it) }
                 return@launch
             } ?: return@launch
@@ -288,7 +345,7 @@ class FileSystemViewInteractor(
 
     fun readMetadata() {
         interactorScope.launch {
-            val outcome = fs.readMetadata(state.activeRef ?: return@launch)
+            val outcome = fs.readMetadata(getActiveRef() ?: return@launch)
             update { state -> state.copy(activeRefMetadataResult = outcome) }
         }
     }
@@ -304,7 +361,7 @@ class FileSystemViewInteractor(
     fun deleteModalConfirmed() {
         interactorScope.launch {
             update { state -> state.copy(isDeleteModalVisible = false) }
-            val outcome = fs.delete(state.activeRef ?: return@launch)
+            val outcome = fs.delete(getActiveRef() ?: return@launch)
             update { state -> state.copy(deleteRefResult = outcome) }
         }
     }
@@ -315,11 +372,11 @@ class FileSystemViewInteractor(
 
     fun list() {
         interactorScope.launch {
-            val folder = state.activeRef ?: return@launch
+            val ref = getActiveRef() ?: return@launch
             val result = if (state.listRecursive) {
-                fs.listWithDepth(folder)
+                fs.listWithDepth(ref)
             } else {
-                fs.list(folder, isRecursive = false)
+                fs.list(ref, isRecursive = false)
             }
 
             update { state -> state.copy(listResult = result) }
@@ -328,12 +385,22 @@ class FileSystemViewInteractor(
 
     fun exists() {
         interactorScope.launch {
-            val ref = state.activeRef ?: return@launch
+            val ref = getActiveRef() ?: return@launch
             val refExists = fs.exists(ref)
 
             update { state ->
                 state.copy(refExistsResult = refExists)
             }
         }
+    }
+
+    fun dismissNoRefSelectedModal() {
+        update { state -> state.copy(isNoRefSelectedModalVisible = false) }
+    }
+
+    private fun getActiveRef(): KmpFsRef? {
+        val ref = state.activeRef
+        if (ref == null) update { state -> state.copy(isNoRefSelectedModalVisible = true) }
+        return ref
     }
 }
