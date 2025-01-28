@@ -15,7 +15,7 @@ class AppCoordinator: Coordinator(
     defaultTransition = if (Platform.current.isMobile) PushFromRightRouteTransition else PushFromTopRouteTransition
 ) {
     fun coordinatorHasBackStack() = hasBackStack()
-    fun popToHome() = popTo(Route.Home)
+    fun popToHome() = pop { toRoute(Route.Home) }
     fun popBackStack() = pop()
 
     fun appStateExampleClicked() = push(Route.AppStateExample)
