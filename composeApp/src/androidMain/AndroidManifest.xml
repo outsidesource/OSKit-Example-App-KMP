@@ -4,6 +4,7 @@
 
     <application
             android:name=".MainApplication"
+            android:label="OSKit Example KMP"
             android:allowBackup="false"
             android:supportsRtl="true"
             android:theme="@style/Theme.App">
