@@ -4,6 +4,9 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import java.io.FileInputStream
+import java.util.Properties
+import kotlin.apply
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -13,7 +16,9 @@ plugins {
     alias(libs.plugins.skie)
 }
 
-version = "1.0-SNAPSHOT"
+val versionProps = Properties().apply { load(FileInputStream(File(rootProject.rootDir, "version.properties"))) }
+val versionName = versionProps["version"]?.toString() ?: "0.0.0"
+val versionBuild = versionProps["build"]?.toString() ?: "0"
 
 val lwjglVersion = "3.3.3"
 
@@ -98,6 +103,11 @@ kotlin {
         val desktopMain by getting
         val androidInstrumentedTest by getting
 
+        commonMain {
+            generateKmpBuildInfo(layout.buildDirectory.asFile.get(), versionName, versionBuild)
+            kotlin.srcDir("${layout.buildDirectory.asFile.get().absolutePath}/generated/com/outsidesource/kmpbuild")
+        }
+
         commonMain.dependencies {
             api(libs.oskit.kmp)
             api(libs.kotlinx.coroutines.core)
@@ -163,5 +173,23 @@ compose.desktop {
             packageName = "OSKit-KMP-Example"
             packageVersion = "1.0.0"
         }
+    }
+}
+
+private fun generateKmpBuildInfo(buildDir: File, versionName: String, versionBuild: String) {
+    val directory = File("${buildDir}/generated/com/outsidesource/kmpbuild")
+    directory.mkdirs()
+
+    File(directory, "KmpBuildInfo.kt").bufferedWriter().use {
+        it.write("""
+            package com.outsidesource.kmpbuild
+            
+            class KmpBuildInfo {
+                companion object {
+                    const val version: String = "$versionName"
+                    const val build: String = "$versionBuild"
+                }
+            }
+        """.trimIndent())
     }
 }
