@@ -18,7 +18,7 @@ okio = "3.9.1"
 oskitCompose = "4.0.0-beta"
 oskitKmp = "5.0.0-beta"
 skie = "0.9.5"
-ui = "1.7.6"
+ui = "1.7.7"
 
 [libraries]
 atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinxAtomicfu" }
