@@ -12,6 +12,8 @@ import com.outsidesource.oskitkmp.filesystem.KmpFs
 import com.outsidesource.oskitkmp.filesystem.KmpFsContext
 import composeAppModule
 import kotlinx.browser.document
+import org.jetbrains.compose.resources.WebResourcesConfiguration.resourcePathMapping
+import org.jetbrains.compose.resources.configureWebResources
 import org.koin.core.component.inject
 import ui.app.App
 
@@ -21,6 +23,10 @@ fun main() {
         platformContext = PlatformContext,
         extraModules = composeAppModule.toTypedArray()
     ).koin
+
+    configureWebResources {
+        resourcePathMapping { path -> "/$path" }
+    }
 
     KmpFs.init(KmpFsContext())
 
