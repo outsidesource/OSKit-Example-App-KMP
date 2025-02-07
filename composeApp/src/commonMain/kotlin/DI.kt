@@ -24,7 +24,7 @@ val composeAppModule = module {
         )
     }
 
-    factory { AppViewInteractor(get()) }
+    factory { params -> AppViewInteractor(params[0], get(), get()) }
     factory { ScreenViewInteractor(get(), get()) }
     factory { HomeViewInteractor(get()) }
     factory { params -> ViewStateExampleViewInteractor(get(), params[0]) }

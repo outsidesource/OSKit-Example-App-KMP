@@ -1,11 +1,14 @@
 package ui.app
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInject
 import com.outsidesource.oskitcompose.router.RouteSwitch
 import com.outsidesource.oskitcompose.systemui.SystemBarColorEffect
 import com.outsidesource.oskitcompose.systemui.SystemBarIconColor
+import org.koin.core.parameter.parametersOf
 import ui.Route
 import ui.app.theme.AppTheme
 import ui.app.theme.DarkAppColors
@@ -24,7 +27,8 @@ import ui.widgets.WidgetsScreen
 
 @Composable
 fun App(
-    interactor: AppViewInteractor = rememberInject<AppViewInteractor>()
+    deepLink: String? = null,
+    interactor: AppViewInteractor = rememberInject<AppViewInteractor> { parametersOf(deepLink) }
 ) {
     val state = interactor.collectAsState()
 

@@ -7,12 +7,10 @@ import com.outsidesource.oskitExample.common.initKoin
 import com.outsidesource.oskitcompose.lib.koinInjector
 import com.outsidesource.oskitkmp.capability.KmpCapabilities
 import com.outsidesource.oskitkmp.capability.KmpCapabilityContext
-import com.outsidesource.oskitkmp.filesystem.IKmpFs
 import com.outsidesource.oskitkmp.filesystem.KmpFs
 import com.outsidesource.oskitkmp.filesystem.KmpFsContext
 import composeAppModule
 import kotlinx.browser.document
-import org.jetbrains.compose.resources.WebResourcesConfiguration.resourcePathMapping
 import org.jetbrains.compose.resources.configureWebResources
 import org.koin.core.component.inject
 import ui.app.App
@@ -34,6 +32,6 @@ fun main() {
     capabilities.init(KmpCapabilityContext())
 
     ComposeViewport(document.body!!) {
-        App()
+        App(deepLink = document.location?.href)
     }
 }
