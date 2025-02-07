@@ -49,7 +49,7 @@ fun MarkdownScreen() {
             styles = markdownStyles,
             text = markdown,
             loadAsync = true,
-            localImageMap = remember {
+            localImageMap = remember(penguin, tux) {
                 mapOf(
                     "penguin" to penguin,
                     "tux" to tux,
