@@ -1,5 +1,6 @@
 package ui.appStateExample
 
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -12,6 +13,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
+import androidx.compose.material.ripple
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -60,7 +62,7 @@ fun AppStateExampleScreen(
                                     .clip(RoundedCornerShape(8.dp))
                                     .clickable(
                                         interactionSource = remember { MutableInteractionSource() },
-                                        indication = rememberRipple()
+                                        indication = ripple(),
                                     ) {
                                         interactor.deviceSelected(it)
                                     }

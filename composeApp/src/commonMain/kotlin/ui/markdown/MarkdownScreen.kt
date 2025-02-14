@@ -15,8 +15,8 @@ import ui.app.theme.AppTheme
 import ui.common.Screen
 import com.outsidesource.oskitcompose.markdown.Markdown
 import com.outsidesource.oskitcompose.markdown.MarkdownStyles
-import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
-import com.outsidesource.oskitcompose.systemui.bottomInsets
+import com.outsidesource.oskitcompose.systemui.KmpWindowInsets
+import com.outsidesource.oskitcompose.systemui.bottom
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import oskit_example_app_kmp.composeapp.generated.resources.Res
@@ -45,11 +45,11 @@ fun MarkdownScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .windowInsetsPadding(KMPWindowInsets.bottomInsets),
+                .windowInsetsPadding(KmpWindowInsets.bottom),
             styles = markdownStyles,
             text = markdown,
             loadAsync = true,
-            localImageMap = remember {
+            localImageMap = remember(penguin, tux) {
                 mapOf(
                     "penguin" to penguin,
                     "tux" to tux,

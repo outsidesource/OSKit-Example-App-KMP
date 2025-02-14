@@ -1,7 +1,7 @@
 PODS:
-  - AWSCore (2.33.8)
-  - AWSS3 (2.33.8):
-    - AWSCore (= 2.33.8)
+  - AWSCore (2.39.0)
+  - AWSS3 (2.39.0):
+    - AWSCore (= 2.39.0)
 
 DEPENDENCIES:
   - AWSCore
@@ -13,9 +13,9 @@ SPEC REPOS:
     - AWSS3
 
 SPEC CHECKSUMS:
-  AWSCore: dfd3136979a57bba64f4771db2e59ed97adb0d3c
-  AWSS3: 4de5b953dbb7cdfe0e91fcdf09b6d531480b2f9a
+  AWSCore: b57f3e105f5e4c910e9e26e644c49bd62817e63e
+  AWSS3: cb8b74600f24482a60d8b529408cc2600b6fe281
 
 PODFILE CHECKSUM: 6bcadfdeabacb05b1247554422b15ae01ebeb8db
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.15.2

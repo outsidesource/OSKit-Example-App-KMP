@@ -1,27 +1,27 @@
 [versions]
-agp = "8.2.2"
-android-compileSdk = "34"
-android-minSdk = "24"
-android-targetSdk = "34"
-androidx-activityCompose = "1.8.2"
-androidx-appcompat = "1.6.1"
-androidx-core-ktx = "1.12.0"
-atomicfu = "0.23.2"
-compose-plugin = "1.6.1"
+kotlin = "2.1.0"
+agp = "8.5.2"
+android-compileSdk = "35"
+android-minSdk = "28"
+android-targetSdk = "35"
+androidx-activityCompose = "1.10.0"
+androidx-appcompat = "1.7.0"
+androidx-core-ktx = "1.15.0"
+compose = "1.7.3"
 junit = "4.13.2"
-kermit = "2.0.2"
-koinCore = "3.5.3"
-kotlin = "1.9.23"
-kotlinxCoroutinesCore = "1.8.0"
-kotlinxDatetime = "0.5.0"
-okio = "3.7.0"
-oskitCompose = "3.5.0"
-oskitKmp = "4.5.0"
-skie = "0.6.2"
-ui = "1.6.4"
+kermit = "2.0.5"
+koinCore = "4.0.0"
+kotlinxAtomicfu = "0.26.1"
+kotlinxCoroutinesCore = "1.10.1"
+kotlinxDatetime = "0.6.1"
+okio = "3.9.1"
+oskitCompose = "4.0.0"
+oskitKmp = "5.0.0"
+skie = "0.9.5"
+ui = "1.7.8"
 
 [libraries]
-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
+atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinxAtomicfu" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -38,6 +38,7 @@ ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }

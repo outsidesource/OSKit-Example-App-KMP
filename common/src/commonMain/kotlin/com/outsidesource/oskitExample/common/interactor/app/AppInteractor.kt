@@ -4,7 +4,6 @@ import com.outsidesource.oskitExample.common.service.preferences.AppColorTheme
 import com.outsidesource.oskitExample.common.service.preferences.IPreferencesService
 import com.outsidesource.oskitkmp.interactor.Interactor
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 data class AppState(
     val isDarkTheme: Boolean = false
@@ -14,9 +13,18 @@ class AppInteractor(
     private val preferencesService: IPreferencesService,
 ) : Interactor<AppState>(
     initialState = AppState(
-        isDarkTheme = runBlocking { preferencesService.getTheme() } == AppColorTheme.Dark
+        isDarkTheme = false
     )
 ) {
+
+    init {
+        interactorScope.launch {
+            val theme = preferencesService.getTheme()
+            update { state ->
+                state.copy(isDarkTheme = theme == AppColorTheme.Dark)
+            }
+        }
+    }
 
     fun onThemeToggled() {
         interactorScope.launch {

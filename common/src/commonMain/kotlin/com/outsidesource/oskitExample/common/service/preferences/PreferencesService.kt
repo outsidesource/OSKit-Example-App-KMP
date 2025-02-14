@@ -1,56 +1,70 @@
 package com.outsidesource.oskitExample.common.service.preferences
 
-import com.outsidesource.oskitkmp.file.KMPFileRef
+import com.outsidesource.oskitkmp.filesystem.KmpFsRef
+import com.outsidesource.oskitkmp.filesystem.KmpFsType
 import com.outsidesource.oskitkmp.outcome.unwrapOrNull
-import com.outsidesource.oskitkmp.storage.IKMPStorage
+import com.outsidesource.oskitkmp.storage.IKmpKvStore
+import com.outsidesource.oskitkmp.storage.IKmpKvStoreNode
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 private const val KEY_COLOR_THEME = "color-theme"
-private const val KEY_SELECTED_FILE = "selected-file"
-private const val KEY_SELECTED_FOLDER = "selected-folder"
+private const val KEY_PERSISTED_INTERNAL_KMPFS_REF = "persisted-internal-ref"
+private const val KEY_PERSISTED_EXTERNAL_KMPFS_REF = "persisted-external-ref"
+
+private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
 class PreferencesService(
-    private val storage: IKMPStorage,
+    private val storage: IKmpKvStore,
 ) : IPreferencesService {
-    private val node = storage.openNode("preferences").unwrapOrNull()
+
+    private val node = CompletableDeferred<IKmpKvStoreNode?>()
+
+    init {
+        scope.launch {
+            node.complete(storage.openNode("preferences").unwrapOrNull())
+        }
+    }
 
     override suspend fun setTheme(theme: AppColorTheme) {
-        node?.putInt(KEY_COLOR_THEME, when (theme) {
+        node.await()?.putInt(KEY_COLOR_THEME, when (theme) {
             AppColorTheme.Light -> 0
             AppColorTheme.Dark -> 1
         })
     }
 
     override suspend fun getTheme(): AppColorTheme {
-        return when (node?.getInt(KEY_COLOR_THEME)) {
+
+        return when (node.await()?.getInt(KEY_COLOR_THEME)) {
             0 -> AppColorTheme.Light
             1 -> AppColorTheme.Dark
             else -> AppColorTheme.Light
         }
     }
 
-    override suspend fun setSelectedFile(ref: KMPFileRef?) {
+    override suspend fun setPersistedRef(ref: KmpFsRef?, type: KmpFsType) {
+        val key = when (type) {
+            KmpFsType.Internal -> KEY_PERSISTED_INTERNAL_KMPFS_REF
+            KmpFsType.External -> KEY_PERSISTED_EXTERNAL_KMPFS_REF
+        }
+
         if (ref == null) {
-            node?.remove(KEY_SELECTED_FILE)
+            node.await()?.remove(key)
             return
         }
-        node?.putBytes(KEY_SELECTED_FILE, ref.toPersistableData())
+        node.await()?.putBytes(key, ref.toPersistableBytes())
     }
 
-    override suspend fun getSelectedFile(): KMPFileRef? {
-        val storedValue = node?.getBytes(KEY_SELECTED_FILE) ?: return null
-        return KMPFileRef.fromPersistableData(storedValue)
-    }
-
-    override suspend fun setSelectedFolder(ref: KMPFileRef?) {
-        if (ref == null) {
-            node?.remove(KEY_SELECTED_FOLDER)
-            return
+    override suspend fun getPersistedRef(type: KmpFsType): KmpFsRef? {
+        val key = when (type) {
+            KmpFsType.Internal -> KEY_PERSISTED_INTERNAL_KMPFS_REF
+            KmpFsType.External -> KEY_PERSISTED_EXTERNAL_KMPFS_REF
         }
-        node?.putBytes(KEY_SELECTED_FOLDER, ref.toPersistableData())
-    }
 
-    override suspend fun getSelectedFolder(): KMPFileRef? {
-        val storedValue = node?.getBytes(KEY_SELECTED_FOLDER) ?: return null
-        return KMPFileRef.fromPersistableData(storedValue)
+        val storedValue = node.await()?.getBytes(key) ?: return null
+        return KmpFsRef.fromPersistableBytes(storedValue)
     }
 }
