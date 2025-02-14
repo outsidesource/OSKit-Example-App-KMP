@@ -16,7 +16,6 @@ import com.outsidesource.oskitkmp.filesystem.KmpFsContext
 import org.koin.core.component.inject
 import ui.app.App
 import java.awt.Dimension
-import kotlin.getValue
 
 private val koin = initKoin(
     platformContext = PlatformContext(),
