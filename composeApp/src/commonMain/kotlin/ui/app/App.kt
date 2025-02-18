@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +47,7 @@ import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.hypot
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 @Composable
 fun App(
@@ -76,68 +80,125 @@ fun App(
 //        }
 //    }
 
-    var color by remember { mutableStateOf(Color.Black) }
-    var calculatedColor by remember { mutableStateOf(Color.Black) }
+    // TODO: Fix pointerInput issues with getting the current color
 
-    Row(
+    var color by remember { mutableStateOf(Color.Black) }
+    var calculatedColor by remember { mutableStateOf<KmpColor>(HsvColor(0f, 0f, 0f)) }
+
+    val colorFunc: (Color, KmpColor) -> Unit = { imageColor, calcColor ->
+        color = imageColor
+        calculatedColor = calcColor
+        println("Bitmap RGB: ${255 * color.red},${255 * color.green},${255 * color.blue}")
+        println("Calculated: ${255 * calculatedColor.red},${255 * calculatedColor.green},${255 * calculatedColor.blue}")
+        println("Calculated HSV: ${calculatedColor.hue},${calculatedColor.saturation},${calculatedColor.value}")
+    }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .horizontalScroll(rememberScrollState())
     ) {
-        ColorPicker(hvDrawer) { imageColor, calcColor ->
-            color = imageColor
-            calculatedColor = calcColor
-            println("Image: ${255 * color.red},${255 * color.green},${255 * color.blue}")
-            println("Calculated: ${255 * calculatedColor.red},${255 * calculatedColor.green},${255 * calculatedColor.blue}")
+        Row {
+            ColorPicker(calculatedColor, HvDrawer, colorFunc)
+            ColorPicker(calculatedColor, HsDrawer, colorFunc)
+            ColorPicker(calculatedColor, SvDrawer, colorFunc)
+            ColorPicker(calculatedColor, HsCircleDrawer, colorFunc)
+            ColorPicker(calculatedColor, HvCircleDrawer, colorFunc)
+            Column {
+                Box(modifier = Modifier.size(100.dp).background(color))
+                Box(modifier = Modifier.size(100.dp).background(calculatedColor.toColor()))
+            }
         }
-        ColorPicker(hsDrawer) {imageColor, calcColor ->
-            color = imageColor
-            calculatedColor = calcColor
-            println("Image: ${255 * color.red},${255 * color.green},${255 * color.blue}")
-            println("Calculated: ${255 * calculatedColor.red},${255 * calculatedColor.green},${255 * calculatedColor.blue}")
+        Column(
+            modifier = Modifier.width(200.dp)
+        ) {
+            Slider(
+                modifier = Modifier.fillMaxWidth(),
+                value = calculatedColor.hue,
+                valueRange = 0f..360f,
+                onValueChange = { calculatedColor = HsvColor(it, calculatedColor.saturation, calculatedColor.value) },
+            )
+            Slider(
+                modifier = Modifier.fillMaxWidth(),
+                value = calculatedColor.saturation * 100f,
+                valueRange = 0f..100f,
+                onValueChange = { calculatedColor = HsvColor(calculatedColor.hue, it / 100f, calculatedColor.value) },
+            )
+            Slider(
+                modifier = Modifier.fillMaxWidth(),
+                value = calculatedColor.value * 100f,
+                valueRange = 0f..100f,
+                onValueChange = {
+                    calculatedColor = HsvColor(calculatedColor.hue, calculatedColor.saturation, it / 100f)
+                },
+            )
         }
-        ColorPicker(svDrawer) {imageColor, calcColor ->
-            color = imageColor
-            calculatedColor = calcColor
-            println("Image: ${255 * color.red},${255 * color.green},${255 * color.blue}")
-            println("Calculated: ${255 * calculatedColor.red},${255 * calculatedColor.green},${255 * calculatedColor.blue}")
-        }
-        ColorPicker(hsCircleDrawer) {imageColor, calcColor ->
-            color = imageColor
-            calculatedColor = calcColor
-            println("Image: ${255 * color.red},${255 * color.green},${255 * color.blue}")
-            println("Calculated: ${255 * calculatedColor.red},${255 * calculatedColor.green},${255 * calculatedColor.blue}")
-        }
-        ColorPicker(hvCircleDrawer) {imageColor, calcColor ->
-            color = imageColor
-            calculatedColor = calcColor
-            println("Image: ${255 * color.red},${255 * color.green},${255 * color.blue}")
-            println("Calculated: ${255 * calculatedColor.red},${255 * calculatedColor.green},${255 * calculatedColor.blue}")
-        }
-        Column {
-            Box(modifier = Modifier.size(100.dp).background(color))
-            Box(modifier = Modifier.size(100.dp).background(calculatedColor))
-        }
-        // TODO: Test calculated color vs picked color
-        // I can't do clicked color exclusively because I couldn't do both RGB and HSV natively. Only RGB would be native due to the pixel data being RGB
     }
 }
 
-// TODO: need to be able to look up a location based on color
+sealed class KmpColor {
+    abstract val hue: Float
+    abstract val saturation: Float
+    abstract val value: Float
+    abstract val red: Float
+    abstract val blue: Float
+    abstract val green: Float
+
+//    abstract fun saturate(value: Float): KmpColor
+//    abstract fun desaturate(value: Float): KmpColor
+//    abstract fun lighten(value: Float): KmpColor
+//    abstract fun darken(value: Float): KmpColor
+//    abstract fun shiftHue(value: Int): KmpColor
+
+    abstract fun toColor(): Color
+}
+
+//data class RgbColor(val r: Int, val g: Int, val b: Int, val a: Int): KmpColor()
+
+data class HsvColor(
+    override val hue: Float,
+    override val saturation: Float,
+    override val value: Float
+): KmpColor() {
+    val rgbValue: Color by lazy { hsvToRgb(hue.toFloat(), saturation, value) }
+
+    override val red: Float = rgbValue.red
+    override val blue: Float = rgbValue.blue
+    override val green: Float = rgbValue.green
+//
+//    override fun saturate(value: Float): KmpColor {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun desaturate(value: Float): KmpColor {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun lighten(value: Float): KmpColor {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun darken(value: Float): KmpColor {
+//        TODO("Not yet implemented")
+//    }
+
+
+    override fun toColor(): Color = hsvToRgb(hue.toFloat(), saturation, value)
+}
+
+
 
 @Composable
 fun ColorPicker(
-    drawer: (Canvas, Size) -> Unit,
-    onChange: (Color, Color) -> Unit,
+    color: KmpColor,
+    drawer: IKmpColorPickerDrawer,
+    onChange: (Color, KmpColor) -> Unit,
 ) {
     val density = LocalDensity.current
-    val bitmap = remember {
-        val bitmap = with(density) {
-            ImageBitmap(200.dp.toPx().toInt(), 200.dp.toPx().toInt())
-        }
-
+    val bitmap = remember(color) {
+        val bitmap = with(density) { ImageBitmap(200.dp.toPx().toInt(), 200.dp.toPx().toInt()) }
         val canvas = Canvas(bitmap)
-        drawer(canvas, Size(bitmap.width.toFloat(), bitmap.height.toFloat()))
+        drawer.drawFunc(color, canvas, Size(bitmap.width.toFloat(), bitmap.height.toFloat()))
         bitmap
     }
 
@@ -152,111 +213,33 @@ fun ColorPicker(
                         width = 1,
                         height = 1,
                     )
-                    onChange(Color(pixel.buffer[0]), colorForDrawerAndPosition(drawer, it, size))
+                    onChange(Color(pixel.buffer[0]), drawer.colorForOffset(color, it, size))
                 })
             }
     ) {
-        drawIntoCanvas { drawer(it, size) }
-    }
-}
-
-//fun positionForColor(drawer: (Canvas, Size) -> Unit, color: Color, size: IntSize): Offset {
-//    return when (drawer) {
-//        hvDrawer -> {
-//            val hue = ((360f / size.width) * offset.x).coerceIn(0f..360f)
-//            val saturation = (100f) / 100f
-//            val value = (100f - ((100f / size.height) * offset.y).coerceIn(0f..100f)) / 100f
-//            Offset(0f, 0f)
-//        }
-//        hsDrawer -> {
-//            val hue = ((360f / size.width) * offset.x).coerceIn(0f..360f)
-//            val saturation = ((100f / size.height) * offset.y).coerceIn(0f..100f) / 100f
-//            val value = (100f) / 100f
-//            Offset(0f, 0f)
-//        }
-//        svDrawer -> {
-//            val hue = 360f
-//            val saturation = ((100f / size.width) * offset.x).coerceIn(0f..100f) / 100f
-//            val value = (100f - ((100f / size.height) * offset.y).coerceIn(0f..100f)) / 100f
-//            Offset(0f, 0f)
-//        }
-//        hsCircleDrawer -> {
-//            val centerX: Double = size.width / 2.0
-//            val centerY: Double = size.height / 2.0
-//            val radius: Double = min(centerX, centerY)
-//            val xOffset: Double = offset.x - centerX
-//            val yOffset: Double = offset.y - centerY
-//            val centerOffset = hypot(xOffset, yOffset)
-//            val rawAngle = atan2(yOffset, xOffset).toDegree() - 90f
-//            val centerAngle = (rawAngle + 360.0) % 360.0
-//            Offset(0f, 0f)
-//        }
-//        hvCircleDrawer -> {
-//            val centerX: Double = size.width / 2.0
-//            val centerY: Double = size.height / 2.0
-//            val radius: Double = min(centerX, centerY)
-//            val xOffset: Double = offset.x - centerX
-//            val yOffset: Double = offset.y - centerY
-//            val centerOffset = hypot(xOffset, yOffset)
-//            val rawAngle = atan2(yOffset, xOffset).toDegree() - 90f
-//            val centerAngle = (rawAngle + 360.0) % 360.0
-//            Offset(0f, 0f)
-//        }
-//        else -> Offset(0f, 0f)
-//    }
-//}
-
-fun colorForDrawerAndPosition(drawer: (Canvas, Size) -> Unit, offset: Offset, size: IntSize): Color {
-    return when (drawer) {
-        hvDrawer -> {
-            val hue = ((360f / size.width) * offset.x).coerceIn(0f..360f)
-            val saturation = (100f) / 100f
-            val value = (100f - ((100f / size.height) * offset.y).coerceIn(0f..100f)) / 100f
-            return hsvToRgb(hue, saturation, value)
-        }
-        hsDrawer -> {
-            val hue = ((360f / size.width) * offset.x).coerceIn(0f..360f)
-            val saturation = ((100f / size.height) * offset.y).coerceIn(0f..100f) / 100f
-            val value = (100f) / 100f
-            return hsvToRgb(hue, saturation, value)
-        }
-        svDrawer -> {
-            val hue = 360f
-            val saturation = ((100f / size.width) * offset.x).coerceIn(0f..100f) / 100f
-            val value = (100f - ((100f / size.height) * offset.y).coerceIn(0f..100f)) / 100f
-            return hsvToRgb(hue, saturation, value)
-        }
-        hsCircleDrawer -> {
-            val centerX: Double = size.width / 2.0
-            val centerY: Double = size.height / 2.0
-            val radius: Double = min(centerX, centerY)
-            val xOffset: Double = offset.x - centerX
-            val yOffset: Double = offset.y - centerY
-            val centerOffset = hypot(xOffset, yOffset)
-            val rawAngle = atan2(yOffset, xOffset).toDegree() - 90f
-            val centerAngle = (rawAngle + 360.0) % 360.0
-            return hsvToRgb(centerAngle.toFloat(), (centerOffset / radius).toFloat(), 1f)
-        }
-        hvCircleDrawer -> {
-            val centerX: Double = size.width / 2.0
-            val centerY: Double = size.height / 2.0
-            val radius: Double = min(centerX, centerY)
-            val xOffset: Double = offset.x - centerX
-            val yOffset: Double = offset.y - centerY
-            val centerOffset = hypot(xOffset, yOffset)
-            val rawAngle = atan2(yOffset, xOffset).toDegree() - 90f
-            val centerAngle = (rawAngle + 360.0) % 360.0
-            return hsvToRgb(centerAngle.toFloat(), 1f, (centerOffset / radius).toFloat())
-        }
-        else -> Color.Black
+        drawIntoCanvas { drawer.drawFunc(color, it, size) }
     }
 }
 
 fun Double.toDegree(): Double = this * 180.0 / PI.toDouble()
 
+//fun hsvToRgb(h: Float, s: Float, v: Float): Color {
+//    if (h.isNaN() || s.isNaN() || s < 1e-7) return Color(v, v, v)
+//    val v = v.toDouble()
+//    val h = (h.coerceIn(0f, 360f) / 60.0)
+//    val s = s.toDouble()
+//
+//    fun f(n: Int): Float {
+//        val k = (n + h) % 6
+//        return (v - v * s * minOf(k, 4 - k, 1.0).coerceAtLeast(0.0)).toFloat()
+//    }
+//
+//    return Color(f(5), f(3), f(1), 1f)
+//}
+
 fun hsvToRgb(h: Float, s: Float, v: Float): Color {
     if (s == 0f) {
-        val gray = (v * 255).toInt().coerceIn(0, 255)
+        val gray = (v * 255).roundToInt().coerceIn(0, 255)
         return Color(gray, gray, gray)
     }
 
@@ -278,184 +261,324 @@ fun hsvToRgb(h: Float, s: Float, v: Float): Color {
         else -> Triple(0f, 0f, 0f)
     }
 
-    val r = (rf * 255).toInt().coerceIn(0, 255)
-    val g = (gf * 255).toInt().coerceIn(0, 255)
-    val b = (bf * 255).toInt().coerceIn(0, 255)
+    val r = (rf * 255).roundToInt().coerceIn(0, 255)
+    val g = (gf * 255).roundToInt().coerceIn(0, 255)
+    val b = (bf * 255).roundToInt().coerceIn(0, 255)
 
     return Color(r, g, b)
 }
 
-val svDrawer: (Canvas, Size) -> Unit = { canvas, size ->
-    val fullHueColor = Color.hsv(360f, 1f, 1f)
-    canvas.drawRect(
-        paint = Paint().apply { color = Color.White },
-        rect = Rect(Offset(0f, 0f), size),
-    )
-
-    canvas.drawRect(
-        paint = Paint().apply {
-            shader = LinearGradientShader(
-                from = Offset(0f, 0f),
-                to = Offset(size.width, 0f),
-                colors = listOf(Color.White, fullHueColor),
-            )
-        },
-        rect = Rect(Offset(0f, 0f), size),
-    )
-
-    canvas.drawRect(
-        paint = Paint().apply {
-            blendMode = BlendMode.Multiply
-            shader = LinearGradientShader(
-                from = Offset(0f, 0f),
-                to = Offset(0f, size.height),
-                colors = listOf(Color.Transparent, Color.Black),
-            )
-        },
-        rect = Rect(Offset(0f, 0f), size),
-    )
+interface IKmpColorPickerDrawer {
+    fun drawFunc(color: KmpColor, canvas: Canvas, size: Size)
+    fun colorForOffset(color: KmpColor, offset: Offset, size: IntSize): KmpColor
+    fun offsetForColor(color: Color, size: IntSize): Offset
 }
 
-val hvDrawer: (Canvas, Size) -> Unit = { canvas, size ->
-    canvas.drawRect(
-        paint = Paint().apply { color = Color.White },
-        rect = Rect(Offset(0f, 0f), size),
-    )
+val SvDrawer = object : IKmpColorPickerDrawer {
+    override fun drawFunc(color: KmpColor, canvas: Canvas, size: Size) {
+        val fullHueColor = Color.hsv(color.hue, 1f, 1f)
+        canvas.drawRect(
+            paint = Paint().apply { this.color = Color.White },
+            rect = Rect(Offset(0f, 0f), size),
+        )
 
-    canvas.drawRect(
-        paint = Paint().apply {
-            shader = LinearGradientShader(
-                from = Offset(0f, 0f),
-                to = Offset(size.width, 0f),
-                colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue, Color.Magenta, Color.Red),
-            )
-        },
-        rect = Rect(Offset(0f, 0f), size),
-    )
+        canvas.drawRect(
+            paint = Paint().apply {
+                shader = LinearGradientShader(
+                    from = Offset(0f, 0f),
+                    to = Offset(size.width, 0f),
+                    colors = listOf(Color.White, fullHueColor),
+                )
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
 
-    canvas.drawRect(
-        paint = Paint().apply {
-            shader = LinearGradientShader(
-                from = Offset(0f, 0f),
-                to = Offset(0f, size.height),
-                colors = listOf(Color.Transparent, Color.Black),
-            )
-        },
-        rect = Rect(Offset(0f, 0f), size),
-    )
+        canvas.drawRect(
+            paint = Paint().apply {
+                blendMode = BlendMode.Multiply
+                shader = LinearGradientShader(
+                    from = Offset(0f, 0f),
+                    to = Offset(0f, size.height),
+                    colors = listOf(Color.Transparent, Color.Black),
+                )
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
+    }
+
+    override fun colorForOffset(
+        color: KmpColor,
+        offset: Offset,
+        size: IntSize
+    ): KmpColor {
+        val saturation = ((100f / size.width) * offset.x).coerceIn(0f..100f) / 100f
+        val value = (100f - ((100f / size.height) * offset.y).coerceIn(0f..100f)) / 100f
+        return HsvColor(color.hue, saturation, value)
+    }
+
+    override fun offsetForColor(
+        color: Color,
+        size: IntSize
+    ): Offset {
+        TODO("Not yet implemented")
+    }
+
 }
 
-val hsDrawer: (Canvas, Size) -> Unit = { canvas, size ->
-    canvas.drawRect(
-        paint = Paint().apply { color = Color.White },
-        rect = Rect(Offset(0f, 0f), size),
-    )
+val HvDrawer = object : IKmpColorPickerDrawer {
+    override fun drawFunc(color: KmpColor, canvas: Canvas, size: Size) {
+        canvas.drawRect(
+            paint = Paint().apply { this.color = Color.White },
+            rect = Rect(Offset(0f, 0f), size),
+        )
 
-    canvas.drawRect(
-        paint = Paint().apply {
-            shader = LinearGradientShader(
-                from = Offset(0f, 0f),
-                to = Offset(size.width, 0f),
-                colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue, Color.Magenta, Color.Red),
-            )
-        },
-        rect = Rect(Offset(0f, 0f), size),
-    )
+        canvas.drawRect(
+            paint = Paint().apply {
+                shader = LinearGradientShader(
+                    from = Offset(0f, 0f),
+                    to = Offset(size.width, 0f),
+                    colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue, Color.Magenta, Color.Red),
+                )
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
 
-    canvas.drawRect(
-        paint = Paint().apply {
-            shader = LinearGradientShader(
-                from = Offset(0f, 0f),
-                to = Offset(0f, size.height),
-                colors = listOf(Color.White, Color.Transparent),
-            )
-        },
-        rect = Rect(Offset(0f, 0f), size),
-    )
+        canvas.drawRect(
+            paint = Paint().apply {
+                shader = LinearGradientShader(
+                    from = Offset(0f, 0f),
+                    to = Offset(0f, size.height),
+                    colors = listOf(Color.Transparent, Color.Black),
+                )
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
+
+        canvas.drawRect(
+            paint = Paint().apply {
+                shader = LinearGradientShader(
+                    from = Offset(0f, 0f),
+                    to = Offset(0f, size.height),
+                    colors = listOf(Color.White, Color.Black),
+                )
+                this.alpha = 1f - color.saturation
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
+    }
+
+    override fun colorForOffset(
+        color: KmpColor,
+        offset: Offset,
+        size: IntSize
+    ): KmpColor {
+        val hue = ((360f / size.width) * offset.x).coerceIn(0f..360f)
+        val value = (100f - ((100f / size.height) * offset.y).coerceIn(0f..100f)) / 100f
+        return HsvColor(hue, color.saturation, value)
+    }
+
+    override fun offsetForColor(
+        color: Color,
+        size: IntSize
+    ): Offset {
+        TODO("Not yet implemented")
+    }
+
 }
 
-val hsCircleDrawer: (Canvas, Size) -> Unit = { canvas, size ->
-    canvas.drawCircle(
-        center = size.center,
-        paint = Paint().apply { color = Color.White },
-        radius = size.width / 2f,
-    )
+val HsDrawer = object : IKmpColorPickerDrawer {
+    override fun drawFunc(color: KmpColor, canvas: Canvas, size: Size) {
+        canvas.drawRect(
+            paint = Paint().apply { this.color = Color.White },
+            rect = Rect(Offset(0f, 0f), size),
+        )
 
-    canvas.rotate(90f, size.center.x, size.center.y)
+        canvas.drawRect(
+            paint = Paint().apply {
+                shader = LinearGradientShader(
+                    from = Offset(0f, 0f),
+                    to = Offset(size.width, 0f),
+                    colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue, Color.Magenta, Color.Red),
+                )
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
 
-    canvas.drawCircle(
-        center = size.center,
-        paint = Paint().apply {
-            shader = SweepGradientShader(
-                center = size.center,
-                colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue, Color.Magenta, Color.Red),
-            )
-        },
-        radius = size.width / 2f,
-    )
+        canvas.drawRect(
+            paint = Paint().apply {
+                shader = LinearGradientShader(
+                    from = Offset(0f, 0f),
+                    to = Offset(0f, size.height),
+                    colors = listOf(Color.White, Color.Transparent),
+                )
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
 
-    canvas.drawCircle(
-        center = size.center,
-        paint = Paint().apply {
-            shader = RadialGradientShader(
-                center = size.center,
-                radius = size.width / 2f,
-                colors = listOf(Color.White, Color.Transparent),
-            )
-        },
-        radius = size.width / 2f,
-    )
+        canvas.drawRect(
+            paint = Paint().apply {
+                this.color = Color.Black
+                this.alpha = 1f - color.value
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
+    }
 
-    // TODO: Add darkening
-//    canvas.drawCircle(
-//        center = size.center,
-//        paint = Paint().apply {
-//            blendMode = BlendMode.Modulate
-//            color = Color(0xFF777777)
-//        },
-//        radius = size.width / 2f,
-//    )
+    override fun colorForOffset(
+        color: KmpColor,
+        offset: Offset,
+        size: IntSize
+    ): KmpColor {
+        val hue = ((360f / size.width) * offset.x).coerceIn(0f..360f)
+        val saturation = ((100f / size.height) * offset.y).coerceIn(0f..100f) / 100f
+        return HsvColor(hue, saturation, color.value)
+    }
+
+    override fun offsetForColor(
+        color: Color,
+        size: IntSize
+    ): Offset {
+        TODO("Not yet implemented")
+    }
+
 }
 
-val hvCircleDrawer: (Canvas, Size) -> Unit = { canvas, size ->
-    canvas.drawCircle(
-        center = size.center,
-        paint = Paint().apply { color = Color.White },
-        radius = size.width / 2f,
-    )
+val HsCircleDrawer = object : IKmpColorPickerDrawer {
+    override fun drawFunc(color: KmpColor, canvas: Canvas, size: Size) {
+        canvas.drawCircle(
+            center = size.center,
+            paint = Paint().apply { this.color = Color.White },
+            radius = size.width / 2f,
+        )
 
-    canvas.rotate(90f, size.center.x, size.center.y)
+        canvas.rotate(90f, size.center.x, size.center.y)
 
-    canvas.drawCircle(
-        center = size.center,
-        paint = Paint().apply {
-            shader = SweepGradientShader(
-                center = size.center,
-                colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue, Color.Magenta, Color.Red),
-            )
-        },
-        radius = size.width / 2f,
-    )
+        canvas.drawCircle(
+            center = size.center,
+            paint = Paint().apply {
+                shader = SweepGradientShader(
+                    center = size.center,
+                    colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue, Color.Magenta, Color.Red),
+                )
+            },
+            radius = size.width / 2f,
+        )
 
-    canvas.drawCircle(
-        center = size.center,
-        paint = Paint().apply {
-            shader = RadialGradientShader(
-                center = size.center,
-                radius = size.width / 2f,
-                colors = listOf(Color.Black, Color.Transparent),
-            )
-        },
-        radius = size.width / 2f,
-    )
+        canvas.drawCircle(
+            center = size.center,
+            paint = Paint().apply {
+                shader = RadialGradientShader(
+                    center = size.center,
+                    radius = size.width / 2f,
+                    colors = listOf(Color.White, Color.Transparent),
+                )
+            },
+            radius = size.width / 2f,
+        )
 
-    // TODO: Add darkening
-//    canvas.drawCircle(
-//        center = size.center,
-//        paint = Paint().apply {
-//            blendMode = BlendMode.Modulate
-//            color = Color(0xFF777777)
-//        },
-//        radius = size.width / 2f,
-//    )
+        canvas.drawCircle(
+            center = size.center,
+            paint = Paint().apply {
+                this.color = Color.Black
+                alpha = 1f - color.value
+            },
+            radius = size.width / 2f,
+        )
+    }
+
+    override fun colorForOffset(
+        color: KmpColor,
+        offset: Offset,
+        size: IntSize
+    ): KmpColor {
+        val centerX: Double = size.width / 2.0
+        val centerY: Double = size.height / 2.0
+        val radius: Double = min(centerX, centerY)
+        val xOffset: Double = offset.x - centerX
+        val yOffset: Double = offset.y - centerY
+        val centerOffset = hypot(xOffset, yOffset)
+        val rawAngle = atan2(yOffset, xOffset).toDegree() - 90f
+        val centerAngle = (rawAngle + 360.0) % 360.0
+        return HsvColor(centerAngle.toFloat(), (centerOffset / radius).toFloat(), color.value)
+    }
+
+    override fun offsetForColor(
+        color: Color,
+        size: IntSize
+    ): Offset {
+        TODO("Not yet implemented")
+    }
+
+}
+
+val HvCircleDrawer = object : IKmpColorPickerDrawer {
+    override fun drawFunc(color: KmpColor, canvas: Canvas, size: Size) {
+        canvas.drawCircle(
+            center = size.center,
+            paint = Paint().apply { this.color = Color.White },
+            radius = size.width / 2f,
+        )
+
+        canvas.rotate(90f, size.center.x, size.center.y)
+
+        canvas.drawCircle(
+            center = size.center,
+            paint = Paint().apply {
+                shader = SweepGradientShader(
+                    center = size.center,
+                    colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue, Color.Magenta, Color.Red),
+                )
+            },
+            radius = size.width / 2f,
+        )
+
+        canvas.drawCircle(
+            center = size.center,
+            paint = Paint().apply {
+                shader = RadialGradientShader(
+                    center = size.center,
+                    radius = size.width / 2f,
+                    colors = listOf(Color.Black, Color.Transparent),
+                )
+            },
+            radius = size.width / 2f,
+        )
+
+        canvas.drawCircle(
+            center = size.center,
+            paint = Paint().apply {
+                shader = RadialGradientShader(
+                    center = size.center,
+                    radius = size.width / 2f,
+                    colors = listOf(Color.Black, Color.White),
+                )
+                this.alpha = 1f - color.saturation
+            },
+            radius = size.width / 2f,
+        )
+    }
+
+    override fun colorForOffset(
+        color: KmpColor,
+        offset: Offset,
+        size: IntSize
+    ): KmpColor {
+        val centerX: Double = size.width / 2.0
+        val centerY: Double = size.height / 2.0
+        val radius: Double = min(centerX, centerY)
+        val xOffset: Double = offset.x - centerX
+        val yOffset: Double = offset.y - centerY
+        val centerOffset = hypot(xOffset, yOffset)
+        val rawAngle = atan2(yOffset, xOffset).toDegree() - 90f
+        val centerAngle = (rawAngle + 360.0) % 360.0
+        return HsvColor(centerAngle.toFloat(), color.saturation, (centerOffset / radius).toFloat())
+    }
+
+    override fun offsetForColor(
+        color: Color,
+        size: IntSize
+    ): Offset {
+        TODO("Not yet implemented")
+    }
+
 }
