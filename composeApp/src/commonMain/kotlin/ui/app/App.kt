@@ -1,8 +1,6 @@
 package ui.app
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInject
 import com.outsidesource.oskitcompose.router.RouteSwitch
