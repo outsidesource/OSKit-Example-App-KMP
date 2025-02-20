@@ -137,12 +137,13 @@ fun App(
 }
 
 sealed class KmpColor {
-    abstract val hue: Float
-    abstract val saturation: Float
-    abstract val value: Float
-    abstract val red: Float
-    abstract val blue: Float
-    abstract val green: Float
+    abstract val hue: Float // 0-360
+    abstract val saturation: Float // 0-1
+    abstract val value: Float // 0-1
+    abstract val red: Float // 0-1
+    abstract val blue: Float // 0-1
+    abstract val green: Float // 0-1
+//    abstract fun luminance: Float
 
 //    abstract fun saturate(value: Float): KmpColor
 //    abstract fun desaturate(value: Float): KmpColor
@@ -165,22 +166,6 @@ data class HsvColor(
     override val red: Float = rgbValue.red
     override val blue: Float = rgbValue.blue
     override val green: Float = rgbValue.green
-//
-//    override fun saturate(value: Float): KmpColor {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun desaturate(value: Float): KmpColor {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun lighten(value: Float): KmpColor {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun darken(value: Float): KmpColor {
-//        TODO("Not yet implemented")
-//    }
 
 
     override fun toColor(): Color = hsvToRgb(hue.toFloat(), saturation, value)
