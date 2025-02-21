@@ -263,10 +263,11 @@ fun rgbToHsv(r: Float, g: Float, b: Float, a: Float): HsvColor {
     }
     if (h < 0) h += 360f
 
+    val hNorm = (h + 360) % 360
     val s = if (max == 0f) 0f else delta / max
     val v = max
 
-    return HsvColor(h.coerceIn(0f, 360f), s.coerceIn(0f, 1f), v.coerceIn(0f, 1f), a)
+    return HsvColor(hNorm, s.coerceIn(0f, 1f), v.coerceIn(0f, 1f), a)
 }
 
 interface IKmpColorPickerRenderer {
@@ -450,10 +451,12 @@ val HsDrawer = object : IKmpColorPickerRenderer {
 
 val HsCircleDrawer = object : IKmpColorPickerRenderer {
     override fun drawFunc(color: HsvColor, canvas: Canvas, size: Size) {
+        val radius = min(size.width, size.height) / 2f
+
         canvas.drawCircle(
             center = size.center,
             paint = Paint().apply { this.color = Color.White },
-            radius = size.width / 2f,
+            radius = radius,
         )
 
         canvas.save()
@@ -467,7 +470,7 @@ val HsCircleDrawer = object : IKmpColorPickerRenderer {
                     colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue, Color.Magenta, Color.Red),
                 )
             },
-            radius = size.width / 2f,
+            radius = radius,
         )
 
         canvas.drawCircle(
@@ -475,11 +478,11 @@ val HsCircleDrawer = object : IKmpColorPickerRenderer {
             paint = Paint().apply {
                 shader = RadialGradientShader(
                     center = size.center,
-                    radius = size.width / 2f,
+                    radius = radius,
                     colors = listOf(Color.White, Color.Transparent),
                 )
             },
-            radius = size.width / 2f,
+            radius = radius,
         )
 
         canvas.drawCircle(
@@ -488,7 +491,7 @@ val HsCircleDrawer = object : IKmpColorPickerRenderer {
                 this.color = Color.Black
                 alpha = 1f - color.value
             },
-            radius = size.width / 2f,
+            radius = radius,
         )
         canvas.restore()
     }
@@ -500,21 +503,22 @@ val HsCircleDrawer = object : IKmpColorPickerRenderer {
     ): HsvColor {
         val centerX: Double = size.width / 2.0
         val centerY: Double = size.height / 2.0
-        val radius: Double = min(centerX, centerY)
+        val circleRadius: Double = min(centerX, centerY)
         val xOffset: Double = offset.x - centerX
         val yOffset: Double = offset.y - centerY
-        val centerOffset = hypot(xOffset, yOffset)
+        val radius = hypot(xOffset, yOffset)
         val rawAngle = atan2(yOffset, xOffset).toDegree() - 90f
-        val centerAngle = (rawAngle + 360.0) % 360.0
-        return HsvColor(centerAngle.toFloat().coerceIn(0f, 360f), (centerOffset / radius).toFloat().coerceIn(0f, 1f), color.value)
+        val normalizedAngle = (rawAngle + 360.0) % 360.0
+        return HsvColor(normalizedAngle.toFloat(), (radius / circleRadius).toFloat().coerceIn(0f, 1f), color.value)
     }
 
     override fun offsetForColor(
         color: HsvColor,
         size: IntSize
     ): Offset {
+        val circleRadius = min(size.height, size.width) / 2f
         val theta = (color.hue + 90f).toRadians()
-        val polarRadius = (size.width / 2f) * color.saturation
+        val polarRadius = circleRadius * color.saturation
         val x = polarRadius * cos(theta)
         val y = polarRadius * sin(theta)
         return Offset((size.width / 2f) + x.toFloat(), (size.height / 2f) + y.toFloat())
@@ -523,10 +527,12 @@ val HsCircleDrawer = object : IKmpColorPickerRenderer {
 
 val HvCircleDrawer = object : IKmpColorPickerRenderer {
     override fun drawFunc(color: HsvColor, canvas: Canvas, size: Size) {
+        val radius = min(size.width, size.height) / 2f
+
         canvas.drawCircle(
             center = size.center,
             paint = Paint().apply { this.color = Color.White },
-            radius = size.width / 2f,
+            radius = radius,
         )
 
         canvas.save()
@@ -540,7 +546,7 @@ val HvCircleDrawer = object : IKmpColorPickerRenderer {
                     colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Cyan, Color.Blue, Color.Magenta, Color.Red),
                 )
             },
-            radius = size.width / 2f,
+            radius = radius,
         )
 
         canvas.drawCircle(
@@ -548,11 +554,11 @@ val HvCircleDrawer = object : IKmpColorPickerRenderer {
             paint = Paint().apply {
                 shader = RadialGradientShader(
                     center = size.center,
-                    radius = size.width / 2f,
+                    radius = radius,
                     colors = listOf(Color.Black, Color.Transparent),
                 )
             },
-            radius = size.width / 2f,
+            radius = radius,
         )
 
         canvas.drawCircle(
@@ -560,12 +566,12 @@ val HvCircleDrawer = object : IKmpColorPickerRenderer {
             paint = Paint().apply {
                 shader = RadialGradientShader(
                     center = size.center,
-                    radius = size.width / 2f,
+                    radius = radius,
                     colors = listOf(Color.Black, Color.White),
                 )
                 this.alpha = 1f - color.saturation
             },
-            radius = size.width / 2f,
+            radius = radius,
         )
         canvas.restore()
     }
@@ -577,21 +583,22 @@ val HvCircleDrawer = object : IKmpColorPickerRenderer {
     ): HsvColor {
         val centerX: Double = size.width / 2.0
         val centerY: Double = size.height / 2.0
-        val radius: Double = min(centerX, centerY)
-        val xOffset: Double = offset.x - centerX
-        val yOffset: Double = offset.y - centerY
-        val centerOffset = hypot(xOffset, yOffset)
-        val rawAngle = atan2(yOffset, xOffset).toDegree() - 90f
-        val centerAngle = (rawAngle + 360.0) % 360.0
-        return HsvColor(centerAngle.toFloat().coerceIn(0f, 360f), color.saturation, (centerOffset / radius).toFloat().coerceIn(0f, 1f))
+        val circleRadius: Double = min(centerX, centerY)
+        val cartesianX: Double = offset.x - centerX
+        val cartesianY: Double = offset.y - centerY
+        val radius = hypot(cartesianX, cartesianY)
+        val rawAngle = atan2(cartesianY, cartesianX).toDegree() - 90f
+        val normalizedAngle = (rawAngle + 360.0) % 360.0
+        return HsvColor(normalizedAngle.toFloat(), color.saturation, (radius / circleRadius).toFloat().coerceIn(0f, 1f))
     }
 
     override fun offsetForColor(
         color: HsvColor,
         size: IntSize
     ): Offset {
+        val circleRadius = min(size.height, size.width) / 2f
         val theta = (color.hue + 90f).toRadians()
-        val polarRadius = (size.width / 2f) * color.value
+        val polarRadius = circleRadius * color.value
         val x = polarRadius * cos(theta)
         val y = polarRadius * sin(theta)
         return Offset((size.width / 2f) + x.toFloat(), (size.height / 2f) + y.toFloat())
