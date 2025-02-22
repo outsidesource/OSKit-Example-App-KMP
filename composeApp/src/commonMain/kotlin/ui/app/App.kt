@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -27,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInject
 import com.outsidesource.oskitcompose.modifier.outerShadow
-import com.outsidesource.oskitcompose.pointer.awaitFirstUp
 import com.outsidesource.oskitcompose.systemui.SystemBarColorEffect
 import com.outsidesource.oskitcompose.systemui.SystemBarIconColor
 import org.koin.core.parameter.parametersOf
@@ -175,21 +173,18 @@ fun KmpColorPicker(
                     isDragging = true
                     onChange(downColor, down.position, size)
 
-                    val up = awaitFirstUp()
-                    val upColor = renderer.colorForOffset(mergedColor.value, up.position, size)
-                    draggingColor = upColor
-                    isDragging = false
-                    onDone(upColor, up.position, size)
-                }
-            }
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDrag = { change, _ ->
-                        val updatedColor = renderer.colorForOffset(mergedColor.value, change.position, size)
+                    var lastPosition = down.position
+                    drag(down.id) {
+                        lastPosition = it.position
+                        val updatedColor = renderer.colorForOffset(mergedColor.value, it.position, size)
                         draggingColor = updatedColor
-                        onChange(updatedColor, change.position, size)
-                    },
-                )
+                        onChange(updatedColor, it.position, size)
+                    }
+
+                    val upColor = renderer.colorForOffset(mergedColor.value, lastPosition, size)
+                    isDragging = false
+                    onDone(upColor, lastPosition, size)
+                }
             }
             .drawBehind {
                 drawIntoCanvas { renderer.draw(mergedColor.value, it, size) }
@@ -224,6 +219,37 @@ fun KmpColorPicker(
     BoxWithConstraints(
         modifier = Modifier
             .defaultMinSize(minWidth = 100.dp, minHeight = 100.dp)
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    val activeKey = run {
+                        var minDistance = Pair<String?, Float>(null, Float.MAX_VALUE)
+                        colors.forEach { (key, color) ->
+                            val distance = cartesianDistance(down.position, renderer.offsetForColor(color, size))
+                            if (distance > minDistance.second) return@forEach
+                            minDistance = Pair(key, distance)
+                        }
+                        minDistance.first ?: return@awaitEachGesture
+                    }
+
+                    val downColor = renderer.colorForOffset(colors[activeKey] ?: HsvColor.Black, down.position, size)
+                    draggingColor = downColor
+                    draggingKey = activeKey
+                    onChange(activeKey, downColor, down.position, size)
+
+                    var lastPosition = down.position
+                    drag(down.id) {
+                        lastPosition = it.position
+                        val updatedColor = renderer.colorForOffset(draggingColor ?: HsvColor.Black, it.position, size)
+                        draggingColor = updatedColor
+                        onChange(activeKey, updatedColor, it.position, size)
+                    }
+
+                    val upColor = renderer.colorForOffset(draggingColor ?: HsvColor.Black, lastPosition, size)
+                    draggingKey = null
+                    onDone(activeKey, upColor, lastPosition, size)
+                }
+            }
             .drawBehind {
                 drawIntoCanvas { renderer.draw(colors.values.firstOrNull() ?: HsvColor.Black, it, size) }
             }
@@ -239,36 +265,41 @@ fun KmpColorPicker(
                         translationX = offset.x - (size.width / 2)
                         translationY = offset.y - (size.width / 2)
                     }
-                    .pointerInput(Unit) {
-                        awaitEachGesture {
-                            val down = awaitFirstDown(requireUnconsumed = false)
-                            val parentSize = IntSize(constraints.maxWidth, constraints.maxHeight)
-                            val parentOffset = renderer.offsetForColor(mergedColor.value, parentSize)
-                            var offset = parentOffset + down.position - Offset(size.width / 2f,  size.height / 2f)
-
-                            val downColor = renderer.colorForOffset(mergedColor.value, offset, parentSize)
-                            draggingColor = downColor
-                            draggingKey = key
-                            onChange(key, downColor, offset, parentSize)
-
-                            drag(down.id) {
-                                offset = offset + (it.position - it.previousPosition)
-                                val dragColor = renderer.colorForOffset(mergedColor.value, offset, parentSize)
-                                draggingColor = dragColor
-                                onChange(key, dragColor, offset, parentSize)
-                            }
-
-                            val upColor = renderer.colorForOffset(mergedColor.value, offset, size)
-                            draggingColor = upColor
-                            draggingKey = null
-                            onDone(key, upColor, offset, size)
-                        }
-                    }
+//                    .pointerInput(Unit) {
+//                        awaitEachGesture {
+//                            val down = awaitFirstDown(requireUnconsumed = false)
+//                            val parentSize = IntSize(constraints.maxWidth, constraints.maxHeight)
+//                            val parentOffset = renderer.offsetForColor(mergedColor.value, parentSize)
+//                            var offset = parentOffset + down.position - Offset(size.width / 2f,  size.height / 2f)
+//
+//                            val downColor = renderer.colorForOffset(mergedColor.value, offset, parentSize)
+//                            draggingColor = downColor
+//                            draggingKey = key
+//                            onChange(key, downColor, offset, parentSize)
+//
+//                            drag(down.id) {
+//                                offset = offset + (it.position - it.previousPosition)
+//                                val dragColor = renderer.colorForOffset(mergedColor.value, offset, parentSize)
+//                                draggingColor = dragColor
+//                                onChange(key, dragColor, offset, parentSize)
+//                            }
+//
+//                            val upColor = renderer.colorForOffset(mergedColor.value, offset, size)
+//                            draggingKey = null
+//                            onDone(key, upColor, offset, size)
+//                        }
+//                    }
             ) {
                 handle(mergedColor.value)
             }
         }
     }
+}
+
+fun cartesianDistance(p1: Offset, p2: Offset): Float {
+    val dx = p2.x - p1.x
+    val dy = p2.y - p1.y
+    return sqrt(dx.pow(2) + dy.pow(2))
 }
 
 @Composable
