@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,7 +20,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -29,6 +32,7 @@ import com.outsidesource.oskitcompose.modifier.outerShadow
 import com.outsidesource.oskitcompose.pointer.awaitFirstUp
 import com.outsidesource.oskitcompose.systemui.SystemBarColorEffect
 import com.outsidesource.oskitcompose.systemui.SystemBarIconColor
+import kotlinx.coroutines.delay
 import org.koin.core.parameter.parametersOf
 import kotlin.math.*
 
@@ -64,6 +68,14 @@ fun App(
 //    }
 
     var color by remember { mutableStateOf<HsvColor>(HsvColor(0f, 1f, 1f)) }
+    var colors = remember {
+        mutableStateMapOf(
+            "1" to HsvColor(0f, 1f, 1f),
+            "2" to HsvColor(90f, 1f, 1f),
+            "3" to HsvColor(180f, 1f, 1f),
+            "4" to HsvColor(270f, 1f, 1f),
+        )
+    }
     val colorFunc: (HsvColor, Any, Any) -> Unit = { c, _, _ -> color = c }
 
     Column(
@@ -101,6 +113,12 @@ fun App(
                 color = color,
                 renderer = HvCircleColorPickerRenderer,
                 onChange = colorFunc,
+            )
+            KmpColorPicker(
+                modifier = Modifier.size(200.dp),
+                colors = colors,
+                renderer = HvCircleColorPickerRenderer,
+                onChange = { key, color, _, _ -> colors[key] = color },
             )
             Box(modifier = Modifier.size(100.dp).background(color.toColor()))
         }
@@ -177,7 +195,7 @@ fun KmpColorPicker(
                 )
             }
             .drawBehind {
-                drawIntoCanvas { renderer.drawFunc(mergedColor.value, it, size) }
+                drawIntoCanvas { renderer.draw(mergedColor.value, it, size) }
             }
             .then(modifier)
     ) {
@@ -190,6 +208,68 @@ fun KmpColorPicker(
                 }
         ) {
             handle(mergedColor.value)
+        }
+    }
+}
+
+@Composable
+fun KmpColorPicker(
+    colors: Map<String, HsvColor>,
+    renderer: IKmpColorPickerRenderer = SvColorPickerRenderer,
+    onChange: (String, HsvColor, offset: Offset, size: IntSize) -> Unit = { _, _, _, _ -> },
+    onDone: (String, HsvColor, offset: Offset, size: IntSize) -> Unit = { _, _, _, _ -> },
+    handle: @Composable (color: HsvColor) -> Unit = { KmpColorPickerHandle(it) },
+    modifier: Modifier = Modifier,
+) {
+    var draggingColor by remember { mutableStateOf<HsvColor?>(null) }
+    var draggingKey by remember { mutableStateOf<String?>(null) }
+
+    BoxWithConstraints(
+        modifier = Modifier
+            .defaultMinSize(minWidth = 100.dp, minHeight = 100.dp)
+            .drawBehind {
+                drawIntoCanvas { renderer.draw(colors.values.firstOrNull() ?: HsvColor(0f, 0f, 0f), it, size) }
+            }
+            .then(modifier)
+    ) {
+        colors.forEach { (key, color) ->
+            val mergedColor = rememberUpdatedState(if (draggingKey == key) draggingColor ?: color else color)
+
+            Box(
+                modifier = Modifier
+                    .graphicsLayer {
+                        val offset = renderer.offsetForColor(mergedColor.value, IntSize(constraints.maxWidth, constraints.maxHeight))
+                        translationX = offset.x - (size.width / 2)
+                        translationY = offset.y - (size.width / 2)
+                    }
+                    .pointerInput(Unit) {
+                        awaitEachGesture {
+                            val down = awaitFirstDown(requireUnconsumed = false)
+                            val parentSize = IntSize(constraints.maxWidth, constraints.maxHeight)
+                            val parentOffset = renderer.offsetForColor(mergedColor.value, parentSize)
+                            var offset = parentOffset + down.position - Offset(size.width / 2f,  size.height / 2f)
+
+                            val downColor = renderer.colorForOffset(mergedColor.value, offset, parentSize)
+                            draggingColor = downColor
+                            draggingKey = key
+                            onChange(key, downColor, offset, parentSize)
+
+                            drag(down.id) {
+                                offset = offset + (it.position - it.previousPosition)
+                                val dragColor = renderer.colorForOffset(mergedColor.value, offset, parentSize)
+                                draggingColor = dragColor
+                                onChange(key, dragColor, offset, parentSize)
+                            }
+
+                            val upColor = renderer.colorForOffset(mergedColor.value, offset, size)
+                            draggingColor = upColor
+                            draggingKey = null
+                            onDone(key, upColor, offset, size)
+                        }
+                    }
+            ) {
+                handle(mergedColor.value)
+            }
         }
     }
 }
@@ -269,6 +349,17 @@ data class HsvColor(
     }
 
     companion object {
+        val Black = HsvColor(0f, 0f, 0f)
+        val White = HsvColor(0f, 0f, 1f)
+        val Transparent = HsvColor(0f, 0f, 0f, 0f)
+        val Red = HsvColor(0f, 1f, 1f)
+        val Yellow = HsvColor(60f, 1f, 1f)
+        val Green = HsvColor(120f, 1f, 1f)
+        val Cyan = HsvColor(180f, 1f, 1f)
+        val Blue = HsvColor(240f, 1f, 1f)
+        val Magenta = HsvColor(300f, 1f, 1f)
+        val Gray = HsvColor(0f, 0f, 0.53333336f)
+
         fun fromColor(color: Color) = color.toHsvColor()
     }
 }
@@ -297,13 +388,13 @@ fun Double.toDegree(): Double = this * 180.0 / PI.toDouble()
 fun Float.toRadians(): Double = this * PI.toDouble() / 180.0
 
 interface IKmpColorPickerRenderer {
-    fun drawFunc(color: HsvColor, canvas: Canvas, size: Size)
+    fun draw(color: HsvColor, canvas: Canvas, size: Size)
     fun colorForOffset(color: HsvColor, offset: Offset, size: IntSize): HsvColor
     fun offsetForColor(color: HsvColor, size: IntSize): Offset
 }
 
 object SvColorPickerRenderer : IKmpColorPickerRenderer {
-    override fun drawFunc(color: HsvColor, canvas: Canvas, size: Size) {
+    override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
         val fullHueColor = Color.hsv(color.hue, 1f, 1f)
         canvas.drawRect(
             paint = Paint().apply { this.color = Color.White },
@@ -355,7 +446,7 @@ object SvColorPickerRenderer : IKmpColorPickerRenderer {
 }
 
 object HvColorPickerRenderer : IKmpColorPickerRenderer {
-    override fun drawFunc(color: HsvColor, canvas: Canvas, size: Size) {
+    override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
         canvas.drawRect(
             paint = Paint().apply { this.color = Color.White },
             rect = Rect(Offset(0f, 0f), size),
@@ -417,7 +508,7 @@ object HvColorPickerRenderer : IKmpColorPickerRenderer {
 }
 
 object HsColorPickerRenderer : IKmpColorPickerRenderer {
-    override fun drawFunc(color: HsvColor, canvas: Canvas, size: Size) {
+    override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
         canvas.drawRect(
             paint = Paint().apply { this.color = Color.White },
             rect = Rect(Offset(0f, 0f), size),
@@ -476,7 +567,7 @@ object HsColorPickerRenderer : IKmpColorPickerRenderer {
 }
 
 object HsCircleColorPickerRenderer : IKmpColorPickerRenderer {
-    override fun drawFunc(color: HsvColor, canvas: Canvas, size: Size) {
+    override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
         val radius = min(size.width, size.height) / 2f
 
         canvas.drawCircle(
@@ -552,7 +643,7 @@ object HsCircleColorPickerRenderer : IKmpColorPickerRenderer {
 }
 
 object HvCircleColorPickerRenderer : IKmpColorPickerRenderer {
-    override fun drawFunc(color: HsvColor, canvas: Canvas, size: Size) {
+    override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
         val radius = min(size.width, size.height) / 2f
 
         canvas.drawCircle(
