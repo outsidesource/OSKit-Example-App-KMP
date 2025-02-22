@@ -20,9 +20,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -32,7 +30,6 @@ import com.outsidesource.oskitcompose.modifier.outerShadow
 import com.outsidesource.oskitcompose.pointer.awaitFirstUp
 import com.outsidesource.oskitcompose.systemui.SystemBarColorEffect
 import com.outsidesource.oskitcompose.systemui.SystemBarIconColor
-import kotlinx.coroutines.delay
 import org.koin.core.parameter.parametersOf
 import kotlin.math.*
 
@@ -117,7 +114,7 @@ fun App(
             KmpColorPicker(
                 modifier = Modifier.size(200.dp),
                 colors = colors,
-                renderer = HvCircleColorPickerRenderer,
+                renderer = HsCircleColorPickerRenderer,
                 onChange = { key, color, _, _ -> colors[key] = color },
             )
             Box(modifier = Modifier.size(100.dp).background(color.toColor()))
@@ -228,7 +225,7 @@ fun KmpColorPicker(
         modifier = Modifier
             .defaultMinSize(minWidth = 100.dp, minHeight = 100.dp)
             .drawBehind {
-                drawIntoCanvas { renderer.draw(colors.values.firstOrNull() ?: HsvColor(0f, 0f, 0f), it, size) }
+                drawIntoCanvas { renderer.draw(colors.values.firstOrNull() ?: HsvColor.Black, it, size) }
             }
             .then(modifier)
     ) {
