@@ -153,14 +153,63 @@ data class HsvColor(
         require(alpha >= 0f && alpha <= 1f) { "Alpha must be between 0f and 1f" }
     }
 
-    fun toColor(): Color = hsvToRgb(hue, saturation, value, alpha)
+    fun toColor(): Color {
+        val aNorm = (alpha * 255).roundToInt().coerceIn(0, 255)
+        val hNorm = ((hue % 360) + 360) % 360
+        if (saturation < 1e-6f) {
+            val gray = (value * 255).roundToInt().coerceIn(0, 255)
+            return Color(gray, gray, gray, aNorm)
+        }
+
+        val hPrime = hNorm / 60f
+        val sector = hPrime.toInt()
+        val fraction = hPrime - sector
+
+        val p = value * (1 - saturation)
+        val q = value * (1 - saturation * fraction)
+        val t = value * (1 - saturation * (1 - fraction))
+
+        val (rf, gf, bf) = when (sector % 6) {
+            0 -> Triple(value, t, p)
+            1 -> Triple(q, value, p)
+            2 -> Triple(p, value, t)
+            3 -> Triple(p, q, value)
+            4 -> Triple(t, p, value)
+            5 -> Triple(value, p, q)
+            else -> Triple(0f, 0f, 0f)
+        }
+
+        val r = (rf * 255).roundToInt().coerceIn(0, 255)
+        val g = (gf * 255).roundToInt().coerceIn(0, 255)
+        val b = (bf * 255).roundToInt().coerceIn(0, 255)
+
+        return Color(r, g, b, aNorm)
+    }
 
     companion object {
         fun fromColor(color: Color) = color.toHsvColor()
     }
 }
 
-fun Color.toHsvColor(): HsvColor = rgbToHsv(red, green, blue, alpha)
+fun Color.toHsvColor(): HsvColor {
+    val max = maxOf(red, green, blue)
+    val min = minOf(red, green, blue)
+    val delta = max - min
+
+    var h = when {
+        delta == 0f -> 0f
+        max == red-> 60 * (((green - blue) / delta) % 6)
+        max == green -> 60 * (((blue - red) / delta) + 2)
+        else -> 60 * (((red - green) / delta) + 4)
+    }
+    if (h < 0) h += 360f
+
+    val hNorm = (h + 360) % 360
+    val s = if (max == 0f) 0f else delta / max
+    val v = max
+
+    return HsvColor(hNorm, s.coerceIn(0f, 1f), v.coerceIn(0f, 1f), alpha)
+}
 
 @Composable
 fun KmpColorPicker(
@@ -216,59 +265,6 @@ fun KmpColorPickerHandle(color: HsvColor) {
 
 fun Double.toDegree(): Double = this * 180.0 / PI.toDouble()
 fun Float.toRadians(): Double = this * PI.toDouble() / 180.0
-
-fun hsvToRgb(h: Float, s: Float, v: Float, a: Float): Color {
-    val aNorm = (a * 255).roundToInt().coerceIn(0, 255)
-    val hNorm = ((h % 360) + 360) % 360
-    if (s < 1e-6f) {
-        val gray = (v * 255).roundToInt().coerceIn(0, 255)
-        return Color(gray, gray, gray, aNorm)
-    }
-
-    val hPrime = hNorm / 60f
-    val sector = hPrime.toInt()
-    val fraction = hPrime - sector
-
-    val p = v * (1 - s)
-    val q = v * (1 - s * fraction)
-    val t = v * (1 - s * (1 - fraction))
-
-    val (rf, gf, bf) = when (sector % 6) {
-        0 -> Triple(v, t, p)
-        1 -> Triple(q, v, p)
-        2 -> Triple(p, v, t)
-        3 -> Triple(p, q, v)
-        4 -> Triple(t, p, v)
-        5 -> Triple(v, p, q)
-        else -> Triple(0f, 0f, 0f)
-    }
-
-    val r = (rf * 255).roundToInt().coerceIn(0, 255)
-    val g = (gf * 255).roundToInt().coerceIn(0, 255)
-    val b = (bf * 255).roundToInt().coerceIn(0, 255)
-
-    return Color(r, g, b, aNorm)
-}
-
-fun rgbToHsv(r: Float, g: Float, b: Float, a: Float): HsvColor {
-    val max = maxOf(r, g, b)
-    val min = minOf(r, g, b)
-    val delta = max - min
-
-    var h = when {
-        delta == 0f -> 0f
-        max == r -> 60 * (((g - b) / delta) % 6)
-        max == g -> 60 * (((b - r) / delta) + 2)
-        else -> 60 * (((r - g) / delta) + 4)
-    }
-    if (h < 0) h += 360f
-
-    val hNorm = (h + 360) % 360
-    val s = if (max == 0f) 0f else delta / max
-    val v = max
-
-    return HsvColor(hNorm, s.coerceIn(0f, 1f), v.coerceIn(0f, 1f), a)
-}
 
 interface IKmpColorPickerRenderer {
     fun drawFunc(color: HsvColor, canvas: Canvas, size: Size)
