@@ -324,6 +324,7 @@ fun KmpColorPickerHandle(
                 color = Color.Black.copy(alpha = .5f),
                 shape = CircleShape,
             )
+            .background(Color.White, CircleShape)
             .background(color.toColor(), CircleShape)
     )
 }
@@ -459,6 +460,14 @@ object SvColorPickerRenderer : IKmpColorPickerRenderer {
             },
             rect = Rect(Offset(0f, 0f), size),
         )
+
+        canvas.drawRect(
+            paint = Paint().apply {
+                blendMode = BlendMode.Xor
+                alpha = 1f - color.alpha
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
     }
 
     override fun colorForOffset(
@@ -521,6 +530,14 @@ object HvColorPickerRenderer : IKmpColorPickerRenderer {
             },
             rect = Rect(Offset(0f, 0f), size),
         )
+
+        canvas.drawRect(
+            paint = Paint().apply {
+                blendMode = BlendMode.Xor
+                alpha = 1f - color.alpha
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
     }
 
     override fun colorForOffset(
@@ -576,6 +593,14 @@ object HsColorPickerRenderer : IKmpColorPickerRenderer {
             paint = Paint().apply {
                 this.color = Color.Black
                 alpha = 1f - color.value
+            },
+            rect = Rect(Offset(0f, 0f), size),
+        )
+
+        canvas.drawRect(
+            paint = Paint().apply {
+                blendMode = BlendMode.Xor
+                alpha = 1f - color.alpha
             },
             rect = Rect(Offset(0f, 0f), size),
         )
@@ -642,6 +667,15 @@ object HsCircleColorPickerRenderer : IKmpColorPickerRenderer {
             paint = Paint().apply {
                 this.color = Color.Black
                 alpha = 1f - color.value
+            },
+            radius = radius,
+        )
+
+        canvas.drawCircle(
+            center = size.center,
+            paint = Paint().apply {
+                blendMode = BlendMode.Xor
+                alpha = 1f - color.alpha
             },
             radius = radius,
         )
@@ -722,6 +756,15 @@ object HvCircleColorPickerRenderer : IKmpColorPickerRenderer {
                     colors = listOf(Color.Black, Color.White),
                 )
                 alpha = 1f - color.saturation
+            },
+            radius = radius,
+        )
+
+        canvas.drawCircle(
+            center = size.center,
+            paint = Paint().apply {
+                blendMode = BlendMode.Xor
+                alpha = 1f - color.alpha
             },
             radius = radius,
         )
