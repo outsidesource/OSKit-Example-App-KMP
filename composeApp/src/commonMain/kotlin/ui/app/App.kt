@@ -517,7 +517,7 @@ object HvColorPickerRenderer : IKmpColorPickerRenderer {
                     to = Offset(0f, size.height),
                     colors = listOf(Color.White, Color.Black),
                 )
-                this.alpha = 1f - color.saturation
+                alpha = 1f - color.saturation
             },
             rect = Rect(Offset(0f, 0f), size),
         )
@@ -575,7 +575,7 @@ object HsColorPickerRenderer : IKmpColorPickerRenderer {
         canvas.drawRect(
             paint = Paint().apply {
                 this.color = Color.Black
-                this.alpha = 1f - color.value
+                alpha = 1f - color.value
             },
             rect = Rect(Offset(0f, 0f), size),
         )
@@ -721,7 +721,7 @@ object HvCircleColorPickerRenderer : IKmpColorPickerRenderer {
                     radius = radius,
                     colors = listOf(Color.Black, Color.White),
                 )
-                this.alpha = 1f - color.saturation
+                alpha = 1f - color.saturation
             },
             radius = radius,
         )
