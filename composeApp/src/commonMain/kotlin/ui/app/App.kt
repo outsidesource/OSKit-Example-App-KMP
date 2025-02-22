@@ -468,7 +468,7 @@ object SvColorPickerRenderer : IKmpColorPickerRenderer {
     ): HsvColor {
         val saturation = ((100f / size.width) * offset.x).coerceIn(0f..100f) / 100f
         val value = (100f - ((100f / size.height) * offset.y).coerceIn(0f..100f)) / 100f
-        return HsvColor(color.hue, saturation, value, color.alpha)
+        return color.copy(saturation = saturation, value = value)
     }
 
     override fun offsetForColor(
@@ -530,7 +530,7 @@ object HvColorPickerRenderer : IKmpColorPickerRenderer {
     ): HsvColor {
         val hue = ((360f / size.width) * offset.x).coerceIn(0f..360f)
         val value = (100f - ((100f / size.height) * offset.y).coerceIn(0f..100f)) / 100f
-        return HsvColor(hue, color.saturation, value, color.alpha)
+        return color.copy(hue = hue, value = value)
     }
 
     override fun offsetForColor(
@@ -588,7 +588,7 @@ object HsColorPickerRenderer : IKmpColorPickerRenderer {
     ): HsvColor {
         val hue = ((360f / size.width) * offset.x).coerceIn(0f..360f)
         val saturation = ((100f / size.height) * offset.y).coerceIn(0f..100f) / 100f
-        return HsvColor(hue, saturation, color.value, color.alpha)
+        return color.copy(hue = hue, saturation = saturation)
     }
 
     override fun offsetForColor(
@@ -599,7 +599,6 @@ object HsColorPickerRenderer : IKmpColorPickerRenderer {
         val y = (size.height * color.saturation).coerceIn(0f, size.height.toFloat())
         return Offset(x, y)
     }
-
 }
 
 object HsCircleColorPickerRenderer : IKmpColorPickerRenderer {
@@ -662,7 +661,7 @@ object HsCircleColorPickerRenderer : IKmpColorPickerRenderer {
         val radius = hypot(xOffset, yOffset)
         val rawAngle = atan2(yOffset, xOffset).toDegree() - 90f
         val normalizedAngle = (rawAngle + 360.0) % 360.0
-        return HsvColor(normalizedAngle.toFloat(), (radius / circleRadius).toFloat().coerceIn(0f, 1f), color.value, color.alpha)
+        return color.copy(hue = normalizedAngle.toFloat(), saturation = (radius / circleRadius).toFloat().coerceIn(0f, 1f))
     }
 
     override fun offsetForColor(
@@ -742,7 +741,7 @@ object HvCircleColorPickerRenderer : IKmpColorPickerRenderer {
         val radius = hypot(cartesianX, cartesianY)
         val rawAngle = atan2(cartesianY, cartesianX).toDegree() - 90f
         val normalizedAngle = (rawAngle + 360.0) % 360.0
-        return HsvColor(normalizedAngle.toFloat(), color.saturation, (radius / circleRadius).toFloat().coerceIn(0f, 1f), color.alpha)
+        return color.copy(hue = normalizedAngle.toFloat(), value = (radius / circleRadius).toFloat().coerceIn(0f, 1f))
     }
 
     override fun offsetForColor(
