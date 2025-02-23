@@ -13,10 +13,7 @@ import androidx.compose.material.Slider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.center
+import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
@@ -463,7 +460,7 @@ object SvColorPickerRenderer : IKmpColorPickerRenderer {
 
         canvas.drawRect(
             paint = Paint().apply {
-                blendMode = BlendMode.Xor
+                blendMode = BlendMode.DstOut
                 alpha = 1f - color.alpha
             },
             rect = Rect(Offset(0f, 0f), size),
@@ -533,7 +530,7 @@ object HvColorPickerRenderer : IKmpColorPickerRenderer {
 
         canvas.drawRect(
             paint = Paint().apply {
-                blendMode = BlendMode.Xor
+                blendMode = BlendMode.DstOut
                 alpha = 1f - color.alpha
             },
             rect = Rect(Offset(0f, 0f), size),
@@ -599,7 +596,7 @@ object HsColorPickerRenderer : IKmpColorPickerRenderer {
 
         canvas.drawRect(
             paint = Paint().apply {
-                blendMode = BlendMode.Xor
+                blendMode = BlendMode.DstOut
                 alpha = 1f - color.alpha
             },
             rect = Rect(Offset(0f, 0f), size),
@@ -630,14 +627,14 @@ object HsCircleColorPickerRenderer : IKmpColorPickerRenderer {
     override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
         val radius = min(size.width, size.height) / 2f
 
+        canvas.save()
+        canvas.rotate(90f, size.center.x, size.center.y)
+
         canvas.drawCircle(
             paint = Paint().apply { this.color = Color.White },
             center = size.center,
             radius = radius,
         )
-
-        canvas.save()
-        canvas.rotate(90f, size.center.x, size.center.y)
 
         canvas.drawCircle(
             center = size.center,
@@ -671,14 +668,17 @@ object HsCircleColorPickerRenderer : IKmpColorPickerRenderer {
             radius = radius,
         )
 
-        canvas.drawCircle(
-            center = size.center,
+        // Clip path to fix anti-aliasing halo around alpha
+        canvas.clipPath(Path().apply { addArc(size.toRect().inflate(1f), 0f, 360f) })
+
+        canvas.drawRect(
+            rect = size.toRect(),
             paint = Paint().apply {
-                blendMode = BlendMode.Xor
+                blendMode = BlendMode.DstOut
                 alpha = 1f - color.alpha
             },
-            radius = radius,
         )
+
         canvas.restore()
     }
 
@@ -715,14 +715,14 @@ object HvCircleColorPickerRenderer : IKmpColorPickerRenderer {
     override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
         val radius = min(size.width, size.height) / 2f
 
+        canvas.save()
+        canvas.rotate(90f, size.center.x, size.center.y)
+
         canvas.drawCircle(
             paint = Paint().apply { this.color = Color.White },
             center = size.center,
             radius = radius,
         )
-
-        canvas.save()
-        canvas.rotate(90f, size.center.x, size.center.y)
 
         canvas.drawCircle(
             center = size.center,
@@ -747,8 +747,11 @@ object HvCircleColorPickerRenderer : IKmpColorPickerRenderer {
             radius = radius,
         )
 
-        canvas.drawCircle(
-            center = size.center,
+        // Clip path to fix anti-aliasing halo around alpha and saturation
+        canvas.clipPath(Path().apply { addArc(size.toRect().inflate(1f), 0f, 360f) })
+
+        canvas.drawRect(
+            rect = size.toRect(),
             paint = Paint().apply {
                 shader = RadialGradientShader(
                     center = size.center,
@@ -757,17 +760,16 @@ object HvCircleColorPickerRenderer : IKmpColorPickerRenderer {
                 )
                 alpha = 1f - color.saturation
             },
-            radius = radius,
         )
 
-        canvas.drawCircle(
-            center = size.center,
+        canvas.drawRect(
+            rect = size.toRect(),
             paint = Paint().apply {
-                blendMode = BlendMode.Xor
+                blendMode = BlendMode.DstOut
                 alpha = 1f - color.alpha
             },
-            radius = radius,
         )
+
         canvas.restore()
     }
 
