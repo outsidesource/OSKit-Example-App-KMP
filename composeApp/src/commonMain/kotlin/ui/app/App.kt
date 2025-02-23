@@ -69,6 +69,7 @@ fun App(
         )
     }
     val colorFunc: (HsvColor, Any, Any) -> Unit = { c, _, _ -> color = c }
+    val options = remember { KmpColorPickerRendererOptions(renderAlpha = true, render3rdComponent = true) }
 
     Column(
         modifier = Modifier
@@ -80,36 +81,42 @@ fun App(
                 modifier = Modifier.size(200.dp),
                 color = color,
                 renderer = HvColorPickerRenderer,
+                rendererOptions = options,
                 onChange = colorFunc,
             )
             KmpColorPicker(
                 modifier = Modifier.size(200.dp),
                 color = color,
                 renderer = HsColorPickerRenderer,
+                rendererOptions = options,
                 onChange = colorFunc,
             )
             KmpColorPicker(
                 modifier = Modifier.size(200.dp),
                 color = color,
                 renderer = SvColorPickerRenderer,
+                rendererOptions = options,
                 onChange = colorFunc,
             )
             KmpColorPicker(
                 modifier = Modifier.size(200.dp),
                 color = color,
                 renderer = HsCircleColorPickerRenderer,
+                rendererOptions = options,
                 onChange = colorFunc,
             )
             KmpColorPicker(
                 modifier = Modifier.size(200.dp),
                 color = color,
                 renderer = HvCircleColorPickerRenderer,
+                rendererOptions = options,
                 onChange = colorFunc,
             )
             KmpColorPicker(
                 modifier = Modifier.size(200.dp),
                 colors = colors,
                 renderer = HsCircleColorPickerRenderer,
+                rendererOptions = options,
                 onChange = { key, color, _, _ -> colors[key] = color },
             )
             Box(modifier = Modifier.size(100.dp).background(color.toColor()))
@@ -157,7 +164,8 @@ fun App(
 @Composable
 fun KmpColorPicker(
     color: HsvColor,
-    renderer: IKmpColorPickerRenderer = SvColorPickerRenderer,
+    renderer: IKmpColorPickerRenderer = KmpColorPickerRenderer.Sv,
+    rendererOptions: KmpColorPickerRendererOptions = remember { KmpColorPickerRendererOptions() },
     onChange: (HsvColor, offset: Offset, size: IntSize) -> Unit = { _, _, _ -> },
     onDone: (HsvColor, offset: Offset, size: IntSize) -> Unit = { _, _, _ -> },
     handle: @Composable (color: HsvColor) -> Unit = { KmpColorPickerHandle(it) },
@@ -192,7 +200,7 @@ fun KmpColorPicker(
                 }
             }
             .drawBehind {
-                drawIntoCanvas { renderer.draw(mergedColor.value, it, size) }
+                drawIntoCanvas { renderer.draw(mergedColor.value, it, size, rendererOptions) }
             }
             .then(modifier)
     ) {
@@ -212,7 +220,8 @@ fun KmpColorPicker(
 @Composable
 fun KmpColorPicker(
     colors: Map<String, HsvColor>,
-    renderer: IKmpColorPickerRenderer = SvColorPickerRenderer,
+    renderer: IKmpColorPickerRenderer = KmpColorPickerRenderer.Sv,
+    rendererOptions: KmpColorPickerRendererOptions = remember { KmpColorPickerRendererOptions() },
     onChange: (String, HsvColor, offset: Offset, size: IntSize) -> Unit = { _, _, _, _ -> },
     onDone: (String, HsvColor, offset: Offset, size: IntSize) -> Unit = { _, _, _, _ -> },
     handle: @Composable (color: HsvColor) -> Unit = { KmpColorPickerHandle(it) },
@@ -256,7 +265,7 @@ fun KmpColorPicker(
                 }
             }
             .drawBehind {
-                drawIntoCanvas { renderer.draw(colors.values.firstOrNull() ?: HsvColor.Black, it, size) }
+                drawIntoCanvas { renderer.draw(colors.values.firstOrNull() ?: HsvColor.Black, it, size, rendererOptions) }
             }
             .then(modifier)
     ) {
@@ -422,13 +431,27 @@ fun Double.toDegree(): Double = this * 180.0 / PI.toDouble()
 fun Float.toRadians(): Double = this * PI.toDouble() / 180.0
 
 interface IKmpColorPickerRenderer {
-    fun draw(color: HsvColor, canvas: Canvas, size: Size)
+    fun draw(color: HsvColor, canvas: Canvas, size: Size, options: KmpColorPickerRendererOptions)
     fun colorForOffset(color: HsvColor, offset: Offset, size: IntSize): HsvColor
     fun offsetForColor(color: HsvColor, size: IntSize): Offset
 }
 
+@Immutable
+data class KmpColorPickerRendererOptions(
+    val renderAlpha: Boolean = false,
+    val render3rdComponent: Boolean = true,
+)
+
+object KmpColorPickerRenderer {
+    val Sv = SvColorPickerRenderer
+    val Hv = HvColorPickerRenderer
+    val Hs = HsColorPickerRenderer
+    val HsCircle = HsCircleColorPickerRenderer
+    val HvCircle = HvColorPickerRenderer
+}
+
 object SvColorPickerRenderer : IKmpColorPickerRenderer {
-    override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
+    override fun draw(color: HsvColor, canvas: Canvas, size: Size, options: KmpColorPickerRendererOptions) {
         val fullHueColor = Color.hsv(color.hue, 1f, 1f)
         canvas.drawRect(
             paint = Paint().apply { this.color = Color.White },
@@ -446,25 +469,29 @@ object SvColorPickerRenderer : IKmpColorPickerRenderer {
             rect = Rect(Offset(0f, 0f), size),
         )
 
-        canvas.drawRect(
-            paint = Paint().apply {
-                blendMode = BlendMode.Multiply
-                shader = LinearGradientShader(
-                    from = Offset(0f, 0f),
-                    to = Offset(0f, size.height),
-                    colors = listOf(Color.Transparent, Color.Black),
-                )
-            },
-            rect = Rect(Offset(0f, 0f), size),
-        )
+        if (options.render3rdComponent) {
+            canvas.drawRect(
+                paint = Paint().apply {
+                    blendMode = BlendMode.Multiply
+                    shader = LinearGradientShader(
+                        from = Offset(0f, 0f),
+                        to = Offset(0f, size.height),
+                        colors = listOf(Color.Transparent, Color.Black),
+                    )
+                },
+                rect = Rect(Offset(0f, 0f), size),
+            )
+        }
 
-        canvas.drawRect(
-            paint = Paint().apply {
-                blendMode = BlendMode.DstOut
-                alpha = 1f - color.alpha
-            },
-            rect = Rect(Offset(0f, 0f), size),
-        )
+        if (options.renderAlpha) {
+            canvas.drawRect(
+                paint = Paint().apply {
+                    blendMode = BlendMode.DstOut
+                    alpha = 1f - color.alpha
+                },
+                rect = Rect(Offset(0f, 0f), size),
+            )
+        }
     }
 
     override fun colorForOffset(
@@ -488,7 +515,7 @@ object SvColorPickerRenderer : IKmpColorPickerRenderer {
 }
 
 object HvColorPickerRenderer : IKmpColorPickerRenderer {
-    override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
+    override fun draw(color: HsvColor, canvas: Canvas, size: Size, options: KmpColorPickerRendererOptions) {
         canvas.drawRect(
             paint = Paint().apply { this.color = Color.White },
             rect = Rect(Offset(0f, 0f), size),
@@ -516,25 +543,29 @@ object HvColorPickerRenderer : IKmpColorPickerRenderer {
             rect = Rect(Offset(0f, 0f), size),
         )
 
-        canvas.drawRect(
-            paint = Paint().apply {
-                shader = LinearGradientShader(
-                    from = Offset(0f, 0f),
-                    to = Offset(0f, size.height),
-                    colors = listOf(Color.White, Color.Black),
-                )
-                alpha = 1f - color.saturation
-            },
-            rect = Rect(Offset(0f, 0f), size),
-        )
+        if (options.render3rdComponent) {
+            canvas.drawRect(
+                paint = Paint().apply {
+                    shader = LinearGradientShader(
+                        from = Offset(0f, 0f),
+                        to = Offset(0f, size.height),
+                        colors = listOf(Color.White, Color.Black),
+                    )
+                    alpha = 1f - color.saturation
+                },
+                rect = Rect(Offset(0f, 0f), size),
+            )
+        }
 
-        canvas.drawRect(
-            paint = Paint().apply {
-                blendMode = BlendMode.DstOut
-                alpha = 1f - color.alpha
-            },
-            rect = Rect(Offset(0f, 0f), size),
-        )
+        if (options.renderAlpha) {
+            canvas.drawRect(
+                paint = Paint().apply {
+                    blendMode = BlendMode.DstOut
+                    alpha = 1f - color.alpha
+                },
+                rect = Rect(Offset(0f, 0f), size),
+            )
+        }
     }
 
     override fun colorForOffset(
@@ -558,7 +589,7 @@ object HvColorPickerRenderer : IKmpColorPickerRenderer {
 }
 
 object HsColorPickerRenderer : IKmpColorPickerRenderer {
-    override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
+    override fun draw(color: HsvColor, canvas: Canvas, size: Size, options: KmpColorPickerRendererOptions) {
         canvas.drawRect(
             paint = Paint().apply { this.color = Color.White },
             rect = Rect(Offset(0f, 0f), size),
@@ -586,21 +617,25 @@ object HsColorPickerRenderer : IKmpColorPickerRenderer {
             rect = Rect(Offset(0f, 0f), size),
         )
 
-        canvas.drawRect(
-            paint = Paint().apply {
-                this.color = Color.Black
-                alpha = 1f - color.value
-            },
-            rect = Rect(Offset(0f, 0f), size),
-        )
+        if (options.render3rdComponent) {
+            canvas.drawRect(
+                paint = Paint().apply {
+                    this.color = Color.Black
+                    alpha = 1f - color.value
+                },
+                rect = Rect(Offset(0f, 0f), size),
+            )
+        }
 
-        canvas.drawRect(
-            paint = Paint().apply {
-                blendMode = BlendMode.DstOut
-                alpha = 1f - color.alpha
-            },
-            rect = Rect(Offset(0f, 0f), size),
-        )
+        if (options.renderAlpha) {
+            canvas.drawRect(
+                paint = Paint().apply {
+                    blendMode = BlendMode.DstOut
+                    alpha = 1f - color.alpha
+                },
+                rect = Rect(Offset(0f, 0f), size),
+            )
+        }
     }
 
     override fun colorForOffset(
@@ -624,7 +659,7 @@ object HsColorPickerRenderer : IKmpColorPickerRenderer {
 }
 
 object HsCircleColorPickerRenderer : IKmpColorPickerRenderer {
-    override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
+    override fun draw(color: HsvColor, canvas: Canvas, size: Size, options: KmpColorPickerRendererOptions) {
         val radius = min(size.width, size.height) / 2f
 
         canvas.save()
@@ -659,25 +694,29 @@ object HsCircleColorPickerRenderer : IKmpColorPickerRenderer {
             radius = radius,
         )
 
-        canvas.drawCircle(
-            center = size.center,
-            paint = Paint().apply {
-                this.color = Color.Black
-                alpha = 1f - color.value
-            },
-            radius = radius,
-        )
+        if (options.render3rdComponent) {
+            canvas.drawCircle(
+                center = size.center,
+                paint = Paint().apply {
+                    this.color = Color.Black
+                    alpha = 1f - color.value
+                },
+                radius = radius,
+            )
+        }
 
         // Clip path to fix anti-aliasing halo around alpha
         canvas.clipPath(Path().apply { addArc(size.toRect().inflate(1f), 0f, 360f) })
 
-        canvas.drawRect(
-            rect = size.toRect(),
-            paint = Paint().apply {
-                blendMode = BlendMode.DstOut
-                alpha = 1f - color.alpha
-            },
-        )
+        if (options.renderAlpha) {
+            canvas.drawRect(
+                rect = size.toRect(),
+                paint = Paint().apply {
+                    blendMode = BlendMode.DstOut
+                    alpha = 1f - color.alpha
+                },
+            )
+        }
 
         canvas.restore()
     }
@@ -712,7 +751,7 @@ object HsCircleColorPickerRenderer : IKmpColorPickerRenderer {
 }
 
 object HvCircleColorPickerRenderer : IKmpColorPickerRenderer {
-    override fun draw(color: HsvColor, canvas: Canvas, size: Size) {
+    override fun draw(color: HsvColor, canvas: Canvas, size: Size, options: KmpColorPickerRendererOptions) {
         val radius = min(size.width, size.height) / 2f
 
         canvas.save()
@@ -750,25 +789,29 @@ object HvCircleColorPickerRenderer : IKmpColorPickerRenderer {
         // Clip path to fix anti-aliasing halo around alpha and saturation
         canvas.clipPath(Path().apply { addArc(size.toRect().inflate(1f), 0f, 360f) })
 
-        canvas.drawRect(
-            rect = size.toRect(),
-            paint = Paint().apply {
-                shader = RadialGradientShader(
-                    center = size.center,
-                    radius = radius,
-                    colors = listOf(Color.Black, Color.White),
-                )
-                alpha = 1f - color.saturation
-            },
-        )
+        if (options.render3rdComponent) {
+            canvas.drawRect(
+                rect = size.toRect(),
+                paint = Paint().apply {
+                    shader = RadialGradientShader(
+                        center = size.center,
+                        radius = radius,
+                        colors = listOf(Color.Black, Color.White),
+                    )
+                    alpha = 1f - color.saturation
+                },
+            )
+        }
 
-        canvas.drawRect(
-            rect = size.toRect(),
-            paint = Paint().apply {
-                blendMode = BlendMode.DstOut
-                alpha = 1f - color.alpha
-            },
-        )
+        if (options.renderAlpha) {
+            canvas.drawRect(
+                rect = size.toRect(),
+                paint = Paint().apply {
+                    blendMode = BlendMode.DstOut
+                    alpha = 1f - color.alpha
+                },
+            )
+        }
 
         canvas.restore()
     }
