@@ -81,6 +81,10 @@ fun HomeScreen(
                     content = { Text("Capability") },
                     onClick = interactor::capabilityButtonClicked,
                 )
+                Button(
+                    content = { Text("Color Picker") },
+                    onClick = interactor::colorPickerButtonClicked,
+                )
             }
         }
     }

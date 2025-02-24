@@ -7,6 +7,7 @@ import org.koin.dsl.module
 import ui.app.AppViewInteractor
 import ui.appStateExample.AppStateExampleViewInteractor
 import ui.capability.CapabilityScreenViewInteractor
+import ui.colorPicker.ColorPickerViewInteractor
 import ui.common.ScreenViewInteractor
 import ui.device.DeviceHomeViewInteractor
 import ui.file.FileSystemViewInteractor
@@ -34,4 +35,5 @@ val composeAppModule = module {
     factory { PopupsScreenViewInteractor() }
     factory { IOSServicesScreenViewInteractor(get(), get()) }
     factory { CapabilityScreenViewInteractor(get()) }
+    factory { ColorPickerViewInteractor() }
 } + platformModule()
