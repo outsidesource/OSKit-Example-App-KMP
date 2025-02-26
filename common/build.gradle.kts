@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.skie)
-    kotlin("native.cocoapods")
+//    kotlin("native.cocoapods")
 }
 
 group = "com.outsidesource.oskitExample.common"
@@ -51,17 +51,17 @@ kotlin {
 
     applyDefaultHierarchyTemplate()
 
-    cocoapods {
-        version = "1.15.2"
-        ios.deploymentTarget = "16"
-
-        pod("AWSCore") {
-            version = "2.39.0"
-        }
-        pod("AWSS3") {
-            version = "2.39.0"
-        }
-    }
+//    cocoapods {
+//        version = "1.15.2"
+//        ios.deploymentTarget = "16"
+//
+//        pod("AWSCore") {
+//            version = "2.39.0"
+//        }
+//        pod("AWSS3") {
+//            version = "2.39.0"
+//        }
+//    }
 
     sourceSets {
         commonMain.dependencies {

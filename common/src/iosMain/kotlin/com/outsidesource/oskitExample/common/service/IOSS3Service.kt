@@ -1,13 +1,8 @@
 package com.outsidesource.oskitExample.common.service
 
-import cocoapods.AWSCore.*
-import cocoapods.AWSS3.AWSS3
-import cocoapods.AWSS3.AWSS3ListObjectsRequest
-import cocoapods.AWSS3.AWSS3Object
 import com.outsidesource.oskitExample.common.service.s3.IS3Service
 import com.outsidesource.oskitkmp.outcome.Outcome
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 /**
@@ -19,8 +14,8 @@ import kotlin.coroutines.suspendCoroutine
 @OptIn(ExperimentalForeignApi::class)
 class IOSS3Service : IS3Service {
 
-    private val s3: AWSS3
-    private val credentials = AWSAnonymousCredentialsProvider()
+//    private val s3: AWSS3
+//    private val credentials = AWSAnonymousCredentialsProvider()
 //    private val credentials = object : NSObject(), AWSCredentialsProviderProtocol {
 //        override fun credentials(): AWSTask =
 //            AWSTask.taskWithResult(AWSCredentials(id, secret, null, null))
@@ -28,32 +23,33 @@ class IOSS3Service : IS3Service {
 //    }
 
     init {
-        AWSServiceManager.defaultServiceManager()?.setDefaultServiceConfiguration(
-            AWSServiceConfiguration(
-                AWSRegionType.AWSRegionUSEast2,
-                AWSServiceType.AWSServiceS3,
-                credentials,
-                false,
-            )
-        )
-
-        s3 = AWSS3.defaultS3()
+//        AWSServiceManager.defaultServiceManager()?.setDefaultServiceConfiguration(
+//            AWSServiceConfiguration(
+//                AWSRegionType.AWSRegionUSEast2,
+//                AWSServiceType.AWSServiceS3,
+//                credentials,
+//                false,
+//            )
+//        )
+//
+//        s3 = AWSS3.defaultS3()
     }
 
     override suspend fun listS3Files(): Outcome<List<String>, Any> = suspendCoroutine {
-        s3.listObjects(AWSS3ListObjectsRequest(mapOf("bucket" to "kmp-poc-public"), null)) { result, error ->
-            when {
-                result != null -> {
-                    val files = result.contents?.mapNotNull {
-                        if (it !is AWSS3Object) return@mapNotNull null
-                        it.key
-                    } ?: emptyList()
-
-                    it.resume(Outcome.Ok(files))
-                }
-                error != null -> it.resume(Outcome.Error(error))
-                else -> it.resume(Outcome.Error(Unit))
-            }
-        }
+        Outcome.Error(Unit)
+//        s3.listObjects(AWSS3ListObjectsRequest(mapOf("bucket" to "kmp-poc-public"), null)) { result, error ->
+//            when {
+//                result != null -> {
+//                    val files = result.contents?.mapNotNull {
+//                        if (it !is AWSS3Object) return@mapNotNull null
+//                        it.key
+//                    } ?: emptyList()
+//
+//                    it.resume(Outcome.Ok(files))
+//                }
+//                error != null -> it.resume(Outcome.Error(error))
+//                else -> it.resume(Outcome.Error(Unit))
+//            }
+//        }
     }
 }
