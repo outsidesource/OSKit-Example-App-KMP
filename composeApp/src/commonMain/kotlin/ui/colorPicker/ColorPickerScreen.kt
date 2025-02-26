@@ -24,18 +24,25 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.ImageShader
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.RadialGradientShader
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StampedPathEffectStyle
 import androidx.compose.ui.graphics.SweepGradientShader
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.rotate
@@ -47,7 +54,9 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitcompose.color.HsvColor
 import com.outsidesource.oskitcompose.color.IKmpColorPickerRenderer
@@ -65,6 +74,7 @@ import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 @Composable
@@ -77,7 +87,13 @@ fun ColorPickerScreen(
         title = "Color Picker",
     ) {
         val colorFunc: (HsvColor, Any, Any) -> Unit = { c, _, _ -> interactor.colorChanged(c) }
-        val options = remember { KmpColorPickerRendererOptions(renderAlpha = true, render3rdComponent = true) }
+        val options = remember {
+            KmpColorPickerRendererOptions(
+                renderAlpha = true,
+                renderAlphaChecker = true,
+                render3rdComponent = true,
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -93,7 +109,7 @@ fun ColorPickerScreen(
                     KmpColorPicker(
                         modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                         color = state.color,
-                        renderer = KmpColorPickerRenderer.Hs,
+                        renderer = remember { KmpColorPickerRenderer.Hs() },
                         rendererOptions = options,
                         onChange = colorFunc,
                     )
@@ -103,7 +119,7 @@ fun ColorPickerScreen(
                     KmpColorPicker(
                         modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                         color = state.color,
-                        renderer = KmpColorPickerRenderer.Hv,
+                        renderer = remember { KmpColorPickerRenderer.Hv() },
                         rendererOptions = options,
                         onChange = colorFunc,
                     )
@@ -113,7 +129,7 @@ fun ColorPickerScreen(
                     KmpColorPicker(
                         modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                         color = state.color,
-                        renderer = KmpColorPickerRenderer.Sv,
+                        renderer = remember { KmpColorPickerRenderer.Sv() },
                         rendererOptions = options,
                         onChange = colorFunc,
                     )
@@ -127,7 +143,7 @@ fun ColorPickerScreen(
                     KmpColorPicker(
                         modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                         color = state.color,
-                        renderer = KmpColorPickerRenderer.HsCircle,
+                        renderer = remember { KmpColorPickerRenderer.HsCircle() },
                         rendererOptions = options,
                         onChange = colorFunc,
                     )
@@ -137,7 +153,7 @@ fun ColorPickerScreen(
                     KmpColorPicker(
                         modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                         color = state.color,
-                        renderer = KmpColorPickerRenderer.HvCircle,
+                        renderer = remember { KmpColorPickerRenderer.HvCircle() },
                         rendererOptions = options,
                         onChange = colorFunc,
                     )
@@ -147,7 +163,7 @@ fun ColorPickerScreen(
                     KmpColorPicker(
                         modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                         colors = state.colors,
-                        renderer = KmpColorPickerRenderer.HsCircle,
+                        renderer = remember { KmpColorPickerRenderer.HsCircle() },
                         rendererOptions = options,
                         onChange = { key, color, _, _ -> interactor.multiColorChanged(key, color) },
                     )
