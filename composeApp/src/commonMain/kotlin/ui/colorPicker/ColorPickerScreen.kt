@@ -1,25 +1,27 @@
 package ui.colorPicker
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Slider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.outsidesource.oskitcompose.color.HsvColor
-import com.outsidesource.oskitcompose.color.KmpColorPicker
-import com.outsidesource.oskitcompose.color.KmpColorPickerRenderer
-import com.outsidesource.oskitcompose.color.KmpColorPickerRendererOptions
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
+import com.outsidesource.oskitcompose.color.*
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.layout.FlexRow
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import ui.common.Screen
+import kotlin.math.roundToInt
 
 @Composable
 fun ColorPickerScreen(
@@ -113,57 +115,91 @@ fun ColorPickerScreen(
                     )
                 }
             }
-            Column {
+            Column(
+                modifier = Modifier.padding(top = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
                 Box(modifier = Modifier.size(100.dp).background(state.color.toColor()))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Slider(
-                        modifier = Modifier.width(200.dp),
-                        value = state.color.hue,
-                        valueRange = 0f..360f,
-                        onValueChange = { interactor.colorChanged(state.color.copy(hue = it)) },
+                    KmpColorPickerHueSlider(
+                        modifier = Modifier.width(250.dp),
+                        color = state.color,
+                        onChange = interactor::colorChanged,
                     )
-                    Text("Hue: ${state.color.hue}")
+                    Text("Hue: ${(state.color.hue * 100).roundToInt() / 100f}")
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Slider(
-                        modifier = Modifier.width(200.dp),
-                        value = state.color.saturation * 100f,
-                        valueRange = 0f..100f,
-                        onValueChange = { interactor.colorChanged(state.color.copy(saturation = it / 100f)) },
+                    KmpColorPickerSaturationSlider(
+                        modifier = Modifier.width(250.dp),
+                        color = state.color,
+                        onChange = interactor::colorChanged,
                     )
-                    Text("Saturation: ${state.color.saturation}")
+                    Text("Saturation: ${(state.color.saturation * 100).roundToInt() / 100f}")
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Slider(
-                        modifier = Modifier.width(200.dp),
-                        value = state.color.value * 100f,
-                        valueRange = 0f..100f,
-                        onValueChange = { interactor.colorChanged(state.color.copy(value = it / 100f)) },
+                    KmpColorPickerValueSlider(
+                        modifier = Modifier.width(250.dp),
+                        color = state.color,
+                        onChange = interactor::colorChanged,
                     )
-                    Text("Value: ${state.color.value}")
+                    Text("Value: ${(state.color.value * 100).roundToInt() / 100f}")
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Slider(
-                        modifier = Modifier.width(200.dp),
-                        value = state.color.alpha * 100f,
-                        valueRange = 0f..100f,
-                        onValueChange = { interactor.colorChanged(state.color.copy(alpha = it / 100f)) },
+                    KmpColorPickerAlphaSlider(
+                        modifier = Modifier.width(250.dp),
+                        color = state.color,
+                        onChange = interactor::colorChanged,
                     )
-                    Text("Alpha: ${state.color.alpha}")
+                    Text("Alpha: ${(state.color.alpha * 100).roundToInt() / 100f}")
                 }
             }
+            Row(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .height(250.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                KmpColorPickerHueSlider(
+                    modifier = Modifier.fillMaxHeight(),
+                    color = state.color,
+                    onChange = interactor::colorChanged,
+                    direction = ColorPickerSliderDirection.Vertical,
+                )
+                KmpColorPickerSaturationSlider(
+                    modifier = Modifier.fillMaxHeight(),
+                    color = state.color,
+                    onChange = interactor::colorChanged,
+                    direction = ColorPickerSliderDirection.Vertical,
+                )
+                KmpColorPickerValueSlider(
+                    modifier = Modifier.fillMaxHeight(),
+                    color = state.color,
+                    onChange = interactor::colorChanged,
+                    direction = ColorPickerSliderDirection.Vertical,
+                )
+                KmpColorPickerAlphaSlider(
+                    modifier = Modifier.fillMaxHeight(),
+                    color = state.color,
+                    onChange = interactor::colorChanged,
+                    direction = ColorPickerSliderDirection.Vertical,
+                )
+            }
+        }
+    }
+}
+
         }
     }
 }
