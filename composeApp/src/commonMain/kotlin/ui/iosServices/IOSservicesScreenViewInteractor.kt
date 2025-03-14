@@ -1,39 +1,22 @@
 package ui.iosServices
 
-import service.s3.IS3Service
-import service.swift.ISwiftExampleService
 import com.outsidesource.oskitkmp.interactor.Interactor
-import com.outsidesource.oskitkmp.outcome.unwrapOrReturn
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import service.swift.ISwiftExampleService
 
 data class IOSServicesScreenViewState(
-    val s3BucketListText: String = "",
     val createFlowInSwiftText: String = "",
     val collectFlowInSwiftText: String = "",
     val suspendFunctionText: String = "",
 )
 
 class IOSServicesScreenViewInteractor(
-    private val s3Service: IS3Service,
     private val swiftExampleService: ISwiftExampleService,
 ) : Interactor<IOSServicesScreenViewState>(
     initialState = IOSServicesScreenViewState()
 ) {
-
-    fun listS3BucketItemsClicked() {
-        interactorScope.launch {
-            update { state -> state.copy(s3BucketListText = "Loading...") }
-
-            val files = s3Service.listS3Files().unwrapOrReturn {
-                update { state -> state.copy(s3BucketListText = "Error") }
-                return@launch
-            }
-
-            update { state -> state.copy(s3BucketListText = files.joinToString("\n")) }
-        }
-    }
 
     fun createFlowInSwiftClicked() {
         interactorScope.launch {

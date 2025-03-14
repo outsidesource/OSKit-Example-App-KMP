@@ -5,8 +5,7 @@ import ComposeApp
 struct iOSApp: App {
     init() {
         loadKoinSwiftModules(
-            swiftExampleService: SwiftExampleService(),
-            s3Service: SwiftS3Service()
+            swiftExampleService: SwiftExampleService()
         )
     }
     
