@@ -37,14 +37,6 @@ fun IOSServicesScreen(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            Section("Implemented with Kotlin via Cocoapods and Objective-C interop") {
-                Button(
-                    content = { Text("List AWS S3 Bucket Items") },
-                    onClick = interactor::listS3BucketItemsClicked
-                )
-                Text(state.s3BucketListText)
-            }
-
             Section("Implemented with Swift") {
                 Column{
                     Button(

@@ -56,7 +56,7 @@ fun commonModule() = module {
     factory { params -> DeviceHomeViewInteractor(params[0], get()) }
     factory { FileSystemViewInteractor(KmpFs.External, KmpFs.Internal, get()) }
     factory { PopupsScreenViewInteractor() }
-    factory { IOSServicesScreenViewInteractor(get(), get()) }
+    factory { IOSServicesScreenViewInteractor(get()) }
     factory { CapabilityScreenViewInteractor(get()) }
     factory { ColorPickerViewInteractor() }
 }
