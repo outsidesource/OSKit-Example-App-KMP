@@ -199,7 +199,3 @@ fun ColorPickerScreen(
         }
     }
 }
-
-        }
-    }
-}
