@@ -1,6 +1,6 @@
 package ui.file
 
-import com.outsidesource.oskitExample.common.service.preferences.PreferencesService
+import service.preferences.PreferencesService
 import com.outsidesource.oskitkmp.filesystem.*
 import com.outsidesource.oskitkmp.filesystem.KmpFileMetadata
 import com.outsidesource.oskitkmp.filesystem.KmpFsRef

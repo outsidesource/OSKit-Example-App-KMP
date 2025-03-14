@@ -2,8 +2,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.application
-import com.outsidesource.oskitExample.common.PlatformContext
-import com.outsidesource.oskitExample.common.initKoin
 import com.outsidesource.oskitcompose.lib.koinInjector
 import com.outsidesource.oskitcompose.systemui.KmpWindowInsetsHolder
 import com.outsidesource.oskitcompose.systemui.LocalKmpWindowInsets
@@ -19,7 +17,6 @@ import java.awt.Dimension
 
 private val koin = initKoin(
     platformContext = PlatformContext(),
-    extraModules = composeAppModule.toTypedArray()
 ).koin
 
 fun main() = application {

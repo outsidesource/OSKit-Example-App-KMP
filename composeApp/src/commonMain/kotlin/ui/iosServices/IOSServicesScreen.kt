@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import resources.Strings
+import ui.resources.Strings
 import ui.app.theme.AppTheme
 import ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState

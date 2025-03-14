@@ -15,7 +15,7 @@ sealed class Route(
     data object FileHandling: Route(webRoutePath = "/files")
     data object Markdown: Route(webRoutePath = "/markdown")
     data object Popups: Route(webRoutePath = "/popups")
-    data object Resources: Route(webRoutePath = "/resources")
+    data object Resources: Route(webRoutePath = "/ui/resources")
     data object IOSServices: Route(webRoutePath = "/ios-services")
     data object Widgets: Route(webRoutePath = "/widgets")
     data object Capability : Route(webRoutePath = "/capability")

@@ -1,18 +1,17 @@
-import com.outsidesource.oskitExample.common.PlatformContext
-import com.outsidesource.oskitExample.common.initKoin
-import com.outsidesource.oskitExample.common.service.IOSS3Service
-import com.outsidesource.oskitExample.common.service.s3.IS3Service
-import com.outsidesource.oskitExample.common.service.swift.ISwiftExampleService
+import service.IOSS3Service
+import service.s3.IS3Service
+import service.swift.ISwiftExampleService
 import com.outsidesource.oskitkmp.storage.KmpKvStore
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+actual class PlatformContext
+
 private val koin = initKoin(
     platformContext = PlatformContext(),
-    extraModules = composeAppModule.toTypedArray()
 ).koin
 
-actual fun platformModule() = module {
+actual fun platformModule(platformContext: PlatformContext) = module {
     single { IOSS3Service() } bind IS3Service::class
     single { KmpKvStore() }
 }

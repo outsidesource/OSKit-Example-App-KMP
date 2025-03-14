@@ -1,7 +1,7 @@
 package ui.iosServices
 
-import com.outsidesource.oskitExample.common.service.s3.IS3Service
-import com.outsidesource.oskitExample.common.service.swift.ISwiftExampleService
+import service.s3.IS3Service
+import service.swift.ISwiftExampleService
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.outcome.unwrapOrReturn
 import kotlinx.coroutines.delay
