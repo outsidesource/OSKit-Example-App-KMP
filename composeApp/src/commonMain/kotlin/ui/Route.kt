@@ -19,6 +19,7 @@ sealed class Route(
     data object IOSServices: Route(webRoutePath = "/ios-services")
     data object Widgets: Route(webRoutePath = "/widgets")
     data object Capability : Route(webRoutePath = "/capability")
+    data object SettingsOpenerExample: Route(webRoutePath = "/settingsopener")
 
     companion object {
         val deepLinks = Router.buildDeepLinks {

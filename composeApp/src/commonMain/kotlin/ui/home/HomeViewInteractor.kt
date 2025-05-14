@@ -42,4 +42,8 @@ class HomeViewInteractor(
     fun capabilityButtonClicked() {
         coordinator.capabilityClicked()
     }
+
+    fun settingsOpenerExampleButtonClicked() {
+        coordinator.settingsOpenerExampleClicked()
+    }
 }

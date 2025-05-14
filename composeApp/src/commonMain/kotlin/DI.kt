@@ -14,6 +14,7 @@ import ui.home.HomeViewInteractor
 import ui.iosServices.IOSServicesScreenViewInteractor
 import ui.popups.PopupsScreenViewInteractor
 import ui.viewStateExample.ViewStateExampleViewInteractor
+import ui.settingsOpenerExample.SettingsOpenerExampleViewInteractor
 
 val composeAppModule = module {
     single { AppCoordinator() }
@@ -34,4 +35,5 @@ val composeAppModule = module {
     factory { PopupsScreenViewInteractor() }
     factory { IOSServicesScreenViewInteractor(get(), get()) }
     factory { CapabilityScreenViewInteractor(get()) }
+    factory { SettingsOpenerExampleViewInteractor(get(), get()) }
 } + platformModule()

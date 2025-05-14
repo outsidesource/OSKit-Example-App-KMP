@@ -22,6 +22,7 @@ import ui.markdown.MarkdownScreen
 import ui.popups.PopupsScreen
 import ui.viewStateExample.ViewStateExampleScreen
 import ui.widgets.WidgetsScreen
+import ui.settingsOpenerExample.SettingsOpenerExampleScreen
 
 @Composable
 fun App(
@@ -50,6 +51,7 @@ fun App(
                 is Route.IOSServices -> IOSServicesScreen()
                 is Route.Widgets -> WidgetsScreen()
                 is Route.Capability -> CapabilityScreen()
+                is Route.SettingsOpenerExample -> SettingsOpenerExampleScreen()
             }
         }
     }

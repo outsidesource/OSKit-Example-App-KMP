@@ -81,6 +81,10 @@ fun HomeScreen(
                     content = { Text("Capability") },
                     onClick = interactor::capabilityButtonClicked,
                 )
+                Button(
+                    content = { Text("App & System Settings Opener") },
+                    onClick = interactor::settingsOpenerExampleButtonClicked,
+                )
             }
         }
     }
