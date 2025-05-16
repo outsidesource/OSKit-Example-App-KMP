@@ -137,6 +137,7 @@ fun PageOne(direction: String) {
                 },
                 html = {
                     """
+                        <iframe width="100%" style="max-width: 500px; aspect-ratio: 16/9;" src="https://www.youtube.com/embed/0NDqYZVbpho?si=_tjA9VpXKSHiY1hy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                         <div style="width: 100%; height: 100%; background: green;">
                             <div>Hello <button>Click</button></div>
                             <input type="text" />
@@ -290,6 +291,12 @@ fun Html(
     // TODO: Make sure these remembered scopes are ok
     // TODO: Add removing of event listener
     // TODO: Add setting of scale and opacity to state (graphics layer or something)
+    // TODO: Demos Google Maps, Youtube embed, charts, react app?, video, audio, iframe
+    // TODO: Move dom setup into state creator
+    // TODO: The event proxy and resize observer need to be added regardless of if there is a user provided script
+    // TODO: Only attach resize observer if constraints aren't defined?
+    // TODO: Rename OsKit to runtime or env or something
+    // TODO: Iframes aren't going to proxy their events properly
     val focusManager = LocalFocusManager.current
     val density = LocalDensity.current
     val scriptElement = remember(script) { document.createElement("script") as HTMLScriptElement }
@@ -298,7 +305,6 @@ fun Html(
     val constraintsRef = remember(Unit) { VarRef(Constraints(0, 0)) }
 
     DisposableEffect(Unit) {
-        // TODO: Move this into state creator
         val shadowRoot = state.container.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
         state.container.className = "oskit-${Uuid.random().toHexString()}"
         state.container.style.position = "absolute"
@@ -312,7 +318,6 @@ fun Html(
         state.content.innerHTML = html()
         shadowRoot.appendChild(state.content)
 
-        // TODO: The event proxy and resize observer need to be added regardless of if there is a user provided script
         if (script != null) {
             state.container.addEventListener("oskit-resize") {
                 val data = (it as? CustomEvent)?.detail?.unsafeCast<ResizeEventDetail>() ?: return@addEventListener
