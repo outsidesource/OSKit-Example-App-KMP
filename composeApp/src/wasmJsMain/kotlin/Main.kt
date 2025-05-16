@@ -135,8 +135,10 @@ fun PageOne(direction: String) {
             Html(
                 modifier = Modifier.fillMaxWidth(),
                 state = htmlState,
-                script = {
+                inlineJs = {
                     """
+                    import { Env } from "${htmlState.runtimeJsUrl}"
+                    
                     function test() {
                         console.log("Hello!")
                         Env.emit(new CustomEvent("hello"))
@@ -184,7 +186,6 @@ fun PageOne(direction: String) {
                             <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
                         </ul>
                     </div>
-                    <script src="${Res.getUri("files/test.js")}"></script>"
                     """
                 },
             )
@@ -194,7 +195,6 @@ fun PageOne(direction: String) {
                     .fillMaxWidth()
                     .background(Color.Gray)
             ) {
-//                TextField(value = "", onValueChange = {})
                 Button(onClick = {}) { Text("Test")}
             }
         }
@@ -262,6 +262,8 @@ external class BlurEventDetail : JsAny {
     val direction: JsString
 }
 
+external fun encodeURIComponent(value: String): String
+
 @Composable
 fun rememberHtmlState(): HtmlState = remember(Unit) {
     HtmlState()
@@ -270,18 +272,20 @@ fun rememberHtmlState(): HtmlState = remember(Unit) {
 @OptIn(ExperimentalUuidApi::class)
 @Immutable
 /**
- * @param container The primary element added to the DOM. All [CustomEvents] should be dispatched to this element.
+ * @param container The primary element added to the DOM. All [CustomEvent]s should be dispatched to this element.
  * @param content The content element. This is the node any custom HTML is appended to. Any custom styles
  */
 data class HtmlState(
     val container: HTMLDivElement = document.createElement("div") as HTMLDivElement,
     val content: HTMLDivElement = document.createElement("div") as HTMLDivElement,
-    internal val script: HTMLScriptElement = document.createElement("script") as HTMLScriptElement
 ) {
+
+    val runtimeJsUrl: String
+    val runtimeJsUrlEncoded: String
 
     init {
         container.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
-        container.className = "html-compose-${Uuid.random().toHexString()}"
+        container.id = "compose-html-${Uuid.random().toHexString()}"
         container.style.position = "absolute"
         container.style.top = "0"
         container.style.left = "0"
@@ -289,94 +293,20 @@ data class HtmlState(
         container.style.overflowX = "hidden"
         container.style.overflowY = "hidden"
 
-        content.className = "html-compose-${Uuid.random().toHexString()}"
+        content.id = "compose-html-${Uuid.random().toHexString()}"
 
-        injectJsRuntime()
-    }
+        runtimeJsUrl = "${Res.getUri("files/compose-html-runtime.js")}?containerId=${container.id}&contentId=${content.id}"
+        runtimeJsUrlEncoded = encodeURIComponent(runtimeJsUrl)
 
-    private fun injectJsRuntime() {
-        script.type = "module"
-        script.textContent = """
-            const Env = (() => {
-                const canvas = document.querySelector("canvas")
-                const container = document.querySelector(".${container.className}")
-                const content = container.shadowRoot.querySelector(".${content.className}")
-
-                // Event proxy
-                container.addEventListener("wheel", (ev) => canvas.dispatchEvent(new WheelEvent("wheel", ev)))
-                const pointerEvents = ["pointerover", "pointerenter", "pointerdown", "pointermove", "pointerup", "pointercancel", "pointerout", "pointerleave", "gotpointercapture", "lostpointercapture"]
-                pointerEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new PointerEvent(type, ev))))
-                const touchEvents = ["touchstart", "touchend", "touchmove", "touchcancel"]
-                touchEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new TouchEvent(type, ev))))
-                const mouseEvents = ["click", "dblclick", "mousedown", "mouseenter", "mouseleave", "mouseout", "mouseover", "mouseup"]
-                mouseEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new MouseEvent(type, ev))))
-
-                const keyboardEvents = ["keyup", "keypress"]
-                keyboardEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new KeyboardEvent(type, ev))))
-                container.addEventListener("keydown", (ev) => {                        
-                    if (ev.key !== "Tab") {
-                         canvas.dispatchEvent(new KeyboardEvent("keydown", ev))
-                         return
-                    }
-
-                    const focusables = getFocusableElements(content)
-                    if (focusables.length > 0) {
-                        if (ev.shiftKey) {
-                            if (container.shadowRoot.activeElement === focusables[0]) {
-                                container.dispatchEvent(new CustomEvent("html-compose-blur", {detail: {direction: "previous"}}))
-                            }
-                        } else if (container.shadowRoot.activeElement === focusables[focusables.length - 1]) {
-                            container.shadowRoot.activeElement.blur()
-                            container.dispatchEvent(new CustomEvent("html-compose-blur", {detail: {direction: "next"}}))
-                            ev.preventDefault()
-                        }
-                        return
-                    }
-                })
-                
-                function getFocusableElements(root) {
-                    const selector = [
-                        "a[href]",
-                        "area[href]",
-                        "input:not([disabled])",
-                        "select:not([disabled])",
-                        "textarea:not([disabled])",
-                        "button:not([disabled])",
-                        "iframe",
-                        "object",
-                        "embed",
-                        "[contenteditable]",
-                        "[tabindex]"
-                    ].join(",")
-                  
-                    return Array.from(root.querySelectorAll(selector)).filter(el => el.tabIndex >= 0);
-                }
-                
-                container.addEventListener("html-compose-focus", () => {
-                    const focusableElements = getFocusableElements(content)
-                    if (focusableElements.length === 0) return
-                    focusableElements[0].focus()
-                })
-                
-                const observer = new ResizeObserver((ev) => {
-                    container.dispatchEvent(new CustomEvent("html-compose-resize", {detail: {height: content.scrollHeight, width: content.scrollWidth}}))
-                })
-                
-                observer.observe(content)
-            
-                return Object.freeze({
-                    container: container,
-                    content: content,
-                    emit: (ev) => container.dispatchEvent(ev),
-                    addListener: (type, listener) => container.addEventListener(type, listener),
-                    removeListener: (type, listener) => container.removeEventListener(type, listener),
-                })
-            })();
-        """.trimIndent()
+        val runtimeScript = document.createElement("script") as HTMLScriptElement
+        runtimeScript.type = "module"
+        runtimeScript.src = runtimeJsUrl
+        container.shadowRoot?.appendChild(runtimeScript)
     }
 
     fun emit(event: CustomEvent) = container.dispatchEvent(event)
-    fun listen(type: String, listener: EventListener) = container.addEventListener(type, listener)
+    fun addListener(type: String, listener: EventListener) = container.addEventListener(type, listener)
+    fun removeListener(type: String, listener: EventListener) = container.removeEventListener(type, listener)
 }
 
 /**
@@ -387,7 +317,32 @@ data class HtmlState(
  *
  * Events:
  *   Use [HtmlState.emit] to dispatch custom events from Kotlin to your injected JavaScript.
- *   Use [HtmlState.listen] to listen to custom events from JavaScript in Kotlin.
+ *   Use [HtmlState.addListener] to listen to custom events from JavaScript in Kotlin.
+ *
+ * JavaScript:
+ *   [Html] supports both inline scripts and ES6 module scripts. All inline JS is injected as an ES6 module in order
+ *   to isolate definitions. All scripts may import [HtmlState.runtimeJsUrl] to gain access to the `Env` object which
+ *   provides access to the `container`, `content` elements as well as providing a mechanism to send and receive
+ *   [CustomEvent]s to Kotlin.
+ *
+ *   inlineJs example:
+ *   ```js
+ *   import { Env } from "${htmlState.runtimeJsUrl()}"
+ *
+ *   function foo() {
+ *      Env.emit(new CustomEvent("bar"))
+ *   }
+ *
+ *   const button = Env.content.querySelector("button")
+ *   ```
+ *
+ *   ES6 module example:
+ *   ```js
+ *   // Source Url: http://example.com/es6.js?runtimeJsUrl=${htmlState.runtimeJsUrlEncoded}
+ *   const { Env } = await import(new URL(import.meta.url).searchParams.get("runtimeJsUrl"))
+ *
+ *   console.log(Env.container)
+ *   ```
  *
  * File access:
  *   Use `Res.getUri()` to inject files/images into your HTML source
@@ -402,8 +357,9 @@ data class HtmlState(
  *
  * @param state The state for the Html. This provides access to the created DOM nodes used and provides some helper
  *   functions for dispatching and listening to events.
- * @param script returns a JavaScript string to be injected into the HTML. This function only runs once unless the
+ * @param inlineJs returns a JavaScript string to be injected into the HTML. This function only runs once unless the
  *   [HtmlState] changes.
+ * @param scripts An array of JavaScript module URLs to load.
  * @param html returns the HTML string to be injected. This function only runs once unless the [HtmlState] changes.
  */
 @OptIn(ExperimentalUuidApi::class)
@@ -411,13 +367,12 @@ data class HtmlState(
 fun Html(
     state: HtmlState = rememberHtmlState(),
     modifier: Modifier = Modifier,
-    script: (() -> String)? = null,
+    inlineJs: (() -> String)? = null,
+    scripts: List<String> = emptyList(),
     html: () -> String,
 ) {
     // TODO: Add setting of scale and opacity to state (graphics layer or something)
     // TODO: Demos Google Maps, Youtube embed, charts, react app?, video, audio, iframe
-    // TODO: Rename OsKit to runtime or env or something
-    // TODO: Test adding using script files
     val focusManager = LocalFocusManager.current
     val density = LocalDensity.current
     var htmlWidth by remember(Unit) { mutableStateOf(0.dp) }
@@ -429,19 +384,31 @@ fun Html(
         state.content.innerHTML = html()
         shadowRoot.appendChild(state.content)
 
-        state.container.addEventListener("html-compose-resize") {
+        state.container.addEventListener("compose-html-resize") {
             val data = (it as? CustomEvent)?.detail?.unsafeCast<ResizeEventDetail>() ?: return@addEventListener
             htmlWidth = data.width.toInt().dp
             htmlHeight = data.height.toInt().dp
         }
-        state.container.addEventListener("html-compose-blur") {
+        state.container.addEventListener("compose-html-blur") {
             val data = (it as? CustomEvent)?.detail?.unsafeCast<BlurEventDetail>() ?: return@addEventListener
             val direction = if (data.direction == "next".toJsString()) FocusDirection.Down else FocusDirection.Up
             focusManager.moveFocus(direction)
         }
 
-        if (script != null) state.script.textContent += script().trimIndent()
-        shadowRoot.appendChild(state.script)
+        if (inlineJs != null) {
+            val script: HTMLScriptElement = document.createElement("script") as HTMLScriptElement
+            script.type = "module"
+            script.textContent = inlineJs().trimIndent()
+            shadowRoot.appendChild(script)
+        }
+
+        for (scriptUrl in scripts) {
+            val script: HTMLScriptElement = document.createElement("script") as HTMLScriptElement
+            script.type = "module"
+            script.src = scriptUrl
+            shadowRoot.appendChild(script)
+        }
+
         document.body?.appendChild(state.container)
 
         onDispose { document.body?.removeChild(state.container) }
@@ -451,7 +418,7 @@ fun Html(
         modifier = modifier
             .onFocusChanged {
                 if (!it.isFocused) return@onFocusChanged
-                state.container.dispatchEvent(CustomEvent("html-compose-focus"))
+                state.container.dispatchEvent(CustomEvent("compose-html-focus"))
             }
             .focusable()
             .onGloballyPositioned { layoutCoordinates ->
