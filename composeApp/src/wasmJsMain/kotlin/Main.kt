@@ -5,23 +5,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -31,26 +21,23 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.boundsInRoot
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.ComposeViewport
+import com.outsidesource.oskitcompose.lib.VarRef
 import com.outsidesource.oskitcompose.lib.koinInjector
 import com.outsidesource.oskitkmp.capability.KmpCapabilities
 import com.outsidesource.oskitkmp.capability.KmpCapabilityContext
 import com.outsidesource.oskitkmp.filesystem.KmpFs
 import com.outsidesource.oskitkmp.filesystem.KmpFsContext
 import kotlinx.browser.document
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.configureWebResources
 import org.koin.core.component.inject
-import org.w3c.dom.CustomEvent
-import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLScriptElement
-import org.w3c.dom.OPEN
-import org.w3c.dom.ShadowRootInit
-import org.w3c.dom.ShadowRootMode
+import org.w3c.dom.*
 import kotlin.math.roundToInt
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -103,6 +90,7 @@ fun main() {
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun PageOne() {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -202,7 +190,7 @@ fun PageTwo() {
                 .background(Color.Blue)
         )
         Html(
-            modifier = Modifier.fillMaxWidth().height(300.dp),
+            modifier = Modifier.fillMaxWidth().weight(1f),
             html = {
                 """
                 <div style="width: 100%; height: 100%; background: green;">
@@ -231,6 +219,10 @@ external class ResizeEventDetail : JsAny {
 }
 
 /**
+ * Render HTML inline
+ *
+ * File access: Use `Res.getUri()` to inject files/images into your HTML source
+ *
  * Limitations:
  *   1. Alpha and scale graphic transformations must be applied directly to the HTML DOM elements.
  *      This affects animations or any parent graphic transformations using alpha/scale.
@@ -243,12 +235,14 @@ fun Html(
     script: (() -> String)? = null,
     html: () -> String,
 ) {
+    // TODO: Make a separate rememberHtmlState() to remember the nodes
     val density = LocalDensity.current
     val container = remember(Unit) { document.createElement("div") as HTMLDivElement }
     val content = remember(Unit) { document.createElement("div") as HTMLDivElement }
     val scriptElement = remember(script) { document.createElement("script") as HTMLScriptElement }
-    var width by remember(Unit) { mutableStateOf(0.dp) }
-    var height by remember(Unit) { mutableStateOf(0.dp) }
+    var htmlWidth by remember(Unit) { mutableStateOf(0.dp) }
+    var htmlHeight by remember(Unit) { mutableStateOf(0.dp) }
+    val constraintsRef = remember(Unit) { VarRef(Constraints(0, 0)) }
 
     DisposableEffect(Unit) {
         val shadowRoot = container.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
@@ -267,8 +261,9 @@ fun Html(
         // TODO: The event proxy and resize observer need to be added regardless of if there is a user provided script
         if (script != null) {
             container.addEventListener("oskit-resize") {
-                width = ((it as CustomEvent).detail?.unsafeCast<ResizeEventDetail>())?.width?.toInt()?.dp ?: 0.dp
-                height = ((it as CustomEvent).detail?.unsafeCast<ResizeEventDetail>())?.height?.toInt()?.dp ?: 0.dp
+                val data = (it as? CustomEvent)?.detail?.unsafeCast<ResizeEventDetail>() ?: return@addEventListener
+                htmlWidth = data.width.toInt().dp
+                htmlHeight = data.height.toInt().dp
             }
             scriptElement.type = "module"
             scriptElement.textContent = """
@@ -289,7 +284,6 @@ fun Html(
                     mouseEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new MouseEvent(type, ev))))
                     
                     const observer = new ResizeObserver((ev) => {
-                        console.log(content.offsetWidth)
                         container.dispatchEvent(new CustomEvent("oskit-resize", {detail: {height: content.scrollHeight, width: content.scrollWidth}}))
                     })
                     
@@ -320,15 +314,21 @@ fun Html(
             container.style.width = "${bounds.width}px"
             container.style.transform = "translate(${bounds.left}px, ${bounds.top}px)"
 
-//            content.style.width = "${size.width}px"
-//            content.style.height = "${size.height}px"
+            content.style.width = if (constraintsRef.value.hasFixedWidth) "${constraintsRef.value.minWidth}px" else "auto"
+            content.style.minWidth = if (constraintsRef.value.hasBoundedWidth) "${constraintsRef.value.minWidth}px" else "auto"
+            content.style.maxWidth = if (constraintsRef.value.hasBoundedWidth) "${constraintsRef.value.maxWidth}px" else "auto"
+            content.style.height = if (constraintsRef.value.hasFixedHeight) "${constraintsRef.value.minHeight}px" else "auto"
+            content.style.minHeight = if (constraintsRef.value.hasBoundedHeight) "${constraintsRef.value.minHeight}px" else "auto"
+            content.style.maxHeight = if (constraintsRef.value.hasBoundedHeight) "${constraintsRef.value.maxHeight}px" else "auto"
+
             val top = if (bounds.height < size.height && rootPos.y < bounds.top) rootPos.y - bounds.top else 0
             val left = if (bounds.width < size.width && rootPos.x < bounds.left) rootPos.x - bounds.left else 0
             content.style.transform = "translate(${left}px, ${top}px)"
         }
     ) { _, constraints ->
-        val width = if (constraints.hasFixedHeight || constraints.hasBoundedHeight) constraints.minWidth else width.toPx().roundToInt()
-        val height = if (constraints.hasFixedHeight || constraints.hasBoundedHeight) constraints.minHeight else height.toPx().roundToInt()
+        constraintsRef.value = constraints
+        val width = if (constraints.hasFixedWidth) constraints.minWidth else htmlWidth.toPx().roundToInt()
+        val height = if (constraints.hasFixedHeight) constraints.minHeight else htmlHeight.toPx().roundToInt()
         layout(width, height) {}
     }
 }
