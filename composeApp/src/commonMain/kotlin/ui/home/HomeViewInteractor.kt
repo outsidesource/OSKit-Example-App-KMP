@@ -43,6 +43,10 @@ class HomeViewInteractor(
         coordinator.capabilityClicked()
     }
 
+    fun colorPickerButtonClicked() {
+        coordinator.colorPickerClicked()
+    }
+
     fun settingsOpenerExampleButtonClicked() {
         coordinator.settingsOpenerExampleClicked()
     }

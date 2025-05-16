@@ -13,6 +13,7 @@ import ui.app.theme.DarkAppColors
 import ui.app.theme.LightAppColors
 import ui.appStateExample.AppStateExampleScreen
 import ui.capability.CapabilityScreen
+import ui.colorPicker.ColorPickerScreen
 import ui.device.DeviceHomeScreen
 import ui.file.FileSystemScreen
 import ui.home.HomeScreen
@@ -51,6 +52,7 @@ fun App(
                 is Route.IOSServices -> IOSServicesScreen()
                 is Route.Widgets -> WidgetsScreen()
                 is Route.Capability -> CapabilityScreen()
+                is Route.ColorPicker -> ColorPickerScreen()
                 is Route.SettingsOpenerExample -> SettingsOpenerExampleScreen()
             }
         }

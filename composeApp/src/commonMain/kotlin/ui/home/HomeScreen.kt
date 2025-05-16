@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import resources.Strings
+import ui.resources.Strings
 import ui.common.Screen
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.resources.rememberKmpString
@@ -80,6 +80,10 @@ fun HomeScreen(
                 Button(
                     content = { Text("Capability") },
                     onClick = interactor::capabilityButtonClicked,
+                )
+                Button(
+                    content = { Text("Color Picker") },
+                    onClick = interactor::colorPickerButtonClicked,
                 )
                 Button(
                     content = { Text("App & System Settings Opener") },

@@ -38,5 +38,6 @@ class AppCoordinator(): Coordinator(
     fun iosServicesClicked() = push(Route.IOSServices)
     fun widgetsClicked() = push(Route.Widgets)
     fun capabilityClicked() = push(Route.Capability)
+    fun colorPickerClicked() = push(Route.ColorPicker)
     fun settingsOpenerExampleClicked() = push(Route.SettingsOpenerExample)
 }

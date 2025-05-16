@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import resources.Strings
+import ui.resources.Strings
 import ui.app.theme.AppTheme
 import ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
@@ -37,14 +37,6 @@ fun IOSServicesScreen(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            Section("Implemented with Kotlin via Cocoapods and Objective-C interop") {
-                Button(
-                    content = { Text("List AWS S3 Bucket Items") },
-                    onClick = interactor::listS3BucketItemsClicked
-                )
-                Text(state.s3BucketListText)
-            }
-
             Section("Implemented with Swift") {
                 Column{
                     Button(

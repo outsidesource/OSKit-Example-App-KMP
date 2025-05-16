@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import resources.Fonts
-import resources.Strings
+import ui.resources.Fonts
+import ui.resources.Strings
 import ui.app.theme.AppTheme
 import ui.common.Screen
 import com.outsidesource.oskitcompose.resources.LocalLocaleOverride

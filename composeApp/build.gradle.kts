@@ -91,7 +91,6 @@ kotlin {
             isStatic = true // https://youtrack.jetbrains.com/issue/KT-42254
             export(libs.oskit.kmp)
             export(libs.kotlinx.coroutines.core)
-            export(project(":common"))
         }
     }
 
@@ -109,7 +108,9 @@ kotlin {
         commonMain.dependencies {
             api(libs.oskit.kmp)
             api(libs.kotlinx.coroutines.core)
-            api(project(":common"))
+            api(libs.koin.core)
+            api(libs.kotlinx.datetime)
+            api(libs.atomicfu)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
