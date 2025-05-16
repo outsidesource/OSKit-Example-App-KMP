@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,6 +15,10 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -24,6 +29,7 @@ import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.ComposeViewport
@@ -109,7 +115,8 @@ fun PageOne() {
                     .fillMaxWidth()
                     .background(Color.Gray)
             ) {
-                TextField(value = "", onValueChange = {})
+//                TextField(value = "", onValueChange = {})
+                Button(onClick = {}) { Text("Test")}
             }
             Html(
                 modifier = Modifier.fillMaxWidth(),
@@ -169,7 +176,10 @@ fun PageOne() {
                     .height(1000.dp)
                     .fillMaxWidth()
                     .background(Color.Gray)
-            )
+            ) {
+//                TextField(value = "", onValueChange = {})
+                Button(onClick = {}) { Text("Test")}
+            }
         }
         Box(
             modifier = Modifier
@@ -218,6 +228,10 @@ external class ResizeEventDetail : JsAny {
     val height: JsNumber
 }
 
+external class BlurEventDetail : JsAny {
+    val direction: JsString
+}
+
 /**
  * Render HTML inline
  *
@@ -236,6 +250,7 @@ fun Html(
     html: () -> String,
 ) {
     // TODO: Make a separate rememberHtmlState() to remember the nodes
+    val focusManager = LocalFocusManager.current
     val density = LocalDensity.current
     val container = remember(Unit) { document.createElement("div") as HTMLDivElement }
     val content = remember(Unit) { document.createElement("div") as HTMLDivElement }
@@ -265,6 +280,11 @@ fun Html(
                 htmlWidth = data.width.toInt().dp
                 htmlHeight = data.height.toInt().dp
             }
+            container.addEventListener("oskit-blur") {
+                val data = (it as? CustomEvent)?.detail?.unsafeCast<BlurEventDetail>() ?: return@addEventListener
+                val direction = if (data.direction == "next".toJsString()) FocusDirection.Down else FocusDirection.Up
+                focusManager.moveFocus(direction)
+            }
             scriptElement.type = "module"
             scriptElement.textContent = """
                 const OsKit = (() => {
@@ -278,10 +298,55 @@ fun Html(
                     pointerEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new PointerEvent(type, ev))))
                     const touchEvents = ["touchstart", "touchend", "touchmove", "touchcancel"]
                     touchEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new TouchEvent(type, ev))))
-                    const keyboardEvents = ["keydown", "keyup", "keypress"]
-                    keyboardEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new KeyboardEvent(type, ev))))
                     const mouseEvents = ["click", "dblclick", "mousedown", "mouseenter", "mouseleave", "mouseout", "mouseover", "mouseup"]
                     mouseEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new MouseEvent(type, ev))))
+
+                    const keyboardEvents = ["keyup", "keypress"]
+                    keyboardEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new KeyboardEvent(type, ev))))
+                    container.addEventListener("keydown", (ev) => {                        
+                        if (ev.key !== "Tab") {
+                             canvas.dispatchEvent(new KeyboardEvent("keydown", ev))
+                             return
+                        }
+
+                        const focusables = getFocusableElements(content)
+                        if (focusables.length > 0) {
+                            if (ev.shiftKey) {
+                                if (container.shadowRoot.activeElement === focusables[0]) {
+                                    container.dispatchEvent(new CustomEvent("oskit-blur", {detail: {direction: "previous"}}))
+                                }
+                            } else if (container.shadowRoot.activeElement === focusables[focusables.length - 1]) {
+                                container.shadowRoot.activeElement.blur()
+                                container.dispatchEvent(new CustomEvent("oskit-blur", {detail: {direction: "next"}}))
+                                ev.preventDefault()
+                            }
+                            return
+                        }
+                    })
+                    
+                    function getFocusableElements(root) {
+                        const selector = [
+                            "a[href]",
+                            "area[href]",
+                            "input:not([disabled])",
+                            "select:not([disabled])",
+                            "textarea:not([disabled])",
+                            "button:not([disabled])",
+                            "iframe",
+                            "object",
+                            "embed",
+                            "[contenteditable]",
+                            "[tabindex]"
+                        ].join(",")
+                      
+                        return Array.from(root.querySelectorAll(selector)).filter(el => el.tabIndex >= 0);
+                    }
+                    
+                    container.addEventListener("oskit-focus", () => {
+                        const focusableElements = getFocusableElements(content)
+                        if (focusableElements.length === 0) return
+                        focusableElements[0].focus()
+                    })
                     
                     const observer = new ResizeObserver((ev) => {
                         container.dispatchEvent(new CustomEvent("oskit-resize", {detail: {height: content.scrollHeight, width: content.scrollWidth}}))
@@ -305,26 +370,32 @@ fun Html(
     }
 
     Layout(
-        modifier = modifier.onGloballyPositioned { layoutCoordinates ->
-            val bounds = layoutCoordinates.boundsInRoot().let { Rect(it.topLeft / density.density, it.size / density.density) }
-            val rootPos = layoutCoordinates.positionInRoot() / density.density
-            val size = layoutCoordinates.size.let { Size(it.width / density.density, it.height / density.density) }
+        modifier = modifier
+            .onFocusChanged {
+                if (!it.isFocused) return@onFocusChanged
+                container.dispatchEvent(CustomEvent("oskit-focus"))
+            }
+            .focusable()
+            .onGloballyPositioned { layoutCoordinates ->
+                val bounds = layoutCoordinates.boundsInRoot().let { Rect(it.topLeft / density.density, it.size / density.density) }
+                val rootPos = layoutCoordinates.positionInRoot() / density.density
+                val size = layoutCoordinates.size.let { Size(it.width / density.density, it.height / density.density) }
 
-            container.style.height = "${bounds.height}px"
-            container.style.width = "${bounds.width}px"
-            container.style.transform = "translate(${bounds.left}px, ${bounds.top}px)"
+                container.style.height = "${bounds.height}px"
+                container.style.width = "${bounds.width}px"
+                container.style.transform = "translate(${bounds.left}px, ${bounds.top}px)"
 
-            content.style.width = if (constraintsRef.value.hasFixedWidth) "${constraintsRef.value.minWidth}px" else "auto"
-            content.style.minWidth = if (constraintsRef.value.hasBoundedWidth) "${constraintsRef.value.minWidth}px" else "auto"
-            content.style.maxWidth = if (constraintsRef.value.hasBoundedWidth) "${constraintsRef.value.maxWidth}px" else "auto"
-            content.style.height = if (constraintsRef.value.hasFixedHeight) "${constraintsRef.value.minHeight}px" else "auto"
-            content.style.minHeight = if (constraintsRef.value.hasBoundedHeight) "${constraintsRef.value.minHeight}px" else "auto"
-            content.style.maxHeight = if (constraintsRef.value.hasBoundedHeight) "${constraintsRef.value.maxHeight}px" else "auto"
+                content.style.width = if (constraintsRef.value.hasFixedWidth) "${constraintsRef.value.minWidth}px" else "auto"
+                content.style.minWidth = if (constraintsRef.value.hasBoundedWidth) "${constraintsRef.value.minWidth}px" else "auto"
+                content.style.maxWidth = if (constraintsRef.value.hasBoundedWidth) "${constraintsRef.value.maxWidth}px" else "auto"
+                content.style.height = if (constraintsRef.value.hasFixedHeight) "${constraintsRef.value.minHeight}px" else "auto"
+                content.style.minHeight = if (constraintsRef.value.hasBoundedHeight) "${constraintsRef.value.minHeight}px" else "auto"
+                content.style.maxHeight = if (constraintsRef.value.hasBoundedHeight) "${constraintsRef.value.maxHeight}px" else "auto"
 
-            val top = if (bounds.height < size.height && rootPos.y < bounds.top) rootPos.y - bounds.top else 0
-            val left = if (bounds.width < size.width && rootPos.x < bounds.left) rootPos.x - bounds.left else 0
-            content.style.transform = "translate(${left}px, ${top}px)"
-        }
+                val top = if (bounds.height < size.height && rootPos.y < bounds.top) rootPos.y - bounds.top else 0
+                val left = if (bounds.width < size.width && rootPos.x < bounds.left) rootPos.x - bounds.left else 0
+                content.style.transform = "translate(${left}px, ${top}px)"
+            }
     ) { _, constraints ->
         constraintsRef.value = constraints
         val width = if (constraints.hasFixedWidth) constraints.minWidth else htmlWidth.toPx().roundToInt()
