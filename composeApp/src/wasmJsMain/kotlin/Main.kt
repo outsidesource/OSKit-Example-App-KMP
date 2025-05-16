@@ -1,8 +1,6 @@
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.*
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -37,6 +35,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.configureWebResources
 import org.koin.core.component.inject
 import org.w3c.dom.*
+import org.w3c.dom.events.EventListener
 import kotlin.math.roundToInt
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -72,16 +71,16 @@ fun main() {
             AnimatedContent(
                 targetState = tab,
                 transitionSpec = {
-//                    scaleIn(tween(1000)) +
+                    scaleIn(tween(1000)) +
                             fadeIn(tween(1000)) togetherWith
-//                            scaleOut(tween(1000)) +
+                            scaleOut(tween(1000)) +
                             fadeOut(tween(1000))
                 }
             )
             {
                 when (it) {
-                    Page.One -> PageOne()
-                    Page.Two -> PageTwo()
+                    Page.One -> PageOne(if (tab == Page.One) "in" else "out")
+                    Page.Two -> PageTwo(if (tab == Page.Two) "in" else "out")
                 }
             }
         }
@@ -91,7 +90,19 @@ fun main() {
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun PageOne() {
+fun PageOne(direction: String) {
+    val htmlState = rememberHtmlState()
+    val alphaAnim = remember { Animatable(0f) }
+    LaunchedEffect(direction) {
+        alphaAnim.animateTo(if (direction == "in") 1f else 0f, tween(1000))
+    }
+
+    LaunchedEffect(alphaAnim) {
+        snapshotFlow { alphaAnim.value }.collect {
+            htmlState.content.style.opacity = it.toString()
+        }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -113,11 +124,12 @@ fun PageOne() {
             }
             Html(
                 modifier = Modifier.fillMaxWidth(),
+                state = htmlState,
                 script = {
                     """
                         function test() {
                             console.log("Hello!")
-                            OsKit.sendEvent(new CustomEvent("hello"))
+                            OsKit.emit(new CustomEvent("hello"))
                         }
                         
                         OsKit.content.querySelector("button").addEventListener("click", test)
@@ -184,7 +196,19 @@ fun PageOne() {
 }
 
 @Composable
-fun PageTwo() {
+fun PageTwo(direction: String) {
+    val htmlState = rememberHtmlState()
+    val alphaAnim = remember { Animatable(0f) }
+    LaunchedEffect(direction) {
+        alphaAnim.animateTo(if (direction == "in") 1f else 0f, tween(1000))
+    }
+
+    LaunchedEffect(alphaAnim) {
+        snapshotFlow { alphaAnim.value }.collect {
+            htmlState.content.style.opacity = it.toString()
+        }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -193,6 +217,7 @@ fun PageTwo() {
                 .background(Color.Blue)
         )
         Html(
+            state = htmlState,
             modifier = Modifier.fillMaxWidth().weight(1f),
             html = {
                 """
@@ -225,6 +250,25 @@ external class BlurEventDetail : JsAny {
     val direction: JsString
 }
 
+@Composable
+fun rememberHtmlState(): HtmlState {
+    return remember(Unit) {
+        HtmlState(
+            container = document.createElement("div") as HTMLDivElement,
+            content = document.createElement("div") as HTMLDivElement,
+        )
+    }
+}
+
+@Immutable
+data class HtmlState(
+    val container: HTMLElement,
+    val content: HTMLElement,
+) {
+    fun emit(event: CustomEvent) = container.dispatchEvent(event)
+    fun listen(type: String, listener: EventListener) = container.addEventListener(type, listener)
+}
+
 /**
  * Render HTML inline
  *
@@ -238,42 +282,44 @@ external class BlurEventDetail : JsAny {
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun Html(
+    state: HtmlState = rememberHtmlState(),
     modifier: Modifier = Modifier,
     script: (() -> String)? = null,
     html: () -> String,
 ) {
-    // TODO: Make a separate rememberHtmlState() to remember the nodes
+    // TODO: Make sure these remembered scopes are ok
+    // TODO: Add removing of event listener
+    // TODO: Add setting of scale and opacity to state (graphics layer or something)
     val focusManager = LocalFocusManager.current
     val density = LocalDensity.current
-    val container = remember(Unit) { document.createElement("div") as HTMLDivElement }
-    val content = remember(Unit) { document.createElement("div") as HTMLDivElement }
     val scriptElement = remember(script) { document.createElement("script") as HTMLScriptElement }
     var htmlWidth by remember(Unit) { mutableStateOf(0.dp) }
     var htmlHeight by remember(Unit) { mutableStateOf(0.dp) }
     val constraintsRef = remember(Unit) { VarRef(Constraints(0, 0)) }
 
     DisposableEffect(Unit) {
-        val shadowRoot = container.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
-        container.className = "oskit-${Uuid.random().toHexString()}"
-        container.style.position = "absolute"
-        container.style.top = "0"
-        container.style.left = "0"
-        container.style.zIndex = "1"
-        container.style.overflowX = "hidden"
-        container.style.overflowY = "hidden"
+        // TODO: Move this into state creator
+        val shadowRoot = state.container.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
+        state.container.className = "oskit-${Uuid.random().toHexString()}"
+        state.container.style.position = "absolute"
+        state.container.style.top = "0"
+        state.container.style.left = "0"
+        state.container.style.zIndex = "1"
+        state.container.style.overflowX = "hidden"
+        state.container.style.overflowY = "hidden"
 
-        content.className = "oskit-${Uuid.random().toHexString()}"
-        content.innerHTML = html()
-        shadowRoot.appendChild(content)
+        state.content.className = "oskit-${Uuid.random().toHexString()}"
+        state.content.innerHTML = html()
+        shadowRoot.appendChild(state.content)
 
         // TODO: The event proxy and resize observer need to be added regardless of if there is a user provided script
         if (script != null) {
-            container.addEventListener("oskit-resize") {
+            state.container.addEventListener("oskit-resize") {
                 val data = (it as? CustomEvent)?.detail?.unsafeCast<ResizeEventDetail>() ?: return@addEventListener
                 htmlWidth = data.width.toInt().dp
                 htmlHeight = data.height.toInt().dp
             }
-            container.addEventListener("oskit-blur") {
+            state.container.addEventListener("oskit-blur") {
                 val data = (it as? CustomEvent)?.detail?.unsafeCast<BlurEventDetail>() ?: return@addEventListener
                 val direction = if (data.direction == "next".toJsString()) FocusDirection.Down else FocusDirection.Up
                 focusManager.moveFocus(direction)
@@ -282,8 +328,8 @@ fun Html(
             scriptElement.textContent = """
                 const OsKit = (() => {
                     const canvas = document.querySelector("canvas")
-                    const container = document.querySelector(".${container.className}")
-                    const content = container.shadowRoot.querySelector(".${content.className}")
+                    const container = document.querySelector(".${state.container.className}")
+                    const content = container.shadowRoot.querySelector(".${state.content.className}")
 
                     // Event proxy
                     container.addEventListener("wheel", (ev) => canvas.dispatchEvent(new WheelEvent("wheel", ev)))
@@ -350,23 +396,24 @@ fun Html(
                     return Object.freeze({
                         container: container,
                         content: content,
-                        sendEvent: (ev) => container.dispatchEvent(ev),   
+                        emit: (ev) => container.dispatchEvent(ev),
+                        listen: (type, listener) => container.addEventListener(type, listener)
                     })
                 })();
             """.trimIndent() + script().trimIndent()
             shadowRoot.appendChild(scriptElement)
         }
 
-        document.body?.appendChild(container)
+        document.body?.appendChild(state.container)
 
-        onDispose { document.body?.removeChild(container) }
+        onDispose { document.body?.removeChild(state.container) }
     }
 
     Layout(
         modifier = modifier
             .onFocusChanged {
                 if (!it.isFocused) return@onFocusChanged
-                container.dispatchEvent(CustomEvent("oskit-focus"))
+                state.container.dispatchEvent(CustomEvent("oskit-focus"))
             }
             .focusable()
             .onGloballyPositioned { layoutCoordinates ->
@@ -374,20 +421,20 @@ fun Html(
                 val rootPos = layoutCoordinates.positionInRoot() / density.density
                 val size = layoutCoordinates.size.let { Size(it.width / density.density, it.height / density.density) }
 
-                container.style.height = "${bounds.height}px"
-                container.style.width = "${bounds.width}px"
-                container.style.transform = "translate(${bounds.left}px, ${bounds.top}px)"
+                state.container.style.height = "${bounds.height}px"
+                state.container.style.width = "${bounds.width}px"
+                state.container.style.transform = "translate(${bounds.left}px, ${bounds.top}px)"
 
-                content.style.width = if (constraintsRef.value.hasFixedWidth) "${constraintsRef.value.minWidth}px" else "auto"
-                content.style.minWidth = if (constraintsRef.value.hasBoundedWidth) "${constraintsRef.value.minWidth}px" else "auto"
-                content.style.maxWidth = if (constraintsRef.value.hasBoundedWidth) "${constraintsRef.value.maxWidth}px" else "auto"
-                content.style.height = if (constraintsRef.value.hasFixedHeight) "${constraintsRef.value.minHeight}px" else "auto"
-                content.style.minHeight = if (constraintsRef.value.hasBoundedHeight) "${constraintsRef.value.minHeight}px" else "auto"
-                content.style.maxHeight = if (constraintsRef.value.hasBoundedHeight) "${constraintsRef.value.maxHeight}px" else "auto"
+                state.content.style.width = if (constraintsRef.value.hasFixedWidth) "${constraintsRef.value.minWidth}px" else "auto"
+                state.content.style.minWidth = if (constraintsRef.value.hasBoundedWidth) "${constraintsRef.value.minWidth}px" else "auto"
+                state.content.style.maxWidth = if (constraintsRef.value.hasBoundedWidth) "${constraintsRef.value.maxWidth}px" else "auto"
+                state.content.style.height = if (constraintsRef.value.hasFixedHeight) "${constraintsRef.value.minHeight}px" else "auto"
+                state.content.style.minHeight = if (constraintsRef.value.hasBoundedHeight) "${constraintsRef.value.minHeight}px" else "auto"
+                state.content.style.maxHeight = if (constraintsRef.value.hasBoundedHeight) "${constraintsRef.value.maxHeight}px" else "auto"
 
                 val top = if (bounds.height < size.height && rootPos.y < bounds.top) rootPos.y - bounds.top else 0
                 val left = if (bounds.width < size.width && rootPos.x < bounds.left) rootPos.x - bounds.left else 0
-                content.style.transform = "translate(${left}px, ${top}px)"
+                state.content.style.transform = "translate(${left}px, ${top}px)"
             }
     ) { _, constraints ->
         constraintsRef.value = constraints
