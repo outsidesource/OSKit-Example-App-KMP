@@ -31,11 +31,13 @@ import com.outsidesource.oskitkmp.capability.KmpCapabilityContext
 import com.outsidesource.oskitkmp.filesystem.KmpFs
 import com.outsidesource.oskitkmp.filesystem.KmpFsContext
 import kotlinx.browser.document
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.configureWebResources
 import org.koin.core.component.inject
 import org.w3c.dom.*
 import org.w3c.dom.events.EventListener
+import oskit_example_app_kmp.composeapp.generated.resources.Res
 import kotlin.math.roundToInt
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -103,6 +105,15 @@ fun PageOne(direction: String) {
         }
     }
 
+    LaunchedEffect(Unit) {
+        var count = 0
+        while (true) {
+            delay(100)
+            count++
+            htmlState.content.querySelector(".count")?.innerHTML = "$count"
+        }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -119,7 +130,6 @@ fun PageOne(direction: String) {
                     .fillMaxWidth()
                     .background(Color.Gray)
             ) {
-//                TextField(value = "", onValueChange = {})
                 Button(onClick = {}) { Text("Test")}
             }
             Html(
@@ -127,54 +137,55 @@ fun PageOne(direction: String) {
                 state = htmlState,
                 script = {
                     """
-                        function test() {
-                            console.log("Hello!")
-                            OsKit.emit(new CustomEvent("hello"))
-                        }
-                        
-                        OsKit.content.querySelector("button").addEventListener("click", test)
-                        """
+                    function test() {
+                        console.log("Hello!")
+                        Env.emit(new CustomEvent("hello"))
+                    }
+
+                    Env.content.querySelector("button").addEventListener("click", test)
+                    """
                 },
                 html = {
                     """
-                        <iframe width="100%" style="max-width: 500px; aspect-ratio: 16/9;" src="https://www.youtube.com/embed/0NDqYZVbpho?si=_tjA9VpXKSHiY1hy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        <div style="width: 100%; height: 100%; background: green;">
-                            <div>Hello <button>Click</button></div>
-                            <input type="text" />
-                            <ul>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                                <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
-                            </ul>
-                        </div>
-                        """
+                    <iframe width="100%" style="max-width: 500px; aspect-ratio: 16/9;" src="https://www.youtube.com/embed/0NDqYZVbpho?si=_tjA9VpXKSHiY1hy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <div style="width: 100%; height: 100%; background: green;">
+                        <div>Hello <button>Click</button> <div class="count">0</div></div>
+                        <input type="text" />
+                        <ul>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                            <li>One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One One </li>
+                        </ul>
+                    </div>
+                    <script src="${Res.getUri("files/test.js")}"></script>"
+                    """
                 },
             )
             Box(
@@ -252,33 +263,148 @@ external class BlurEventDetail : JsAny {
 }
 
 @Composable
-fun rememberHtmlState(): HtmlState {
-    return remember(Unit) {
-        HtmlState(
-            container = document.createElement("div") as HTMLDivElement,
-            content = document.createElement("div") as HTMLDivElement,
-        )
-    }
+fun rememberHtmlState(): HtmlState = remember(Unit) {
+    HtmlState()
 }
 
+@OptIn(ExperimentalUuidApi::class)
 @Immutable
+/**
+ * @param container The primary element added to the DOM. All [CustomEvents] should be dispatched to this element.
+ * @param content The content element. This is the node any custom HTML is appended to. Any custom styles
+ */
 data class HtmlState(
-    val container: HTMLElement,
-    val content: HTMLElement,
+    val container: HTMLDivElement = document.createElement("div") as HTMLDivElement,
+    val content: HTMLDivElement = document.createElement("div") as HTMLDivElement,
+    internal val script: HTMLScriptElement = document.createElement("script") as HTMLScriptElement
 ) {
+
+    init {
+        container.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
+        container.className = "html-compose-${Uuid.random().toHexString()}"
+        container.style.position = "absolute"
+        container.style.top = "0"
+        container.style.left = "0"
+        container.style.zIndex = "1"
+        container.style.overflowX = "hidden"
+        container.style.overflowY = "hidden"
+
+        content.className = "html-compose-${Uuid.random().toHexString()}"
+
+        injectJsRuntime()
+    }
+
+    private fun injectJsRuntime() {
+        script.type = "module"
+        script.textContent = """
+            const Env = (() => {
+                const canvas = document.querySelector("canvas")
+                const container = document.querySelector(".${container.className}")
+                const content = container.shadowRoot.querySelector(".${content.className}")
+
+                // Event proxy
+                container.addEventListener("wheel", (ev) => canvas.dispatchEvent(new WheelEvent("wheel", ev)))
+                const pointerEvents = ["pointerover", "pointerenter", "pointerdown", "pointermove", "pointerup", "pointercancel", "pointerout", "pointerleave", "gotpointercapture", "lostpointercapture"]
+                pointerEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new PointerEvent(type, ev))))
+                const touchEvents = ["touchstart", "touchend", "touchmove", "touchcancel"]
+                touchEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new TouchEvent(type, ev))))
+                const mouseEvents = ["click", "dblclick", "mousedown", "mouseenter", "mouseleave", "mouseout", "mouseover", "mouseup"]
+                mouseEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new MouseEvent(type, ev))))
+
+                const keyboardEvents = ["keyup", "keypress"]
+                keyboardEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new KeyboardEvent(type, ev))))
+                container.addEventListener("keydown", (ev) => {                        
+                    if (ev.key !== "Tab") {
+                         canvas.dispatchEvent(new KeyboardEvent("keydown", ev))
+                         return
+                    }
+
+                    const focusables = getFocusableElements(content)
+                    if (focusables.length > 0) {
+                        if (ev.shiftKey) {
+                            if (container.shadowRoot.activeElement === focusables[0]) {
+                                container.dispatchEvent(new CustomEvent("html-compose-blur", {detail: {direction: "previous"}}))
+                            }
+                        } else if (container.shadowRoot.activeElement === focusables[focusables.length - 1]) {
+                            container.shadowRoot.activeElement.blur()
+                            container.dispatchEvent(new CustomEvent("html-compose-blur", {detail: {direction: "next"}}))
+                            ev.preventDefault()
+                        }
+                        return
+                    }
+                })
+                
+                function getFocusableElements(root) {
+                    const selector = [
+                        "a[href]",
+                        "area[href]",
+                        "input:not([disabled])",
+                        "select:not([disabled])",
+                        "textarea:not([disabled])",
+                        "button:not([disabled])",
+                        "iframe",
+                        "object",
+                        "embed",
+                        "[contenteditable]",
+                        "[tabindex]"
+                    ].join(",")
+                  
+                    return Array.from(root.querySelectorAll(selector)).filter(el => el.tabIndex >= 0);
+                }
+                
+                container.addEventListener("html-compose-focus", () => {
+                    const focusableElements = getFocusableElements(content)
+                    if (focusableElements.length === 0) return
+                    focusableElements[0].focus()
+                })
+                
+                const observer = new ResizeObserver((ev) => {
+                    container.dispatchEvent(new CustomEvent("html-compose-resize", {detail: {height: content.scrollHeight, width: content.scrollWidth}}))
+                })
+                
+                observer.observe(content)
+            
+                return Object.freeze({
+                    container: container,
+                    content: content,
+                    emit: (ev) => container.dispatchEvent(ev),
+                    addListener: (type, listener) => container.addEventListener(type, listener),
+                    removeListener: (type, listener) => container.removeEventListener(type, listener),
+                })
+            })();
+        """.trimIndent()
+    }
+
     fun emit(event: CustomEvent) = container.dispatchEvent(event)
     fun listen(type: String, listener: EventListener) = container.addEventListener(type, listener)
 }
 
 /**
- * Render HTML inline
+ * Render arbitrary HTML within the compose layout.
  *
- * File access: Use `Res.getUri()` to inject files/images into your HTML source
+ * [Html] works by appending DOM nodes to the document and positioning them properly to align with the intended position
+ * in the compose layout. All injected HTML is rendered in a [ShadowRoot] to avoid style/name collisions.
+ *
+ * Events:
+ *   Use [HtmlState.emit] to dispatch custom events from Kotlin to your injected JavaScript.
+ *   Use [HtmlState.listen] to listen to custom events from JavaScript in Kotlin.
+ *
+ * File access:
+ *   Use `Res.getUri()` to inject files/images into your HTML source
  *
  * Limitations:
- *   1. Alpha and scale graphic transformations must be applied directly to the HTML DOM elements.
- *      This affects animations or any parent graphic transformations using alpha/scale.
+ *   1. Alpha and scale graphic transformations to this composable or parent composable cannot be automatically
+ *      applied to the HTML. This includes transformations that occur as a result of animations. In order to apply
+ *      alpha and scale transformations, they must be applied directly to the HTML DOM elements via [HtmlState].
  *   2. Accessibility will not flow naturally as the DOM elements are outside the canvas.
+ *   3. Using `iframe` will prevent scrolling while hovering over the iframe. This is due to iframes not bubbling their
+ *      events up to any parent documents.
+ *
+ * @param state The state for the Html. This provides access to the created DOM nodes used and provides some helper
+ *   functions for dispatching and listening to events.
+ * @param script returns a JavaScript string to be injected into the HTML. This function only runs once unless the
+ *   [HtmlState] changes.
+ * @param html returns the HTML string to be injected. This function only runs once unless the [HtmlState] changes.
  */
 @OptIn(ExperimentalUuidApi::class)
 @Composable
@@ -288,127 +414,34 @@ fun Html(
     script: (() -> String)? = null,
     html: () -> String,
 ) {
-    // TODO: Make sure these remembered scopes are ok
-    // TODO: Add removing of event listener
     // TODO: Add setting of scale and opacity to state (graphics layer or something)
     // TODO: Demos Google Maps, Youtube embed, charts, react app?, video, audio, iframe
-    // TODO: Move dom setup into state creator
-    // TODO: The event proxy and resize observer need to be added regardless of if there is a user provided script
-    // TODO: Only attach resize observer if constraints aren't defined?
     // TODO: Rename OsKit to runtime or env or something
-    // TODO: Iframes aren't going to proxy their events properly
+    // TODO: Test adding using script files
     val focusManager = LocalFocusManager.current
     val density = LocalDensity.current
-    val scriptElement = remember(script) { document.createElement("script") as HTMLScriptElement }
     var htmlWidth by remember(Unit) { mutableStateOf(0.dp) }
     var htmlHeight by remember(Unit) { mutableStateOf(0.dp) }
     val constraintsRef = remember(Unit) { VarRef(Constraints(0, 0)) }
 
-    DisposableEffect(Unit) {
-        val shadowRoot = state.container.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
-        state.container.className = "oskit-${Uuid.random().toHexString()}"
-        state.container.style.position = "absolute"
-        state.container.style.top = "0"
-        state.container.style.left = "0"
-        state.container.style.zIndex = "1"
-        state.container.style.overflowX = "hidden"
-        state.container.style.overflowY = "hidden"
-
-        state.content.className = "oskit-${Uuid.random().toHexString()}"
+    DisposableEffect(state) {
+        val shadowRoot = state.container.shadowRoot ?: return@DisposableEffect onDispose {  }
         state.content.innerHTML = html()
         shadowRoot.appendChild(state.content)
 
-        if (script != null) {
-            state.container.addEventListener("oskit-resize") {
-                val data = (it as? CustomEvent)?.detail?.unsafeCast<ResizeEventDetail>() ?: return@addEventListener
-                htmlWidth = data.width.toInt().dp
-                htmlHeight = data.height.toInt().dp
-            }
-            state.container.addEventListener("oskit-blur") {
-                val data = (it as? CustomEvent)?.detail?.unsafeCast<BlurEventDetail>() ?: return@addEventListener
-                val direction = if (data.direction == "next".toJsString()) FocusDirection.Down else FocusDirection.Up
-                focusManager.moveFocus(direction)
-            }
-            scriptElement.type = "module"
-            scriptElement.textContent = """
-                const OsKit = (() => {
-                    const canvas = document.querySelector("canvas")
-                    const container = document.querySelector(".${state.container.className}")
-                    const content = container.shadowRoot.querySelector(".${state.content.className}")
-
-                    // Event proxy
-                    container.addEventListener("wheel", (ev) => canvas.dispatchEvent(new WheelEvent("wheel", ev)))
-                    const pointerEvents = ["pointerover", "pointerenter", "pointerdown", "pointermove", "pointerup", "pointercancel", "pointerout", "pointerleave", "gotpointercapture", "lostpointercapture"]
-                    pointerEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new PointerEvent(type, ev))))
-                    const touchEvents = ["touchstart", "touchend", "touchmove", "touchcancel"]
-                    touchEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new TouchEvent(type, ev))))
-                    const mouseEvents = ["click", "dblclick", "mousedown", "mouseenter", "mouseleave", "mouseout", "mouseover", "mouseup"]
-                    mouseEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new MouseEvent(type, ev))))
-
-                    const keyboardEvents = ["keyup", "keypress"]
-                    keyboardEvents.forEach((type) => container.addEventListener(type, (ev) => canvas.dispatchEvent(new KeyboardEvent(type, ev))))
-                    container.addEventListener("keydown", (ev) => {                        
-                        if (ev.key !== "Tab") {
-                             canvas.dispatchEvent(new KeyboardEvent("keydown", ev))
-                             return
-                        }
-
-                        const focusables = getFocusableElements(content)
-                        if (focusables.length > 0) {
-                            if (ev.shiftKey) {
-                                if (container.shadowRoot.activeElement === focusables[0]) {
-                                    container.dispatchEvent(new CustomEvent("oskit-blur", {detail: {direction: "previous"}}))
-                                }
-                            } else if (container.shadowRoot.activeElement === focusables[focusables.length - 1]) {
-                                container.shadowRoot.activeElement.blur()
-                                container.dispatchEvent(new CustomEvent("oskit-blur", {detail: {direction: "next"}}))
-                                ev.preventDefault()
-                            }
-                            return
-                        }
-                    })
-                    
-                    function getFocusableElements(root) {
-                        const selector = [
-                            "a[href]",
-                            "area[href]",
-                            "input:not([disabled])",
-                            "select:not([disabled])",
-                            "textarea:not([disabled])",
-                            "button:not([disabled])",
-                            "iframe",
-                            "object",
-                            "embed",
-                            "[contenteditable]",
-                            "[tabindex]"
-                        ].join(",")
-                      
-                        return Array.from(root.querySelectorAll(selector)).filter(el => el.tabIndex >= 0);
-                    }
-                    
-                    container.addEventListener("oskit-focus", () => {
-                        const focusableElements = getFocusableElements(content)
-                        if (focusableElements.length === 0) return
-                        focusableElements[0].focus()
-                    })
-                    
-                    const observer = new ResizeObserver((ev) => {
-                        container.dispatchEvent(new CustomEvent("oskit-resize", {detail: {height: content.scrollHeight, width: content.scrollWidth}}))
-                    })
-                    
-                    observer.observe(content)
-                
-                    return Object.freeze({
-                        container: container,
-                        content: content,
-                        emit: (ev) => container.dispatchEvent(ev),
-                        listen: (type, listener) => container.addEventListener(type, listener)
-                    })
-                })();
-            """.trimIndent() + script().trimIndent()
-            shadowRoot.appendChild(scriptElement)
+        state.container.addEventListener("html-compose-resize") {
+            val data = (it as? CustomEvent)?.detail?.unsafeCast<ResizeEventDetail>() ?: return@addEventListener
+            htmlWidth = data.width.toInt().dp
+            htmlHeight = data.height.toInt().dp
+        }
+        state.container.addEventListener("html-compose-blur") {
+            val data = (it as? CustomEvent)?.detail?.unsafeCast<BlurEventDetail>() ?: return@addEventListener
+            val direction = if (data.direction == "next".toJsString()) FocusDirection.Down else FocusDirection.Up
+            focusManager.moveFocus(direction)
         }
 
+        if (script != null) state.script.textContent += script().trimIndent()
+        shadowRoot.appendChild(state.script)
         document.body?.appendChild(state.container)
 
         onDispose { document.body?.removeChild(state.container) }
@@ -418,7 +451,7 @@ fun Html(
         modifier = modifier
             .onFocusChanged {
                 if (!it.isFocused) return@onFocusChanged
-                state.container.dispatchEvent(CustomEvent("oskit-focus"))
+                state.container.dispatchEvent(CustomEvent("html-compose-focus"))
             }
             .focusable()
             .onGloballyPositioned { layoutCoordinates ->
