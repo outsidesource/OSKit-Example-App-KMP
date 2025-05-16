@@ -38,25 +38,25 @@ export const Env = (() => {
         if (focusables.length > 0) {
             if (ev.shiftKey) {
                 if (container.shadowRoot.activeElement === focusables[0]) {
-                    container.dispatchEvent(new CustomEvent("html-compose-blur", {detail: {direction: "previous"}}))
+                    container.dispatchEvent(new CustomEvent("compose-html-blur", {detail: {direction: "previous"}}))
                 }
             } else if (container.shadowRoot.activeElement === focusables[focusables.length - 1]) {
                 container.shadowRoot.activeElement.blur()
-                container.dispatchEvent(new CustomEvent("html-compose-blur", {detail: {direction: "next"}}))
+                container.dispatchEvent(new CustomEvent("compose-html-blur", {detail: {direction: "next"}}))
                 ev.preventDefault()
             }
             return
         }
     })
 
-    container.addEventListener("html-compose-focus", () => {
+    container.addEventListener("compose-html-focus", () => {
         const focusableElements = getFocusableElements(content)
         if (focusableElements.length === 0) return
         focusableElements[0].focus()
     })
 
     const observer = new ResizeObserver((ev) => {
-        container.dispatchEvent(new CustomEvent("html-compose-resize", {detail: {height: content.scrollHeight, width: content.scrollWidth}}))
+        container.dispatchEvent(new CustomEvent("compose-html-resize", {detail: {height: content.scrollHeight, width: content.scrollWidth}}))
     })
 
     observer.observe(content)
