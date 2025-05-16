@@ -265,9 +265,7 @@ external class BlurEventDetail : JsAny {
 external fun encodeURIComponent(value: String): String
 
 @Composable
-fun rememberHtmlState(): HtmlState = remember(Unit) {
-    HtmlState()
-}
+fun rememberHtmlState(): HtmlState = remember(Unit) { HtmlState() }
 
 @OptIn(ExperimentalUuidApi::class)
 @Immutable
