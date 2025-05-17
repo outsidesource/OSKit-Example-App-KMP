@@ -102,6 +102,8 @@ fun PageOne(direction: String) {
     LaunchedEffect(alphaAnim) {
         snapshotFlow { alphaAnim.value }.collect {
             htmlState.content.style.opacity = it.toString()
+            htmlState.content.style.transformOrigin = "top left"
+            htmlState.content.style.unsafeCast<CSSStyleDeclarationExt>().scale = it.toString()
         }
     }
 
@@ -114,7 +116,10 @@ fun PageOne(direction: String) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         Box(
             modifier = Modifier
                 .height(100.dp)
@@ -218,6 +223,8 @@ fun PageTwo(direction: String) {
     LaunchedEffect(alphaAnim) {
         snapshotFlow { alphaAnim.value }.collect {
             htmlState.content.style.opacity = it.toString()
+            htmlState.content.style.transformOrigin = "top left"
+            htmlState.content.style.unsafeCast<CSSStyleDeclarationExt>().scale = it.toString()
         }
     }
 
@@ -253,16 +260,21 @@ enum class Page {
     Two,
 }
 
-external class ResizeEventDetail : JsAny {
+private external class ResizeEventDetail : JsAny {
     val width: JsNumber
     val height: JsNumber
 }
 
-external class BlurEventDetail : JsAny {
+private external class BlurEventDetail : JsAny {
     val direction: JsString
 }
 
-external fun encodeURIComponent(value: String): String
+private external fun encodeURIComponent(value: String): String
+
+private external interface CSSStyleDeclarationExt : JsAny {
+    var scale: String
+    var translate: String
+}
 
 @Composable
 fun rememberHtmlState(): HtmlState = remember(Unit) { HtmlState() }
@@ -369,7 +381,6 @@ fun Html(
     scripts: List<String> = emptyList(),
     html: () -> String,
 ) {
-    // TODO: Add setting of scale and opacity to state (graphics layer or something)
     // TODO: Demos Google Maps, Youtube embed, charts, react app?, video, audio, iframe
     val focusManager = LocalFocusManager.current
     val density = LocalDensity.current
@@ -437,7 +448,7 @@ fun Html(
 
                 val top = if (bounds.height < size.height && rootPos.y < bounds.top) rootPos.y - bounds.top else 0
                 val left = if (bounds.width < size.width && rootPos.x < bounds.left) rootPos.x - bounds.left else 0
-                state.content.style.transform = "translate(${left}px, ${top}px)"
+                state.content.style.unsafeCast<CSSStyleDeclarationExt>().translate = "${left}px ${top}px"
             }
     ) { _, constraints ->
         constraintsRef.value = constraints
