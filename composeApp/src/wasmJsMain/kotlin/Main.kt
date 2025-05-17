@@ -131,7 +131,6 @@ fun PageOne(direction: String) {
         ) {
             Box(
                 modifier = Modifier
-                    .height(1000.dp)
                     .fillMaxWidth()
                     .background(Color.Gray)
             ) {
