@@ -28,11 +28,6 @@ fun IOSServicesScreen(
     val state = interactor.collectAsState()
 
     Screen(rememberKmpString(Strings.iosServices)) {
-        if (Platform.current != Platform.IOS) {
-            Text("View this screen in iOS to see different ways of implementing platform dependent code on iOS")
-            return@Screen
-        }
-
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp),

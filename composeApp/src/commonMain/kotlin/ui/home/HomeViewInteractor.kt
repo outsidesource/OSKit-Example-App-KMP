@@ -46,4 +46,8 @@ class HomeViewInteractor(
     fun colorPickerButtonClicked() {
         coordinator.colorPickerClicked()
     }
+
+    fun htmlDemoButtonClicked() {
+        coordinator.htmlDemoClicked()
+    }
 }

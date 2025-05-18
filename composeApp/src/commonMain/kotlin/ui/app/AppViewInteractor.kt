@@ -1,5 +1,6 @@
 package ui.app
 
+import com.outsidesource.oskitkmp.coordinator.Coordinator
 import interactor.app.AppInteractor
 import com.outsidesource.oskitkmp.interactor.Interactor
 import coordinator.AppCoordinator
@@ -17,6 +18,8 @@ class AppViewInteractor(
     dependencies = listOf(appInteractor)
 ) {
 
+    private val coordinatorObserver = Coordinator.createObserver(coordinator)
+
     init {
         coordinator.handleDeepLink(deepLink)
     }
@@ -24,4 +27,6 @@ class AppViewInteractor(
     override fun computed(state: AppViewState): AppViewState {
         return state.copy(isDarkTheme = appInteractor.state.isDarkTheme)
     }
+
+    fun getActiveRoute() = coordinatorObserver.routeFlow.value.route
 }

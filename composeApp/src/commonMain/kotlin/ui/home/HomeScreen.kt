@@ -20,6 +20,8 @@ import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.resources.rememberKmpString
 import com.outsidesource.oskitcompose.scrollbars.KmpVerticalScrollbar
 import com.outsidesource.oskitcompose.scrollbars.rememberKmpScrollbarAdapter
+import com.outsidesource.oskitkmp.lib.Platform
+import com.outsidesource.oskitkmp.lib.current
 import ui.app.theme.AppTheme
 
 @Composable
@@ -69,10 +71,12 @@ fun HomeScreen(
                     content = { Text(rememberKmpString(Strings.resources)) },
                     onClick = interactor::resourcesButtonClicked,
                 )
-                Button(
-                    content = { Text(rememberKmpString(Strings.iosServices)) },
-                    onClick = interactor::iosServicesButtonClicked,
-                )
+                if (Platform.current == Platform.IOS) {
+                    Button(
+                        content = { Text(rememberKmpString(Strings.iosServices)) },
+                        onClick = interactor::iosServicesButtonClicked,
+                    )
+                }
                 Button(
                     content = { Text("Widgets") },
                     onClick = interactor::widgetsButtonClicked,
@@ -85,6 +89,12 @@ fun HomeScreen(
                     content = { Text("Color Picker") },
                     onClick = interactor::colorPickerButtonClicked,
                 )
+                if (Platform.current == Platform.WebBrowser) {
+                    Button(
+                        content = { Text("HTML Demo") },
+                        onClick = interactor::htmlDemoButtonClicked,
+                    )
+                }
             }
         }
     }
