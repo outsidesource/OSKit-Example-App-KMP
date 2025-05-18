@@ -60,6 +60,13 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
             }
         }
 
+        LaunchedEffect(Unit) {
+            textHtmlState.listen("mouse-moved").collect {
+                val event = it.detail?.unsafeCast<MouseMoveEvent>() ?: return@collect
+                println("Mouse Moved: ${event.x}, ${event.y}")
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -221,6 +228,15 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
                     .padding(AppTheme.dimensions.screenPadding)
                     .fillMaxWidth(),
                 state = textHtmlState,
+                inlineJs = {
+                    """
+                    import { Env } from "${textHtmlState.runtimeJsUrl}"
+
+                    Env.container.addEventListener("mousemove", (ev) => {
+                        Env.emit(new CustomEvent("mouse-moved", { detail: { x: ev.pageX, y: ev.pageY } }))
+                    })
+                    """
+                },
                 html = {
                     """
                     <style>
@@ -276,4 +292,9 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
             )
         }
     }
+}
+
+private external interface MouseMoveEvent : JsAny {
+    val x: Int
+    val y: Int
 }
