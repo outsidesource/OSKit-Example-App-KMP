@@ -22,6 +22,7 @@ import ui.iosServices.IOSServicesScreen
 import ui.markdown.MarkdownScreen
 import ui.popups.PopupsScreen
 import ui.viewStateExample.ViewStateExampleScreen
+import ui.htmlDemo.HtmlDemoScreen
 import ui.widgets.WidgetsScreen
 
 @Composable
@@ -52,7 +53,19 @@ fun App(
                 is Route.Widgets -> WidgetsScreen()
                 is Route.Capability -> CapabilityScreen()
                 is Route.ColorPicker -> ColorPickerScreen()
+                is Route.WebDemo -> HtmlDemoScreen(
+                    transitionDirection = if (it == interactor.getActiveRoute()) {
+                        RouteTransitionDirection.In
+                    } else {
+                        RouteTransitionDirection.Out
+                    }
+                )
             }
         }
     }
+}
+
+enum class RouteTransitionDirection {
+    In,
+    Out,
 }
