@@ -3,6 +3,8 @@ package ui.htmlDemo
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,11 +15,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitcompose.html.Html
 import com.outsidesource.oskitcompose.html.rememberHtmlState
 import kotlinx.coroutines.delay
 import org.w3c.dom.CustomEvent
+import oskit_example_app_kmp.composeapp.generated.resources.Res
 import ui.app.RouteTransitionDirection
 import ui.app.theme.AppTheme
 import ui.common.Screen
@@ -100,7 +105,6 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
                     state = videoHtmlState,
                     inlineJs = {
                         """
-                            import { Env } from "${videoHtmlState.runtimeJsUrl}"
                             Env.addListener("play-video", () => Env.content.querySelector("video").play())
                         """
                     }
@@ -136,12 +140,11 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
 
                 // Camera Preview
                 Html(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f),
                     state = cameraHtmlState,
                     inlineJs = {
-                        """
-                        import { Env } from "${cameraHtmlState.runtimeJsUrl}"
-                        
+                        """                       
                         Env.addListener("toggle-camera", () => {
                             const videoElement = Env.content.querySelector("#camera-preview")
                             if (!videoElement.srcObject) {
@@ -193,45 +196,25 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
                     .aspectRatio(16f/9f)
                     .fillMaxWidth(),
                 state = chartHtmlState,
-                scripts = listOf("https://cdn.jsdelivr.net/npm/chart.js"),
-                inlineJs = {
-                    """
-                        import { Env } from "${chartHtmlState.runtimeJsUrl}"
-                        import "https://cdn.jsdelivr.net/npm/chart.js"
-                        
-                        const ctx = Env.content.querySelector("#chart")
-                        
-                        new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                            datasets: [{
-                                label: '# of Votes',
-                                data: [12, 19, 3, 5, 2, 3],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            }
-                        }
-                      })
-                    """
-                },
-                html = { """<canvas id="chart"></canvas>"""  }
+                scripts = listOf("${Res.getUri("files/chart-example.js")}?runtimeJsUrl=${chartHtmlState.runtimeJsUrlEncoded}"),
+                html = { """<canvas id="chart"></canvas>""" }
             )
             Html(
                 modifier = Modifier
                     .padding(AppTheme.dimensions.screenPadding)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { println("Click passthrough") }
+                    )
+                    .onKeyEvent {
+                        println("Key passthrough - ${it.key}")
+                        false
+                    },
                 state = textHtmlState,
                 inlineJs = {
                     """
-                    import { Env } from "${textHtmlState.runtimeJsUrl}"
-
                     Env.container.addEventListener("mousemove", (ev) => {
                         Env.emit(new CustomEvent("mouse-moved", { detail: { x: ev.pageX, y: ev.pageY } }))
                     })
@@ -258,6 +241,10 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
                         <div class="demo-section">
                             <div><strong>This count is being updated from a coroutine:</strong></div>
                             <div class="count">0</div></div>
+                        </div>
+                        <div class="demo-section">
+                            <div><strong>This image is from a compose resource:</strong></div>
+                            <img src="${Res.getUri("drawable/penguin.png")}" width="200" height="auto" />
                         </div>
                         <div class="demo-section">
                             <p>
