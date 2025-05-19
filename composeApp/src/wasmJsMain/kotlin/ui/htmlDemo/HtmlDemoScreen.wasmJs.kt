@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -14,11 +15,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.outsidesource.oskitcompose.html.Html
+import com.outsidesource.oskitcompose.html.HtmlState
 import com.outsidesource.oskitcompose.html.rememberHtmlState
 import kotlinx.coroutines.delay
 import org.w3c.dom.CustomEvent
@@ -34,11 +39,17 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
         paddingValues = PaddingValues(0.dp),
     ) {
 
+        val horizontalPadding = AppTheme.dimensions.screenPadding.calculateStartPadding(LayoutDirection.Ltr)
+        val lazyRowCount = 10
         val videoHtmlState = rememberHtmlState()
         val youtubeHtmlState = rememberHtmlState()
         val cameraHtmlState = rememberHtmlState()
         val chartHtmlState = rememberHtmlState()
         val textHtmlState = rememberHtmlState()
+        val lazyRowHtmlStates = remember(Unit) { (0..lazyRowCount / 2).map { HtmlState() } }
+        val animatedHtmlState = remember(Unit) {
+            mutableListOf(videoHtmlState, youtubeHtmlState, cameraHtmlState, chartHtmlState, textHtmlState) + lazyRowHtmlStates
+        }
 
         val alphaAnim = remember { Animatable(0f) }
 
@@ -47,12 +58,8 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
         }
 
         LaunchedEffect(alphaAnim) {
-            snapshotFlow { alphaAnim.value }.collect {
-                videoHtmlState.content.style.opacity = it.toString()
-                youtubeHtmlState.content.style.opacity = it.toString()
-                cameraHtmlState.content.style.opacity = it.toString()
-                chartHtmlState.content.style.opacity = it.toString()
-                textHtmlState.content.style.opacity = it.toString()
+            snapshotFlow { alphaAnim.value }.collect { alpha ->
+                animatedHtmlState.forEach { it.content.style.opacity = alpha.toString() }
             }
         }
 
@@ -75,10 +82,11 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(
-                modifier = Modifier.padding(AppTheme.dimensions.screenPadding),
+                modifier = Modifier.padding(horizontal = horizontalPadding),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Box(modifier = Modifier.weight(1f)) {
@@ -96,12 +104,14 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
                 }
             }
             Row(
-                modifier = Modifier.padding(AppTheme.dimensions.screenPadding),
+                modifier = Modifier.padding(horizontal = horizontalPadding),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // Video Demo
                 Html(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(16f / 9f),
                     state = videoHtmlState,
                     inlineJs = {
                         """
@@ -110,7 +120,7 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
                     }
                 ) {
                     """
-                    <video id='video' controls="controls" preload='none' width="100%" style="aspect-ratio: 16/9;">
+                    <video id='video' controls="controls" preload='none' width="100%" height="100%">
                         <source id='mp4' src="http://media.w3.org/2010/05/sintel/trailer.mp4" type='video/mp4' />
                         <source id='webm' src="http://media.w3.org/2010/05/sintel/trailer.webm" type='video/webm' />
                         <source id='ogv' src="http://media.w3.org/2010/05/sintel/trailer.ogv" type='video/ogg' />
@@ -120,13 +130,15 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
 
                 // Youtube Demo
                 Html(
-                    modifier = Modifier.weight(1f),
                     state = youtubeHtmlState,
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(16f / 9f),
                 ) {
                     """                    
                     <iframe 
                         width="100%" 
-                        style="aspect-ratio: 16/9;" 
+                        height="100%" 
                         src="https://www.youtube.com/embed/0NDqYZVbpho?si=_tjA9VpXKSHiY1hy" 
                         title="YouTube Example" 
                         frameborder="0" 
@@ -141,7 +153,8 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
                 // Camera Preview
                 Html(
                     modifier = Modifier
-                        .weight(1f),
+                        .weight(1f)
+                        .aspectRatio(16f / 9f),
                     state = cameraHtmlState,
                     inlineJs = {
                         """                       
@@ -182,16 +195,37 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
                             id="camera-preview" 
                             autoplay 
                             playsinline 
-                            style="width: 100%; aspect-ratio: 16/9; background: black;"
+                            style="width: 100%; height: 100%; background: black;"
                         >
                         </video>
                         """
                     }
                 )
             }
+            LazyRow(
+                modifier = Modifier.padding(horizontal = horizontalPadding),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                items(count = lazyRowCount) {
+                    if (it % 2 == 0) {
+                        Html(
+                            modifier = Modifier.background(Color(0xFFF2F2F2)).size(200.dp),
+                            state = lazyRowHtmlStates[it / 2],
+                        ) {
+                            """<div style="display: flex; height: 100%; align-items: center; justify-content: center;">HTML Rendered</div>"""
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier.background(Color(0xFFE2E2E2)).size(200.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text("Compose Rendered")
+                        }
+                    }
+                }
+            }
             Html(
-                modifier = Modifier
-                    .padding(AppTheme.dimensions.screenPadding)
+                modifier = Modifier.padding(horizontal = horizontalPadding)
                     .widthIn(max = 800.dp)
                     .aspectRatio(16f/9f)
                     .fillMaxWidth(),
@@ -201,7 +235,7 @@ actual fun HtmlDemoScreen(transitionDirection: RouteTransitionDirection) {
             )
             Html(
                 modifier = Modifier
-                    .padding(AppTheme.dimensions.screenPadding)
+                    .padding(horizontal = horizontalPadding)
                     .fillMaxWidth()
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
