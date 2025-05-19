@@ -7,7 +7,6 @@ import com.outsidesource.oskitcompose.router.PushFromTopRouteTransition
 import com.outsidesource.oskitkmp.coordinator.Coordinator
 import com.outsidesource.oskitkmp.lib.Platform
 import com.outsidesource.oskitkmp.lib.current
-import kotlinx.coroutines.delay
 
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -40,4 +39,5 @@ class AppCoordinator(): Coordinator(
     fun capabilityClicked() = push(Route.Capability)
     fun colorPickerClicked() = push(Route.ColorPicker)
     fun settingsOpenerExampleClicked() = push(Route.SettingsOpenerExample)
+    fun htmlDemoClicked() = push(Route.WebDemo)
 }

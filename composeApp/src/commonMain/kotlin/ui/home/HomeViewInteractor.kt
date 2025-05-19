@@ -50,4 +50,8 @@ class HomeViewInteractor(
     fun settingsOpenerExampleButtonClicked() {
         coordinator.settingsOpenerExampleClicked()
     }
+
+    fun htmlDemoButtonClicked() {
+        coordinator.htmlDemoClicked()
+    }
 }
