@@ -72,11 +72,6 @@ fun HomeScreen(
                     onClick = interactor::resourcesButtonClicked,
                 )
                 Button(
-                    content = { Text(rememberKmpString(Strings.iosServices)) },
-                    onClick = interactor::iosServicesButtonClicked,
-                    enabled = Platform.current == Platform.IOS,
-                )
-                Button(
                     content = { Text("Widgets") },
                     onClick = interactor::widgetsButtonClicked,
                 )
@@ -91,6 +86,11 @@ fun HomeScreen(
                 Button(
                     content = { Text("App & System Settings Opener") },
                     onClick = interactor::settingsOpenerExampleButtonClicked,
+                )
+                Button(
+                    content = { Text(rememberKmpString(Strings.iosServices)) },
+                    onClick = interactor::iosServicesButtonClicked,
+                    enabled = Platform.current == Platform.IOS,
                 )
                 Button(
                     content = { Text("HTML in WASM Demo") },
