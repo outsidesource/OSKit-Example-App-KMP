@@ -84,6 +84,10 @@ fun HomeScreen(
                     onClick = interactor::colorPickerButtonClicked,
                 )
                 Button(
+                    content = { Text("App & System Settings Opener") },
+                    onClick = interactor::settingsOpenerExampleButtonClicked,
+                )
+                Button(
                     content = { Text(rememberKmpString(Strings.iosServices)) },
                     onClick = interactor::iosServicesButtonClicked,
                     enabled = Platform.current == Platform.IOS,

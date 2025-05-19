@@ -23,6 +23,7 @@ import ui.file.FileSystemViewInteractor
 import ui.home.HomeViewInteractor
 import ui.iosServices.IOSServicesScreenViewInteractor
 import ui.popups.PopupsScreenViewInteractor
+import ui.settingsOpenerExample.SettingsOpenerExampleViewInteractor
 import ui.viewStateExample.ViewStateExampleViewInteractor
 
 fun initKoin(
@@ -59,4 +60,5 @@ fun commonModule() = module {
     factory { IOSServicesScreenViewInteractor(get()) }
     factory { CapabilityScreenViewInteractor(get()) }
     factory { ColorPickerViewInteractor() }
+    factory { SettingsOpenerExampleViewInteractor(get(), get()) }
 }

@@ -1,4 +1,5 @@
 import com.outsidesource.oskitkmp.storage.KmpKvStore
+import com.outsidesource.oskitkmp.systemui.KmpSettingsScreen
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import service.swift.ISwiftExampleService
@@ -11,6 +12,7 @@ private val koin = initKoin(
 
 actual fun platformModule(platformContext: PlatformContext) = module {
     single { KmpKvStore() }
+    single { KmpSettingsScreen() }
 }
 
 fun loadKoinSwiftModules(
