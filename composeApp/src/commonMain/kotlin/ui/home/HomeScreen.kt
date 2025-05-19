@@ -71,12 +71,11 @@ fun HomeScreen(
                     content = { Text(rememberKmpString(Strings.resources)) },
                     onClick = interactor::resourcesButtonClicked,
                 )
-                if (Platform.current == Platform.IOS) {
-                    Button(
-                        content = { Text(rememberKmpString(Strings.iosServices)) },
-                        onClick = interactor::iosServicesButtonClicked,
-                    )
-                }
+                Button(
+                    content = { Text(rememberKmpString(Strings.iosServices)) },
+                    onClick = interactor::iosServicesButtonClicked,
+                    enabled = Platform.current == Platform.IOS,
+                )
                 Button(
                     content = { Text("Widgets") },
                     onClick = interactor::widgetsButtonClicked,
@@ -89,12 +88,11 @@ fun HomeScreen(
                     content = { Text("Color Picker") },
                     onClick = interactor::colorPickerButtonClicked,
                 )
-                if (Platform.current == Platform.WebBrowser) {
-                    Button(
-                        content = { Text("HTML Demo") },
-                        onClick = interactor::htmlDemoButtonClicked,
-                    )
-                }
+                Button(
+                    content = { Text("HTML in WASM Demo") },
+                    onClick = interactor::htmlDemoButtonClicked,
+                    enabled = Platform.current == Platform.WebBrowser,
+                )
             }
         }
     }
