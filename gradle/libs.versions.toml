@@ -1,27 +1,28 @@
 [versions]
-agp = "8.2.2"
-android-compileSdk = "34"
-android-minSdk = "24"
-android-targetSdk = "34"
-androidx-activityCompose = "1.8.2"
-androidx-appcompat = "1.6.1"
-androidx-core-ktx = "1.12.0"
-atomicfu = "0.23.2"
-compose-plugin = "1.6.1"
+kotlin = "2.1.10"
+agp = "8.9.3"
+android-compileSdk = "35"
+android-minSdk = "28"
+android-targetSdk = "35"
+androidx-activityCompose = "1.10.1"
+androidx-appcompat = "1.7.0"
+androidx-core-ktx = "1.16.0"
+compose = "1.8.0"
 junit = "4.13.2"
-kermit = "2.0.2"
-koinCore = "3.5.3"
-kotlin = "1.9.23"
-kotlinxCoroutinesCore = "1.8.0"
-kotlinxDatetime = "0.5.0"
-okio = "3.9.0"
-oskitCompose = "3.6.1"
-oskitKmp = "4.6.3"
-skie = "0.6.2"
-ui = "1.6.7"
+kermit = "2.0.5"
+koinCore = "4.0.0"
+kotlinxAtomicfu = "0.26.1"
+kotlinxCoroutinesCore = "1.10.2"
+kotlinxDatetime = "0.6.1"
+okio = "3.9.1"
+oskitCompose = "4.1.0-beta"
+oskitKmp = "5.0.0"
+skie = "0.10.1"
+ui = "1.8.1"
+material-icons = "1.7.3"
 
 [libraries]
-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
+atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinxAtomicfu" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -34,10 +35,12 @@ okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 oskit-compose = { module = "com.outsidesource:oskit-compose", version.ref = "oskitCompose" }
 oskit-kmp = { module = "com.outsidesource:oskit-kmp", version.ref = "oskitKmp" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+material-icons = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "material-icons" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }

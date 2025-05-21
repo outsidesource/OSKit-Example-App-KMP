@@ -12,7 +12,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.outsidesource.oskitExample.common.entity.device.ConnectionStatus
+import entity.device.ConnectionStatus
 import ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
@@ -60,7 +60,7 @@ fun AppStateExampleScreen(
                                     .clip(RoundedCornerShape(8.dp))
                                     .clickable(
                                         interactionSource = remember { MutableInteractionSource() },
-                                        indication = rememberRipple()
+                                        indication = ripple(),
                                     ) {
                                         interactor.deviceSelected(it)
                                     }

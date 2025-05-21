@@ -1,8 +1,13 @@
-import com.outsidesource.oskitkmp.storage.DesktopKMPStorage
-import com.outsidesource.oskitkmp.storage.IKMPStorage
+
+import com.outsidesource.oskitkmp.storage.KmpKvStore
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import service.swift.ISwiftExampleService
+import service.swift.NoOpSwiftExampleService
 
-actual fun platformModule() = module {
-    single { DesktopKMPStorage(appName = "OSKit-Example-App-KMP") } bind IKMPStorage::class
+actual class PlatformContext
+
+actual fun platformModule(platformContext: PlatformContext) = module {
+    single { NoOpSwiftExampleService() } bind ISwiftExampleService::class
+    single { KmpKvStore(appName = "OSKit-Example-App") }
 }

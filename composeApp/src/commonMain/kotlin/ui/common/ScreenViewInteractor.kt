@@ -1,6 +1,6 @@
 package ui.common
 
-import com.outsidesource.oskitExample.common.interactor.app.AppInteractor
+import interactor.app.AppInteractor
 import coordinator.AppCoordinator
 import com.outsidesource.oskitkmp.interactor.Interactor
 

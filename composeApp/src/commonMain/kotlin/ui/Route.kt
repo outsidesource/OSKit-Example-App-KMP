@@ -1,16 +1,30 @@
 package ui
 
 import com.outsidesource.oskitkmp.router.IRoute
+import com.outsidesource.oskitkmp.router.IWebRoute
+import com.outsidesource.oskitkmp.router.Router
 
-sealed class Route: IRoute {
-    data object Home: Route()
-    data class ViewStateExample(val depth: Int): Route()
-    data object AppStateExample: Route()
-    data class DeviceHome(val deviceId: Int): Route()
-    data object FileHandling: Route()
-    data object Markdown: Route()
-    data object Popups: Route()
-    data object Resources: Route()
-    data object IOSServices: Route()
-    data object Widgets: Route()
+sealed class Route(
+    override val webRoutePath: String?,
+    override val webRouteTitle: String? = null
+): IRoute, IWebRoute {
+    data object Home: Route(webRoutePath = "/")
+    data class ViewStateExample(val depth: Int): Route(webRoutePath = "/view-state/$depth")
+    data object AppStateExample: Route(webRoutePath = "/app-state")
+    data class DeviceHome(val deviceId: Int): Route(webRoutePath = "/devices/$deviceId")
+    data object FileHandling: Route(webRoutePath = "/files")
+    data object Markdown: Route(webRoutePath = "/markdown")
+    data object Popups: Route(webRoutePath = "/popups")
+    data object Resources: Route(webRoutePath = "/ui/resources")
+    data object IOSServices: Route(webRoutePath = "/ios-services")
+    data object Widgets: Route(webRoutePath = "/widgets")
+    data object Capability : Route(webRoutePath = "/capability")
+    data object ColorPicker : Route(webRoutePath = "/color-picker")
+    data object WebDemo : Route(webRoutePath = "/web-demo")
+
+    companion object {
+        val deepLinks = Router.buildDeepLinks {
+            "/view-state/:depth" routesTo { args, _ -> ViewStateExample(args[0].toInt()) }
+        }
+    }
 }

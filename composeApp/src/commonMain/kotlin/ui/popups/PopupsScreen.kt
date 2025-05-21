@@ -20,9 +20,9 @@ import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.modifier.outerShadow
 import com.outsidesource.oskitcompose.popup.*
-import com.outsidesource.oskitcompose.systemui.KMPWindowInsets
-import com.outsidesource.oskitcompose.systemui.bottomInsets
-import com.outsidesource.oskitcompose.systemui.verticalInsets
+import com.outsidesource.oskitcompose.systemui.KmpWindowInsets
+import com.outsidesource.oskitcompose.systemui.bottom
+import com.outsidesource.oskitcompose.systemui.vertical
 
 @Composable
 fun PopupsScreen(
@@ -90,7 +90,7 @@ fun PopupsScreen(
     ) {
         Column(
             modifier = Modifier
-                .windowInsetsPadding(KMPWindowInsets.bottomInsets)
+                .windowInsetsPadding(KmpWindowInsets.bottom)
                 .height(200.dp)
                 .fillMaxWidth()
         ) {
@@ -116,7 +116,7 @@ fun PopupsScreen(
     ) {
         Column(
             modifier = Modifier
-                .windowInsetsPadding(KMPWindowInsets.verticalInsets)
+                .windowInsetsPadding(KmpWindowInsets.vertical)
                 .fillMaxSize()
         ) {
             Text(

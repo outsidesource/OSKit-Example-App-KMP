@@ -1,17 +1,20 @@
 import com.outsidesource.oskitcompose.lib.koinInjector
 import com.outsidesource.oskitcompose.uikit.OSComposeUIViewController
-import com.outsidesource.oskitkmp.file.IKMPFileHandler
-import com.outsidesource.oskitkmp.file.KMPFileHandlerContext
+import com.outsidesource.oskitkmp.capability.KmpCapabilities
+import com.outsidesource.oskitkmp.capability.KmpCapabilityContext
+import com.outsidesource.oskitkmp.filesystem.KmpFs
+import com.outsidesource.oskitkmp.filesystem.KmpFsContext
 import org.koin.core.component.inject
 import platform.UIKit.UIViewController
 import ui.app.App
 
 fun MainViewController(): UIViewController {
-    val fileHandler by koinInjector.inject<IKMPFileHandler>()
+    val capabilities by koinInjector.inject<KmpCapabilities>()
+    capabilities.init(KmpCapabilityContext())
 
     return OSComposeUIViewController {
         App()
     }.apply {
-        fileHandler.init(KMPFileHandlerContext(this))
+        KmpFs.init(KmpFsContext(this))
     }
 }

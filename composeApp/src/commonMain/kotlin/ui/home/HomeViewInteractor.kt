@@ -38,4 +38,16 @@ class HomeViewInteractor(
     fun widgetsButtonClicked() {
         coordinator.widgetsClicked()
     }
+
+    fun capabilityButtonClicked() {
+        coordinator.capabilityClicked()
+    }
+
+    fun colorPickerButtonClicked() {
+        coordinator.colorPickerClicked()
+    }
+
+    fun htmlDemoButtonClicked() {
+        coordinator.htmlDemoClicked()
+    }
 }

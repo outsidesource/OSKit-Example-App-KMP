@@ -11,14 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ui.common.Screen
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
+import org.koin.core.parameter.parametersOf
+import ui.common.Screen
 
 @Composable
 fun ViewStateExampleScreen(
     depth: Int,
-    interactor: ViewStateExampleViewInteractor = rememberInjectForRoute()
+    interactor: ViewStateExampleViewInteractor = rememberInjectForRoute { parametersOf(depth) }
 ) {
     val state = interactor.collectAsState()
 

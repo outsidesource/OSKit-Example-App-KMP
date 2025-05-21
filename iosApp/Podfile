@@ -4,8 +4,4 @@
 target 'iosApp' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
-
-  # Pods for iosApp
-  pod 'AWSS3'
-  pod 'AWSCore'
 end
