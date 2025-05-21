@@ -18,7 +18,7 @@ okio = "3.9.1"
 oskitCompose = "4.1.0"
 oskitKmp = "5.0.0"
 skie = "0.10.1"
-ui = "1.8.1"
+ui = "1.8.2"
 material-icons = "1.7.3"
 
 [libraries]

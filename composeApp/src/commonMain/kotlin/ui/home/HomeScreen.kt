@@ -1,11 +1,6 @@
 package ui.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -14,8 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ui.resources.Strings
-import ui.common.Screen
+import com.outsidesource.oskitcompose.layout.FlexRowLayoutScope.weight
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.resources.rememberKmpString
 import com.outsidesource.oskitcompose.scrollbars.KmpVerticalScrollbar
@@ -23,6 +17,8 @@ import com.outsidesource.oskitcompose.scrollbars.rememberKmpScrollbarAdapter
 import com.outsidesource.oskitkmp.lib.Platform
 import com.outsidesource.oskitkmp.lib.current
 import ui.app.theme.AppTheme
+import ui.common.Screen
+import ui.resources.Strings
 
 @Composable
 fun HomeScreen(
@@ -82,6 +78,10 @@ fun HomeScreen(
                 Button(
                     content = { Text("Color Picker") },
                     onClick = interactor::colorPickerButtonClicked,
+                )
+                Button(
+                    content = { Text("Window Info") },
+                    onClick = interactor::windowInfoButtonClicked,
                 )
                 Button(
                     content = { Text(rememberKmpString(Strings.iosServices)) },
