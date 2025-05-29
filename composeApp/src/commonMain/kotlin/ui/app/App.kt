@@ -24,6 +24,7 @@ import ui.popups.PopupsScreen
 import ui.viewStateExample.ViewStateExampleScreen
 import ui.htmlDemo.HtmlDemoScreen
 import ui.widgets.WidgetsScreen
+import ui.windowInfo.WindowInfoScreen
 import ui.settingsOpenerExample.SettingsOpenerExampleScreen
 
 @Composable
@@ -55,6 +56,7 @@ fun App(
                 is Route.Capability -> CapabilityScreen()
                 is Route.ColorPicker -> ColorPickerScreen()
                 is Route.SettingsOpenerExample -> SettingsOpenerExampleScreen()
+                is Route.WindowInfo -> WindowInfoScreen()
                 is Route.WebDemo -> HtmlDemoScreen(
                     transitionDirection = if (it == interactor.getActiveRoute()) {
                         RouteTransitionDirection.In

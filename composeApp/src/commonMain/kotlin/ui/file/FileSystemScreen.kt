@@ -10,7 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -20,6 +20,8 @@ import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import com.outsidesource.oskitcompose.popup.Modal
 import com.outsidesource.oskitcompose.scrollbars.KmpVerticalScrollbar
 import com.outsidesource.oskitcompose.scrollbars.rememberKmpScrollbarAdapter
+import com.outsidesource.oskitcompose.systemui.WindowSizeClass
+import com.outsidesource.oskitcompose.systemui.widthSizeClass
 import com.outsidesource.oskitkmp.filesystem.KmpFsRef
 import com.outsidesource.oskitkmp.filesystem.KmpFsRefListItem
 import com.outsidesource.oskitkmp.filesystem.KmpFsType
@@ -46,7 +48,7 @@ fun FileSystemScreen(
         Row(
             modifier = Modifier
                 .padding(horizontal = AppTheme.dimensions.screenPadding.calculateStartPadding(LayoutDirection.Ltr))
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
         ) {
             Tab(
                 label = "Internal",
@@ -178,11 +180,7 @@ private fun SharedFileSystemControls(
             .fillMaxSize()
             .padding(AppTheme.dimensions.screenPadding)
     ) {
-        Row(
-            modifier = Modifier.padding(bottom = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
+        val activeRefContent = @Composable {
             Text("Active Ref:")
             Column {
                 var isExpanded by remember { mutableStateOf(false) }
@@ -222,6 +220,23 @@ private fun SharedFileSystemControls(
             }
 
             Text(state.activeRef?.toString() ?: "None")
+        }
+
+        if (LocalWindowInfo.current.widthSizeClass > WindowSizeClass.S) {
+            Row(
+                modifier = Modifier.padding(bottom = 24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                activeRefContent()
+            }
+        } else {
+            Column(
+                modifier = Modifier.padding(bottom = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                activeRefContent()
+            }
         }
 
         Column(

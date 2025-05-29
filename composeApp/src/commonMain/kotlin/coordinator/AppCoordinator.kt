@@ -21,10 +21,7 @@ class AppCoordinator(): Coordinator(
     }
 
     fun coordinatorHasBackStack() = hasBackStack()
-    fun popToHome() = transaction {
-        pop { whileTrue { true } }
-        replace(Route.Home)
-    }
+    fun popToHome() = pop { whileTrue { true } }
     fun popBackStack() = pop()
 
     fun appStateExampleClicked() = push(Route.AppStateExample)
@@ -40,4 +37,5 @@ class AppCoordinator(): Coordinator(
     fun colorPickerClicked() = push(Route.ColorPicker)
     fun settingsOpenerExampleClicked() = push(Route.SettingsOpenerExample)
     fun htmlDemoClicked() = push(Route.WebDemo)
+    fun windowInfoClicked() = push(Route.WindowInfo)
 }

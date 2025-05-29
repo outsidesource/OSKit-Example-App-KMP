@@ -10,12 +10,10 @@ import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import com.outsidesource.oskitcompose.systemui.rememberKmpWindowInfo
-import kotlin.math.min
+import com.outsidesource.oskitcompose.systemui.WindowSizeClass
+import com.outsidesource.oskitcompose.systemui.widthSizeClass
 
 val LocalAppColors = staticCompositionLocalOf<IAppColors> { LightAppColors }
 val LocalAppTypography = staticCompositionLocalOf<IAppTypography> { AppTypography(LightAppColors, PhoneAppDimensions) }
@@ -43,25 +41,16 @@ fun AppTheme(
     colorsOverride: IAppColors? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val windowInfo = rememberKmpWindowInfo()
+    val sizeClass = LocalWindowInfo.current.widthSizeClass
     val colors = when {
         colorsOverride != null -> colorsOverride
         !isSystemInDarkTheme() -> LightAppColors
         else -> DarkAppColors
     }
 
-    val containerSize = windowInfo.containerSize
-    val density = LocalDensity.current
-    val size = remember(containerSize) {
-        with(density) {
-            DpSize(containerSize.width.toDp(), containerSize.height.toDp())
-        }
-    }
-
-    val minDimension = min(size.width.value, size.height.value).dp
     val dimensions = when {
-        minDimension <= 600.dp -> PhoneAppDimensions
-        minDimension <= 1024.dp -> TabletAppDimensions
+        sizeClass < WindowSizeClass.Tablet -> PhoneAppDimensions
+        sizeClass < WindowSizeClass.Desktop -> TabletAppDimensions
         else -> DesktopAppDimensions
     }
     val typography = remember(colors, dimensions) { AppTypography(colors, dimensions) }

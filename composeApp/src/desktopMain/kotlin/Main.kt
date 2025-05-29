@@ -3,6 +3,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.application
 import com.outsidesource.oskitcompose.lib.koinInjector
+import com.outsidesource.oskitcompose.systemui.KmpAppLifecycleObserver
+import com.outsidesource.oskitcompose.systemui.KmpAppLifecycleObserverContext
 import com.outsidesource.oskitcompose.systemui.KmpWindowInsetsHolder
 import com.outsidesource.oskitcompose.systemui.LocalKmpWindowInsets
 import com.outsidesource.oskitcompose.window.SizedWindow
@@ -32,6 +34,7 @@ fun main() = application {
         state = windowState,
     ) {
         DisposableEffect(Unit) {
+            KmpAppLifecycleObserver.init(KmpAppLifecycleObserverContext(this@SizedWindow.window))
             KmpFs.init(KmpFsContext(window = this@SizedWindow.window, appName = "OSKit-Example-App"))
             onDispose {  }
         }
