@@ -1,19 +1,22 @@
 package ui.settingsOpenerExample
 
-import coordinator.AppCoordinator
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.systemui.KmpSettingsScreen
 import com.outsidesource.oskitkmp.systemui.SettingsScreenType
+import coordinator.AppCoordinator
 import kotlinx.coroutines.launch
 
 data class SettingsOpenerExampleViewState(
-    val text: Boolean = true
+    val appSettingsOutcome: String? = null,
+    val systemSettingsOutcome: String? = null,
+    val btSettingsOutcome: String? = null,
+    val locationSettingsOutcome: String? = null,
 )
 
 class SettingsOpenerExampleViewInteractor(
     private val coordinator: AppCoordinator,
     private val screenOpener: KmpSettingsScreen
-): Interactor<SettingsOpenerExampleViewState>(
+) : Interactor<SettingsOpenerExampleViewState>(
     initialState = SettingsOpenerExampleViewState()
 ) {
 
@@ -25,25 +28,45 @@ class SettingsOpenerExampleViewInteractor(
 
     fun appSettingsClicked() {
         interactorScope.launch {
-            screenOpener.open(SettingsScreenType.App)
+            val res = screenOpener.open(SettingsScreenType.App)
+            update { state ->
+                state.copy(
+                    appSettingsOutcome = res.toString()
+                )
+            }
         }
     }
 
     fun systemSettingsClicked() {
         interactorScope.launch {
-            screenOpener.open(SettingsScreenType.SystemSettings)
+            val res = screenOpener.open(SettingsScreenType.SystemSettings)
+            update { state ->
+                state.copy(
+                    systemSettingsOutcome = res.toString()
+                )
+            }
         }
     }
 
     fun bluetoothSettingsClicked() {
         interactorScope.launch {
-            screenOpener.open(SettingsScreenType.Bluetooth)
+            val res = screenOpener.open(SettingsScreenType.Bluetooth)
+            update { state ->
+                state.copy(
+                    btSettingsOutcome = res.toString()
+                )
+            }
         }
     }
 
     fun locationSettingsClicked() {
         interactorScope.launch {
-            screenOpener.open(SettingsScreenType.Location)
+            val res = screenOpener.open(SettingsScreenType.Location)
+            update { state ->
+                state.copy(
+                    locationSettingsOutcome = res.toString()
+                )
+            }
         }
     }
 }

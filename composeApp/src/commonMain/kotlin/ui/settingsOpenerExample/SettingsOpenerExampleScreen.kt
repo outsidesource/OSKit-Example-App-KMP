@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -33,26 +34,32 @@ fun SettingsOpenerExampleScreen(
                 content = { Text("Open App Settings") },
                 onClick = interactor::appSettingsClicked
             )
+            ResultLabel(state.appSettingsOutcome)
 
             Button(
                 content = { Text("Open System Settings") },
                 onClick = interactor::systemSettingsClicked
             )
+            ResultLabel(state.systemSettingsOutcome)
 
             Button(
                 content = { Text("Open Bluetooth Settings") },
                 onClick = interactor::bluetoothSettingsClicked
             )
+            ResultLabel(state.btSettingsOutcome)
 
             Button(
                 content = { Text("Open Location Settings") },
                 onClick = interactor::locationSettingsClicked
             )
-
-            Button(
-                content = { Text("Pop To Home") },
-                onClick = interactor::popToHome
-            )
+            ResultLabel(state.locationSettingsOutcome)
         }
+    }
+}
+
+@Composable
+private fun ResultLabel(message: String?) {
+    if (!message.isNullOrBlank()) {
+        Text("Result is $message", modifier = Modifier.padding(top = 4.dp, bottom = 16.dp))
     }
 }
