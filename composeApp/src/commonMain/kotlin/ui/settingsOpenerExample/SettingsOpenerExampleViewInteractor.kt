@@ -1,7 +1,7 @@
 package ui.settingsOpenerExample
 
 import com.outsidesource.oskitkmp.interactor.Interactor
-import com.outsidesource.oskitkmp.systemui.KmpSettingsScreen
+import com.outsidesource.oskitkmp.systemui.KmpSettingsScreenOpener
 import com.outsidesource.oskitkmp.systemui.SettingsScreenType
 import coordinator.AppCoordinator
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ data class SettingsOpenerExampleViewState(
 
 class SettingsOpenerExampleViewInteractor(
     private val coordinator: AppCoordinator,
-    private val screenOpener: KmpSettingsScreen
+    private val screenOpener: KmpSettingsScreenOpener
 ) : Interactor<SettingsOpenerExampleViewState>(
     initialState = SettingsOpenerExampleViewState()
 ) {
@@ -23,8 +23,6 @@ class SettingsOpenerExampleViewInteractor(
     override fun computed(state: SettingsOpenerExampleViewState): SettingsOpenerExampleViewState {
         return state
     }
-
-    fun popToHome() = coordinator.popToHome()
 
     fun appSettingsClicked() {
         interactorScope.launch {
