@@ -12,6 +12,7 @@ interface IKVStoreDemoService {
     suspend fun addTodoItem(title: String): Outcome<TodoItem, Any>
     suspend fun removeTodoItem(id: String): Boolean
     suspend fun changeState(id: String, completed: Boolean): Boolean
+    suspend fun rename(id: String, name: String): Boolean
 }
 
 @Serializable

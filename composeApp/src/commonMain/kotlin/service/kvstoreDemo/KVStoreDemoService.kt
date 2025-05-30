@@ -69,6 +69,20 @@ class KVStoreDemoService(
         }
     }
 
+    override suspend fun rename(id: String, name: String): Boolean {
+        val data = readItemsSnapshot().toMutableList()
+        val item = data.find { it.id == id }
+
+        return if (item != null) {
+            val index = data.indexOf(item)
+            data[index] = item.copy(name = name)
+            writeItemsSnapshot(data)
+            true
+        } else {
+            false
+        }
+    }
+
     private suspend fun readItemsSnapshot(): List<TodoItem> {
         return node.await()?.getSerializable(
             KEY_ITEMS,
