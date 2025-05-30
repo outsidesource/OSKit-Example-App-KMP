@@ -14,6 +14,21 @@ private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 private const val KEY_ITEMS = "items"
 
 
+/**
+ * A simple KVStore demo service that demonstrates how to use KmpKvStore to store and retrieve data in a reactive
+ * way. Note, the implementation here is simplified for the demo purposes.
+ *
+ * The KVStoreDemoService is a simple service that stores and retrieves TodoItems in a reactive way. It uses a single
+ * KmpKvStore node to store the serialized list of [TodoItem]. The [KmpKvStore] node is opened asynchronously when the service is
+ * initialized. The [KmpKvStore] node is closed when the service is destroyed.
+ *
+ * The [KVStoreDemoService] provides a flow of a list of [TodoItem] that can be observed using the observeTodos() function.
+ *
+ * The [KVStoreDemoService] provides functions to add, remove, update, and rename TodoItems using the addTodoItem(),
+ * removeTodoItem(), changeState(), and rename() functions, respectively.
+ *
+ * This service is being consumed in the [ui.kvstoreDemo.KVStoreDemoScreenViewInteractor].
+ */
 class KVStoreDemoService(
     private val storage: IKmpKvStore,
 ) : IKVStoreDemoService {
