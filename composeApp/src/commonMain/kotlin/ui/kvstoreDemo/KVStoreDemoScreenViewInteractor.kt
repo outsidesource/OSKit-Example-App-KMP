@@ -2,6 +2,7 @@ package ui.kvstoreDemo
 
 import com.outsidesource.oskitkmp.interactor.Interactor
 import com.outsidesource.oskitkmp.outcome.Outcome
+import com.outsidesource.oskitkmp.outcome.unwrapOrNull
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import service.kvstoreDemo.IKVStoreDemoService
@@ -32,6 +33,12 @@ class KVStoreDemoScreenViewInteractor(
                     )
                 }
             }
+        }
+
+        interactorScope.launch {
+            // As observeSerializable does not emit the initial value upon subscription, we do a technical
+            // store update to trigger the initial emission. This is a temporary workaround until the issue is fixed
+            kvStoreDemoService.removeTodoItem(kvStoreDemoService.addTodoItem("XXXXX1234567890").unwrapOrNull()?.id ?: "")
         }
     }
 
