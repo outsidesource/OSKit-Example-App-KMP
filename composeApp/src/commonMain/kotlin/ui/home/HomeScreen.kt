@@ -112,6 +112,10 @@ fun HomeScreen(
                         onClick = interactor::htmlDemoButtonClicked,
                         enabled = Platform.current == Platform.WebBrowser,
                     )
+                    Button(
+                        content = { Text("KV Store Demo") },
+                        onClick = interactor::kvStoreButtonClicked,
+                    )
                 }
             }
         }

@@ -23,6 +23,7 @@ import ui.markdown.MarkdownScreen
 import ui.popups.PopupsScreen
 import ui.viewStateExample.ViewStateExampleScreen
 import ui.htmlDemo.HtmlDemoScreen
+import ui.kvstoreDemo.KVStoreDemoScreen
 import ui.widgets.WidgetsScreen
 import ui.windowInfo.WindowInfoScreen
 
@@ -62,6 +63,7 @@ fun App(
                         RouteTransitionDirection.Out
                     }
                 )
+                is Route.KVStore -> KVStoreDemoScreen()
             }
         }
     }

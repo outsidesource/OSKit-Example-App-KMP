@@ -9,6 +9,7 @@ import java.util.Properties
 import kotlin.apply
 
 plugins {
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.compose)
@@ -111,6 +112,7 @@ kotlin {
             api(libs.koin.core)
             api(libs.kotlinx.datetime)
             api(libs.atomicfu)
+            api(libs.kotlinx.serialization.json)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

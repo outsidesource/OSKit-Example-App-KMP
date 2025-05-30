@@ -14,6 +14,7 @@ koinCore = "4.0.0"
 kotlinxAtomicfu = "0.26.1"
 kotlinxCoroutinesCore = "1.10.2"
 kotlinxDatetime = "0.6.1"
+kotlinxSerialization = "1.6.3"
 okio = "3.9.1"
 oskitCompose = "4.1.0"
 oskitKmp = "5.0.0"
@@ -36,6 +37,7 @@ oskit-compose = { module = "com.outsidesource:oskit-compose", version.ref = "osk
 oskit-kmp = { module = "com.outsidesource:oskit-kmp", version.ref = "oskitKmp" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 material-icons = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "material-icons" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -43,4 +45,5 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }

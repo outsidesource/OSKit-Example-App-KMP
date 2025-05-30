@@ -13,6 +13,8 @@ import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import service.kvstoreDemo.IKVStoreDemoService
+import service.kvstoreDemo.KVStoreDemoService
 import ui.app.AppViewInteractor
 import ui.appStateExample.AppStateExampleViewInteractor
 import ui.capability.CapabilityScreenViewInteractor
@@ -22,6 +24,7 @@ import ui.device.DeviceHomeViewInteractor
 import ui.file.FileSystemViewInteractor
 import ui.home.HomeViewInteractor
 import ui.iosServices.IOSServicesScreenViewInteractor
+import ui.kvstoreDemo.KVStoreDemoScreenViewInteractor
 import ui.popups.PopupsScreenViewInteractor
 import ui.viewStateExample.ViewStateExampleViewInteractor
 
@@ -47,6 +50,7 @@ fun commonModule() = module {
 
     single { DeviceInteractor(get()) }
     single { AppInteractor(get()) }
+    single { KVStoreDemoService(get()) } bind IKVStoreDemoService::class
 
     factory { params -> AppViewInteractor(params[0], get(), get()) }
     factory { ScreenViewInteractor(get(), get()) }
@@ -59,4 +63,5 @@ fun commonModule() = module {
     factory { IOSServicesScreenViewInteractor(get()) }
     factory { CapabilityScreenViewInteractor(get()) }
     factory { ColorPickerViewInteractor() }
+    factory { KVStoreDemoScreenViewInteractor(get()) }
 }
