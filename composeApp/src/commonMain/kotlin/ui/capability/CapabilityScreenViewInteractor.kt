@@ -24,6 +24,7 @@ class CapabilityScreenViewInteractor(
         get() = when (state.capabilityType) {
             CapabilityType.Bluetooth -> capabilityService.bluetooth
             CapabilityType.Location -> capabilityService.location
+            CapabilityType.Notification -> capabilityService.location
         }
 
     init {
@@ -72,4 +73,5 @@ class CapabilityScreenViewInteractor(
 enum class CapabilityType {
     Bluetooth,
     Location,
+    Notification,
 }
