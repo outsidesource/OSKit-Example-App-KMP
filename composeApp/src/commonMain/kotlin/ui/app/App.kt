@@ -23,6 +23,8 @@ import ui.markdown.MarkdownScreen
 import ui.popups.PopupsScreen
 import ui.viewStateExample.ViewStateExampleScreen
 import ui.htmlDemo.HtmlDemoScreen
+import ui.openForResultExample.ConfirmationScreen
+import ui.openForResultExample.OpenForResultExampleScreen
 import ui.widgets.WidgetsScreen
 import ui.windowInfo.WindowInfoScreen
 
@@ -62,6 +64,8 @@ fun App(
                         RouteTransitionDirection.Out
                     }
                 )
+                is Route.OpenForResultExample -> OpenForResultExampleScreen()
+                is Route.OpenForResultExampleConfirmation -> ConfirmationScreen()
             }
         }
     }

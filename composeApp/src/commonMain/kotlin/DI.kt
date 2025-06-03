@@ -22,6 +22,8 @@ import ui.device.DeviceHomeViewInteractor
 import ui.file.FileSystemViewInteractor
 import ui.home.HomeViewInteractor
 import ui.iosServices.IOSServicesScreenViewInteractor
+import ui.openForResultExample.ConfirmationViewInteractor
+import ui.openForResultExample.OpenForResultExampleViewInteractor
 import ui.popups.PopupsScreenViewInteractor
 import ui.viewStateExample.ViewStateExampleViewInteractor
 
@@ -59,4 +61,6 @@ fun commonModule() = module {
     factory { IOSServicesScreenViewInteractor(get()) }
     factory { CapabilityScreenViewInteractor(get()) }
     factory { ColorPickerViewInteractor() }
+    factory { OpenForResultExampleViewInteractor(get()) }
+    factory { ConfirmationViewInteractor(get()) }
 }

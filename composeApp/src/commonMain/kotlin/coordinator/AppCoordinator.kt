@@ -37,4 +37,15 @@ class AppCoordinator(): Coordinator(
     fun colorPickerClicked() = push(Route.ColorPicker)
     fun htmlDemoClicked() = push(Route.WebDemo)
     fun windowInfoClicked() = push(Route.WindowInfo)
+    fun openForResultExampleClicked() = push(Route.OpenForResultExample)
+    suspend fun openForResultExampleConfirmationClicked() = transactionWithResult<Boolean>(Boolean::class) {
+        push(Route.OpenForResultExampleConfirmation)
+    }
+    fun openForResultExampleConfirmationYesClicked() {
+        pop { withResult(true) }
+    }
+    fun openForResultExampleConfirmationNoClicked() {
+        pop { withResult(false) }
+    }
+
 }

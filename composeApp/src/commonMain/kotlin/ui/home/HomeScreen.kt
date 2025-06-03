@@ -112,6 +112,10 @@ fun HomeScreen(
                         onClick = interactor::htmlDemoButtonClicked,
                         enabled = Platform.current == Platform.WebBrowser,
                     )
+                    Button(
+                        content = { Text("Open Route For Result Example") },
+                        onClick = interactor::openForResultExampleClicked,
+                    )
                 }
             }
         }
