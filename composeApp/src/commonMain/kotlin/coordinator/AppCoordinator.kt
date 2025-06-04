@@ -37,5 +37,5 @@ class AppCoordinator(): Coordinator(
     fun colorPickerClicked() = push(Route.ColorPicker)
     fun htmlDemoClicked() = push(Route.WebDemo)
     fun windowInfoClicked() = push(Route.WindowInfo)
-    fun kvStorelicked() = push(Route.KVStore)
+    fun kvStoreClicked() = push(Route.KVStore)
 }

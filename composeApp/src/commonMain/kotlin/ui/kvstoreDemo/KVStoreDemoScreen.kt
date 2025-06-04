@@ -97,6 +97,7 @@ fun KVStoreDemoScreen(
                             item = item,
                             isSelected = item.id == state.selectedTodoItem?.id,
                             onItemClick = { interactor.selectTodoItem(item.id) },
+                            onItemCheckChanged = { interactor.toDoItemCompletionStatusChanged(item, it) }
                         )
                         Divider()
                     }
@@ -143,7 +144,7 @@ fun KVStoreDemoScreen(
                         Checkbox(
                             checked = state.selectedTodoItem.completed,
                             onCheckedChange = { isChecked ->
-                                interactor.currentToDoItemCompletionStatusChanged(isChecked)
+                                interactor.toDoItemCompletionStatusChanged(state.selectedTodoItem, isChecked)
                             }
                         )
                         Text("Completed")
@@ -173,7 +174,8 @@ fun KVStoreDemoScreen(
 fun TodoListItem(
     item: TodoItem,
     isSelected: Boolean,
-    onItemClick: () -> Unit
+    onItemClick: () -> Unit,
+    onItemCheckChanged: (Boolean) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -189,8 +191,8 @@ fun TodoListItem(
         )
         Checkbox(
             checked = item.completed,
-            onCheckedChange = null, // Display only, editing handled in the detail view
-            enabled = false,
+            onCheckedChange = { onItemCheckChanged(it) },
+            enabled = true,
             modifier = Modifier.padding(start = 8.dp)
         )
     }

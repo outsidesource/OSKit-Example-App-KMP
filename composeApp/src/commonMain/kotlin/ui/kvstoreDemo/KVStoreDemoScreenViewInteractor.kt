@@ -34,12 +34,6 @@ class KVStoreDemoScreenViewInteractor(
                 }
             }
         }
-
-        interactorScope.launch {
-            // As observeSerializable does not emit the initial value upon subscription, we do a technical
-            // store update to trigger the initial emission. This is a temporary workaround until the issue is fixed
-            kvStoreDemoService.removeTodoItem(kvStoreDemoService.addTodoItem("XXXXX1234567890").unwrapOrNull()?.id ?: "")
-        }
     }
 
     fun newTodoNameTyped(value: String) {
@@ -58,8 +52,7 @@ class KVStoreDemoScreenViewInteractor(
         }
     }
 
-    fun currentToDoItemCompletionStatusChanged(completed: Boolean) {
-        val item = state.selectedTodoItem ?: return
+    fun toDoItemCompletionStatusChanged(item: TodoItem, completed: Boolean) {
         interactorScope.launch {
             kvStoreDemoService.changeState(item.id, completed)
         }

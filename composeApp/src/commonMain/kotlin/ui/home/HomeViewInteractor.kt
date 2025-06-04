@@ -19,5 +19,5 @@ class HomeViewInteractor(
     fun colorPickerButtonClicked() = coordinator.colorPickerClicked()
     fun htmlDemoButtonClicked() = coordinator.htmlDemoClicked()
     fun windowInfoButtonClicked() = coordinator.windowInfoClicked()
-    fun kvStoreButtonClicked() = coordinator.kvStorelicked()
+    fun kvStoreButtonClicked() = coordinator.kvStoreClicked()
 }

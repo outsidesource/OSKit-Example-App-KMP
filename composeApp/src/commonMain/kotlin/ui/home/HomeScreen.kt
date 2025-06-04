@@ -103,6 +103,10 @@ fun HomeScreen(
                         onClick = interactor::windowInfoButtonClicked,
                     )
                     Button(
+                        content = { Text("KV Store Demo") },
+                        onClick = interactor::kvStoreButtonClicked,
+                    )
+                    Button(
                         content = { Text(rememberKmpString(Strings.iosServices)) },
                         onClick = interactor::iosServicesButtonClicked,
                         enabled = Platform.current == Platform.IOS,
@@ -111,10 +115,6 @@ fun HomeScreen(
                         content = { Text("HTML in WASM Demo") },
                         onClick = interactor::htmlDemoButtonClicked,
                         enabled = Platform.current == Platform.WebBrowser,
-                    )
-                    Button(
-                        content = { Text("KV Store Demo") },
-                        onClick = interactor::kvStoreButtonClicked,
                     )
                 }
             }
