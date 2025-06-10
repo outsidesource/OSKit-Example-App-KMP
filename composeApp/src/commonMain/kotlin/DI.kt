@@ -1,6 +1,7 @@
 import com.outsidesource.oskitkmp.capability.BluetoothCapabilityFlags
 import com.outsidesource.oskitkmp.capability.KmpCapabilities
 import com.outsidesource.oskitkmp.capability.LocationCapabilityFlags
+import com.outsidesource.oskitkmp.capability.StorageCapabilityFlags
 import com.outsidesource.oskitkmp.filesystem.KmpFs
 import coordinator.AppCoordinator
 import interactor.app.AppInteractor
@@ -41,6 +42,7 @@ fun commonModule() = module {
         KmpCapabilities(
             bluetoothFlags = BluetoothCapabilityFlags.entries.toTypedArray(),
             locationFlags = LocationCapabilityFlags.entries.toTypedArray(),
+            storageFlags = StorageCapabilityFlags.entries.toTypedArray(),
         )
     }
     single { AppCoordinator() }
