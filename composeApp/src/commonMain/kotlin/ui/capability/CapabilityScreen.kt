@@ -32,6 +32,11 @@ fun CapabilityScreen(
                 isActive = state.capabilityType == CapabilityType.Location,
                 onClick = { interactor.capabilityTypeClicked(CapabilityType.Location) }
             )
+            Tab(
+                label = "Nfc",
+                isActive = state.capabilityType == CapabilityType.Nfc,
+                onClick = { interactor.capabilityTypeClicked(CapabilityType.Nfc) }
+            )
         }
 
         Item("Status", state.status.toString())
