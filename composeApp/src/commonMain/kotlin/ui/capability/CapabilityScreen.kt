@@ -32,6 +32,11 @@ fun CapabilityScreen(
                 isActive = state.capabilityType == CapabilityType.Location,
                 onClick = { interactor.capabilityTypeClicked(CapabilityType.Location) }
             )
+            Tab(
+                label = "Camera",
+                isActive = state.capabilityType == CapabilityType.Camera,
+                onClick = { interactor.capabilityTypeClicked(CapabilityType.Camera) }
+            )
         }
 
         Item("Status", state.status.toString())
