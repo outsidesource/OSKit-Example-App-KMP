@@ -20,10 +20,6 @@ class SettingsOpenerExampleViewInteractor(
     initialState = SettingsOpenerExampleViewState()
 ) {
 
-    override fun computed(state: SettingsOpenerExampleViewState): SettingsOpenerExampleViewState {
-        return state
-    }
-
     fun appSettingsClicked() {
         interactorScope.launch {
             val res = settingsScreenOpener.open(SettingsScreenType.App)
