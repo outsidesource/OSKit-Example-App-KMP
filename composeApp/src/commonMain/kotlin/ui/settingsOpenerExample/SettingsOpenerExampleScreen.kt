@@ -23,7 +23,7 @@ fun SettingsOpenerExampleScreen(
 ) {
     val state = interactor.collectAsState()
 
-    Screen("Settings Opener Example") {
+    Screen("Settings Opener") {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
