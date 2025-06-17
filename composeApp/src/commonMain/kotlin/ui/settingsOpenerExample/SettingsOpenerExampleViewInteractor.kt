@@ -1,7 +1,7 @@
 package ui.settingsOpenerExample
 
 import com.outsidesource.oskitkmp.interactor.Interactor
-import com.outsidesource.oskitkmp.systemui.KmpSettingsScreenOpener
+import com.outsidesource.oskitkmp.systemui.IKmpSettingsScreenOpener
 import com.outsidesource.oskitkmp.systemui.SettingsScreenType
 import coordinator.AppCoordinator
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ data class SettingsOpenerExampleViewState(
 
 class SettingsOpenerExampleViewInteractor(
     private val coordinator: AppCoordinator,
-    private val screenOpener: KmpSettingsScreenOpener
+    private val screenOpener: IKmpSettingsScreenOpener
 ) : Interactor<SettingsOpenerExampleViewState>(
     initialState = SettingsOpenerExampleViewState()
 ) {
