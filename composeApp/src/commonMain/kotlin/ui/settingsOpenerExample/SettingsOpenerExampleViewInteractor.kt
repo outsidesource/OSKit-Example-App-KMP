@@ -15,7 +15,7 @@ data class SettingsOpenerExampleViewState(
 
 class SettingsOpenerExampleViewInteractor(
     private val coordinator: AppCoordinator,
-    private val screenOpener: IKmpSettingsScreenOpener
+    private val settingsScreenOpener: IKmpSettingsScreenOpener
 ) : Interactor<SettingsOpenerExampleViewState>(
     initialState = SettingsOpenerExampleViewState()
 ) {
@@ -26,7 +26,7 @@ class SettingsOpenerExampleViewInteractor(
 
     fun appSettingsClicked() {
         interactorScope.launch {
-            val res = screenOpener.open(SettingsScreenType.App)
+            val res = settingsScreenOpener.open(SettingsScreenType.App)
             update { state ->
                 state.copy(
                     appSettingsOutcome = res.toString()
@@ -37,7 +37,7 @@ class SettingsOpenerExampleViewInteractor(
 
     fun systemSettingsClicked() {
         interactorScope.launch {
-            val res = screenOpener.open(SettingsScreenType.SystemSettings)
+            val res = settingsScreenOpener.open(SettingsScreenType.SystemSettings)
             update { state ->
                 state.copy(
                     systemSettingsOutcome = res.toString()
@@ -48,7 +48,7 @@ class SettingsOpenerExampleViewInteractor(
 
     fun bluetoothSettingsClicked() {
         interactorScope.launch {
-            val res = screenOpener.open(SettingsScreenType.Bluetooth)
+            val res = settingsScreenOpener.open(SettingsScreenType.Bluetooth)
             update { state ->
                 state.copy(
                     btSettingsOutcome = res.toString()
@@ -59,7 +59,7 @@ class SettingsOpenerExampleViewInteractor(
 
     fun locationSettingsClicked() {
         interactorScope.launch {
-            val res = screenOpener.open(SettingsScreenType.Location)
+            val res = settingsScreenOpener.open(SettingsScreenType.Location)
             update { state ->
                 state.copy(
                     locationSettingsOutcome = res.toString()
