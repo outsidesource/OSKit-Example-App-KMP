@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.1.21"
+kotlin = "2.2.0"
 agp = "8.9.3"
 android-compileSdk = "35"
 android-minSdk = "28"
@@ -16,8 +16,8 @@ kotlinxCoroutinesCore = "1.10.2"
 kotlinxDatetime = "0.6.2"
 okio = "3.9.1"
 oskitCompose = "4.1.0"
-oskitKmp = "5.0.0"
-skie = "0.10.2"
+oskitKmp = "5.1.0"
+skie = "0.10.4"
 ui = "1.8.3"
 material-icons = "1.7.3"
 
