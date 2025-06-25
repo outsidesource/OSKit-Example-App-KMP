@@ -1,8 +1,6 @@
 import Foundation
 import ComposeApp
 
-typealias Outcome = Oskit_kmpOutcome
-
 class SwiftExampleService : ISwiftExampleService {
     
     func createFlowInSwift() -> SkieSwiftFlow<String> {
