@@ -38,7 +38,7 @@ class AppCoordinator(): Coordinator(
     fun htmlDemoClicked() = push(Route.WebDemo)
     fun windowInfoClicked() = push(Route.WindowInfo)
     fun openForResultExampleClicked() = push(Route.OpenForResultExample)
-    suspend fun openForResultExampleConfirmationClicked() = transactionWithResult<Boolean>(Boolean::class) {
+    suspend fun openForResultExampleConfirmationClicked() = transactionWithResult(Boolean::class) {
         push(Route.OpenForResultExampleConfirmation)
     }
     fun openForResultExampleConfirmationYesClicked() {

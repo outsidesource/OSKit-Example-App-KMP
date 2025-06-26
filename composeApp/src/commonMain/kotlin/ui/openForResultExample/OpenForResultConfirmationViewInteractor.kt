@@ -7,7 +7,7 @@ data class ConfirmationViewState(
     val result: Boolean? = null,
 )
 
-class ConfirmationViewInteractor(
+class OpenForResultConfirmationViewInteractor(
     private val coordinator: AppCoordinator
 ): Interactor<ConfirmationViewState>(
     initialState = ConfirmationViewState()

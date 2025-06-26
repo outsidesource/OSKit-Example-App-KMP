@@ -38,9 +38,7 @@ fun OpenForResultExampleScreen(
                 onClick = interactor::openConfirmationRouteClicked
             )
 
-            if (state.result != null) {
-                Text("Returned result: ${if (state.result) "Yes" else "No"}")
-            }
+            Text("Returned result: ${state.result?.toString()?:"Cancelled"}")
 
         }
     }

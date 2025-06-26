@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,8 +15,8 @@ import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import ui.common.Screen
 
 @Composable
-fun ConfirmationScreen(
-    interactor: ConfirmationViewInteractor = rememberInjectForRoute()
+fun OpenForResultConfirmationScreen(
+    interactor: OpenForResultConfirmationViewInteractor = rememberInjectForRoute()
 ) {
     val state = interactor.collectAsState()
 
@@ -27,17 +26,17 @@ fun ConfirmationScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("Did you just sign in from a new device?")
+            Text("Return Result:")
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
-                    content = { Text("Yes, that was me") },
+                    content = { Text("True") },
                     onClick = interactor::yesClicked
                 )
                 Button(
-                    content = { Text("No, that's not me") },
+                    content = { Text("False") },
                     onClick = interactor::noClicked
                 )
             }
