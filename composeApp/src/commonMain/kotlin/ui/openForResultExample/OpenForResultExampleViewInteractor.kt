@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 
 data class OpenForResultExampleViewState(
     val result: Boolean? = null,
+    val exampleDialogWasEverLaunched: Boolean = false,
 )
 
 class OpenForResultExampleViewInteractor(
@@ -16,6 +17,7 @@ class OpenForResultExampleViewInteractor(
 ) {
 
     fun openConfirmationRouteClicked() {
+        update { state -> state.copy(exampleDialogWasEverLaunched = true) }
         interactorScope.launch {
             val res = coordinator.openForResultExampleConfirmationClicked().unwrapOrNull()
             update { state -> state.copy(result = res) }

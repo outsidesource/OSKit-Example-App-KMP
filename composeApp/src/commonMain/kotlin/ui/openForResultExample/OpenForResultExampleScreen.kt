@@ -38,7 +38,9 @@ fun OpenForResultExampleScreen(
                 onClick = interactor::openConfirmationRouteClicked
             )
 
-            Text("Returned result: ${state.result?.toString()?:"Cancelled"}")
+            if (state.exampleDialogWasEverLaunched) {
+                Text("Returned result: ${state.result?.toString() ?: "Cancelled"}")
+            }
 
         }
     }
