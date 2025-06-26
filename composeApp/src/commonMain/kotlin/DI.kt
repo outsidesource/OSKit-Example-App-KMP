@@ -2,6 +2,7 @@ import com.outsidesource.oskitkmp.capability.BluetoothCapabilityFlags
 import com.outsidesource.oskitkmp.capability.KmpCapabilities
 import com.outsidesource.oskitkmp.capability.LocationCapabilityFlags
 import com.outsidesource.oskitkmp.filesystem.KmpFs
+import com.outsidesource.oskitkmp.notifications.KmpLocalNotifications
 import coordinator.AppCoordinator
 import interactor.app.AppInteractor
 import service.device.DeviceService
@@ -22,6 +23,8 @@ import ui.device.DeviceHomeViewInteractor
 import ui.file.FileSystemViewInteractor
 import ui.home.HomeViewInteractor
 import ui.iosServices.IOSServicesScreenViewInteractor
+import ui.notifications.LocalNotificationsScreen
+import ui.notifications.LocalNotificationsScreenViewInteractor
 import ui.popups.PopupsScreenViewInteractor
 import ui.viewStateExample.ViewStateExampleViewInteractor
 
@@ -44,6 +47,7 @@ fun commonModule() = module {
         )
     }
     single { AppCoordinator() }
+    single { KmpLocalNotifications() }
 
     single { DeviceInteractor(get()) }
     single { AppInteractor(get()) }
@@ -59,4 +63,5 @@ fun commonModule() = module {
     factory { IOSServicesScreenViewInteractor(get()) }
     factory { CapabilityScreenViewInteractor(get()) }
     factory { ColorPickerViewInteractor() }
+    factory { LocalNotificationsScreenViewInteractor(get()) }
 }

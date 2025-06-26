@@ -12,6 +12,8 @@ import com.outsidesource.oskitkmp.capability.KmpCapabilityContext
 import com.outsidesource.oskitkmp.filesystem.IKmpFs
 import com.outsidesource.oskitkmp.filesystem.KmpFs
 import com.outsidesource.oskitkmp.filesystem.KmpFsContext
+import com.outsidesource.oskitkmp.notifications.KmpLocalNotifications
+import com.outsidesource.oskitkmp.notifications.KmpLocalNotificationsContext
 import org.koin.core.component.inject
 import ui.app.App
 
@@ -25,6 +27,9 @@ class MainActivity : ComponentActivity() {
 
         val capabilities by koinInjector.inject<KmpCapabilities>()
         capabilities.init(KmpCapabilityContext(this))
+
+        val notifications by koinInjector.inject<KmpLocalNotifications>()
+        notifications.init(KmpLocalNotificationsContext(this))
 
         setContent {
             App()

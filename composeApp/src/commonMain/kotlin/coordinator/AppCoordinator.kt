@@ -37,4 +37,5 @@ class AppCoordinator(): Coordinator(
     fun colorPickerClicked() = push(Route.ColorPicker)
     fun htmlDemoClicked() = push(Route.WebDemo)
     fun windowInfoClicked() = push(Route.WindowInfo)
+    fun localNotificationsClicked() = push(Route.LocalNotifications)
 }

@@ -112,6 +112,10 @@ fun HomeScreen(
                         onClick = interactor::htmlDemoButtonClicked,
                         enabled = Platform.current == Platform.WebBrowser,
                     )
+                    Button(
+                        content = { Text("Local Notifications") },
+                        onClick = interactor::localNotificationsButtonClicked,
+                    )
                 }
             }
         }

@@ -19,4 +19,5 @@ class HomeViewInteractor(
     fun colorPickerButtonClicked() = coordinator.colorPickerClicked()
     fun htmlDemoButtonClicked() = coordinator.htmlDemoClicked()
     fun windowInfoButtonClicked() = coordinator.windowInfoClicked()
+    fun localNotificationsButtonClicked() = coordinator.localNotificationsClicked()
 }
