@@ -64,7 +64,7 @@ kotlin {
             freeCompilerArgs.add("-Xwasm-attach-js-exception")
         }
 
-        moduleName = "composeApp"
+        outputModuleName = "composeApp"
         browser {
             val rootDirPath = project.rootDir.path
             val projectDirPath = project.projectDir.path
