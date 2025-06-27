@@ -30,7 +30,7 @@ fun main() = application {
     SizedWindow(
         title = "OSKit-KMP Example",
         onCloseRequest = ::exitApplication,
-        minWindowSize = Dimension(800, 600),
+        minWindowSize = Dimension(300, 300),
         state = windowState,
     ) {
         DisposableEffect(Unit) {
