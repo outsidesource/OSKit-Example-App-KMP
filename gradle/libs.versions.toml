@@ -18,7 +18,7 @@ okio = "3.9.1"
 oskitCompose = "4.1.0"
 oskitKmp = "5.1.0"
 skie = "0.10.4"
-ui = "1.8.3"
+compose-multiplatform = "1.8.3"
 material-icons = "1.7.3"
 
 [libraries]
@@ -34,7 +34,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 oskit-compose = { module = "com.outsidesource:oskit-compose", version.ref = "oskitCompose" }
 oskit-kmp = { module = "com.outsidesource:oskit-kmp", version.ref = "oskitKmp" }
-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+compose-multiplatform = { module = "androidx.compose.ui:ui", version.ref = "compose-multiplatform" }
 material-icons = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "material-icons" }
 
 [plugins]

@@ -125,7 +125,7 @@ kotlin {
             implementation(kotlin("test"))
         }
         androidMain.dependencies {
-            implementation(libs.ui)
+            implementation(libs.compose.multiplatform)
             implementation(libs.androidx.appcompat)
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.activity.compose)
