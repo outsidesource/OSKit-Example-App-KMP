@@ -32,6 +32,11 @@ fun CapabilityScreen(
                 isActive = state.capabilityType == CapabilityType.Location,
                 onClick = { interactor.capabilityTypeClicked(CapabilityType.Location) }
             )
+            Tab(
+                label = "WiFi Devices",
+                isActive = state.capabilityType == CapabilityType.WifiDevices,
+                onClick = { interactor.capabilityTypeClicked(CapabilityType.WifiDevices) }
+            )
         }
 
         Item("Status", state.status.toString())
