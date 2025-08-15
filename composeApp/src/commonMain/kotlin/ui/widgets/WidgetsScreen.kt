@@ -19,13 +19,14 @@ import com.outsidesource.oskitcompose.form.*
 import com.outsidesource.oskitcompose.modifier.KmpExternalDropData
 import com.outsidesource.oskitcompose.modifier.kmpOnExternalDragAndDrop
 import com.outsidesource.oskitcompose.modifier.outerShadow
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ui.app.theme.AppTheme
 import ui.common.Screen
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalTime::class)
 @Composable
 fun WidgetsScreen() {
     Screen("Widgets") {
