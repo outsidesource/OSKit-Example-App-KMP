@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.outsidesource.oskitcompose.form.*
 import com.outsidesource.oskitcompose.modifier.KmpExternalDropData
 import com.outsidesource.oskitcompose.modifier.kmpOnExternalDragAndDrop
-import com.outsidesource.oskitcompose.modifier.outerShadow
+import com.outsidesource.oskitcompose.modifier.kmpOuterShadow
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ui.app.theme.AppTheme
@@ -107,7 +107,7 @@ fun WidgetsScreen() {
                 modifier = Modifier
                     .size(200.dp)
                     .then(if (dragEntered || dragStarted) {
-                        Modifier.outerShadow(8.dp, color = if (dragEntered) Color.Green else Color.Black)
+                        Modifier.kmpOuterShadow(8.dp, color = if (dragEntered) Color.Green else Color.Black)
                     } else {
                         Modifier
                     })

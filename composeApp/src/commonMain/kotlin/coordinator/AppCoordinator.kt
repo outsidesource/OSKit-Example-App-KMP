@@ -35,6 +35,7 @@ class AppCoordinator(): Coordinator(
     fun widgetsClicked() = push(Route.Widgets)
     fun capabilityClicked() = push(Route.Capability)
     fun colorPickerClicked() = push(Route.ColorPicker)
+    fun sliderClicked() = push(Route.Slider)
     fun htmlDemoClicked() = push(Route.WebDemo)
     fun windowInfoClicked() = push(Route.WindowInfo)
 }

@@ -99,6 +99,10 @@ fun HomeScreen(
                         onClick = interactor::colorPickerButtonClicked,
                     )
                     Button(
+                        content = { Text("Slider") },
+                        onClick = interactor::sliderButtonClicked,
+                    )
+                    Button(
                         content = { Text("Window Info") },
                         onClick = interactor::windowInfoButtonClicked,
                     )

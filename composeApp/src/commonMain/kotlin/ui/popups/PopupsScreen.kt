@@ -18,7 +18,7 @@ import com.outsidesource.oskitcompose.geometry.PopupShape
 import com.outsidesource.oskitcompose.geometry.PopupShapeCaretPosition
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
-import com.outsidesource.oskitcompose.modifier.outerShadow
+import com.outsidesource.oskitcompose.modifier.kmpOuterShadow
 import com.outsidesource.oskitcompose.popup.*
 import com.outsidesource.oskitcompose.systemui.KmpWindowInsets
 import com.outsidesource.oskitcompose.systemui.bottom
@@ -57,7 +57,7 @@ fun PopupsScreen(
                     Column(
                         modifier = Modifier
                             .padding(top = 16.dp, bottom = 4.dp, end = 4.dp, start = 4.dp)
-                            .outerShadow(4.dp, shape = popupShape)
+                            .kmpOuterShadow(4.dp, shape = popupShape)
                             .background(Color(0xFF333333), shape = popupShape)
                             .padding(8.dp)
                     ) {

@@ -23,6 +23,7 @@ import ui.markdown.MarkdownScreen
 import ui.popups.PopupsScreen
 import ui.viewStateExample.ViewStateExampleScreen
 import ui.htmlDemo.HtmlDemoScreen
+import ui.slider.SliderScreen
 import ui.widgets.WidgetsScreen
 import ui.windowInfo.WindowInfoScreen
 
@@ -54,6 +55,7 @@ fun App(
                 is Route.Widgets -> WidgetsScreen()
                 is Route.Capability -> CapabilityScreen()
                 is Route.ColorPicker -> ColorPickerScreen()
+                is Route.Slider -> SliderScreen()
                 is Route.WindowInfo -> WindowInfoScreen()
                 is Route.WebDemo -> HtmlDemoScreen(
                     transitionDirection = if (it == interactor.getActiveRoute()) {
