@@ -50,7 +50,8 @@ data object DarkAppColors: IAppColors by LightAppColors {
             trackBackground = SolidColor(Color(0xFF666666)),
             thumbBackground = SolidColor(Color(0xFFCCCCCC)),
             labelTextStyle = it.labelTextStyle.copy(color = fontColor),
-
+            labelTextStyleDisabled = it.labelTextStyleDisabled.copy(color = fontColor),
+            valueLabelTextStyleDisabled = it.labelTextStyleDisabled.copy(color = fontColor)
         )
     }
 }
