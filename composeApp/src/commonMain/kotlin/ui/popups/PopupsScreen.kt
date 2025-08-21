@@ -57,7 +57,7 @@ fun PopupsScreen(
                     Column(
                         modifier = Modifier
                             .padding(top = 16.dp, bottom = 4.dp, end = 4.dp, start = 4.dp)
-                            .kmpOuterShadow(4.dp, shape = popupShape)
+                            .kmpOuterShadow(4.dp, shape = popupShape, color = Color.Black)
                             .background(Color(0xFF333333), shape = popupShape)
                             .padding(8.dp)
                     ) {
