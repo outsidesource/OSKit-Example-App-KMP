@@ -10,7 +10,7 @@ import com.outsidesource.oskitkmp.lib.current
 
 
 @OptIn(ExperimentalAnimationApi::class)
-class AppCoordinator(): Coordinator(
+class AppCoordinator: Coordinator(
     initialRoute = Route.Home,
     defaultTransition = if (Platform.current.isMobile) PushFromRightRouteTransition else PushFromTopRouteTransition
 ) {

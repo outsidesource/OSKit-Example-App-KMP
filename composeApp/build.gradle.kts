@@ -114,6 +114,7 @@ android {
     namespace = "com.outsidesource.oskitExample"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
