@@ -11,9 +11,9 @@ import kotlin.apply
 
 plugins {
     alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.skie)
 }
 
@@ -31,7 +31,11 @@ kotlin {
 
     jvm("desktop")
 
-    androidTarget()
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
 
     wasmJs {
         compilerOptions {
@@ -109,10 +113,8 @@ kotlin {
 android {
     namespace = "com.outsidesource.oskitExample"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-    minSdk = libs.versions.android.minSdk.get().toInt()
-
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
 
