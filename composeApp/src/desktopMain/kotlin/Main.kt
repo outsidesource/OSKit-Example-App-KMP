@@ -2,7 +2,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.application
-import com.outsidesource.oskitcompose.lib.koinInjector
 import com.outsidesource.oskitcompose.systemui.KmpAppLifecycleObserver
 import com.outsidesource.oskitcompose.systemui.KmpAppLifecycleObserverContext
 import com.outsidesource.oskitcompose.systemui.KmpWindowInsetsHolder
@@ -13,7 +12,6 @@ import com.outsidesource.oskitkmp.capability.KmpCapabilities
 import com.outsidesource.oskitkmp.capability.KmpCapabilityContext
 import com.outsidesource.oskitkmp.filesystem.KmpFs
 import com.outsidesource.oskitkmp.filesystem.KmpFsContext
-import org.koin.core.component.inject
 import ui.app.App
 import java.awt.Dimension
 
@@ -24,7 +22,7 @@ private val koin = initKoin(
 fun main() = application {
     val windowState = rememberPersistedWindowState("OSKit-Example-App", initialSize = Dimension(800, 600))
 
-    val capabilities by koinInjector.inject<KmpCapabilities>()
+    val capabilities by koin.inject<KmpCapabilities>()
     capabilities.init(KmpCapabilityContext())
 
     SizedWindow(

@@ -1,22 +1,20 @@
 [versions]
-kotlin = "2.2.0"
-compose = "1.8.2"
-compose-multiplatform = "1.9.0"
-oskitKmp = "5.1.0"
-oskitCompose = "4.1.0"
-agp = "8.11.1"
+kotlin = "2.3.10"
+composeMultiplatform = "1.10.1"
+oskitKmp = "5.1.0-beta5"
+oskitCompose = "4.1.0-beta6"
+androidGradlePlugin = "9.0.1"
 android-compileSdk = "36"
 android-minSdk = "28"
-android-targetSdk = "36"
-androidx-activityCompose = "1.10.1"
+androidx-activityCompose = "1.12.4"
 androidx-appcompat = "1.7.1"
 androidx-core-ktx = "1.17.0"
 junit = "4.13.2"
-koinCore = "4.1.0"
-kotlinxAtomicfu = "0.29.0"
+koinCore = "4.1.1"
+kotlinxAtomicfu = "0.31.0"
 kotlinxCoroutinesCore = "1.10.2"
 kotlinxDatetime = "0.7.1"
-skie = "0.10.5"
+skie = "0.10.10"
 material-icons = "1.7.3"
 
 [libraries]
@@ -30,13 +28,18 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 oskit-compose = { module = "com.outsidesource:oskit-compose", version.ref = "oskitCompose" }
 oskit-kmp = { module = "com.outsidesource:oskit-kmp", version.ref = "oskitKmp" }
-compose-multiplatform = { module = "androidx.compose.ui:ui", version.ref = "compose-multiplatform" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMultiplatform" }
+compose-ui-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
+compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "composeMultiplatform" }
+compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
+compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "composeMultiplatform" }
 material-icons = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "material-icons" }
 
 [plugins]
-androidApplication = { id = "com.android.application", version.ref = "agp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
+androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }
