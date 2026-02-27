@@ -7,12 +7,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.lib.rememberInject
+import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
 import ui.app.theme.AppTheme
 
 @Composable
 fun Screen(
     title: String,
-    interactor: ScreenViewInteractor = rememberInject(),
+    interactor: ScreenViewInteractor = rememberInjectForRoute(),
     paddingValues: PaddingValues = AppTheme.dimensions.screenPadding,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -22,7 +23,7 @@ fun Screen(
         AppBar(
             modifier = Modifier.zIndex(1f),
             title = title,
-            hasBackStack = interactor.hasBackStack(),
+            hasBackStack = state.hasBackStack,
             isDarkTheme = state.isDarkTheme,
             onThemeToggled = { interactor.onThemeToggled() },
             onBackPress = interactor::appBarBackButtonPressed

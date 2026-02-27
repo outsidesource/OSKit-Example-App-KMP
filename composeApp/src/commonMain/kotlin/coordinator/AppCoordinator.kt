@@ -10,7 +10,7 @@ import com.outsidesource.oskitkmp.lib.current
 
 
 @OptIn(ExperimentalAnimationApi::class)
-class AppCoordinator(): Coordinator(
+class AppCoordinator: Coordinator(
     initialRoute = Route.Home,
     defaultTransition = if (Platform.current.isMobile) PushFromRightRouteTransition else PushFromTopRouteTransition
 ) {
@@ -21,10 +21,7 @@ class AppCoordinator(): Coordinator(
     }
 
     fun coordinatorHasBackStack() = hasBackStack()
-    fun popToHome() = transaction {
-        pop { whileTrue { true } }
-        replace(Route.Home)
-    }
+    fun popToHome() = pop { whileTrue { true } }
     fun popBackStack() = pop()
 
     fun appStateExampleClicked() = push(Route.AppStateExample)
@@ -38,5 +35,7 @@ class AppCoordinator(): Coordinator(
     fun widgetsClicked() = push(Route.Widgets)
     fun capabilityClicked() = push(Route.Capability)
     fun colorPickerClicked() = push(Route.ColorPicker)
+    fun sliderClicked() = push(Route.Slider)
     fun htmlDemoClicked() = push(Route.WebDemo)
+    fun windowInfoClicked() = push(Route.WindowInfo)
 }

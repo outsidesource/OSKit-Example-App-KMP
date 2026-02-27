@@ -20,7 +20,9 @@ sealed class Route(
     data object Widgets: Route(webRoutePath = "/widgets")
     data object Capability : Route(webRoutePath = "/capability")
     data object ColorPicker : Route(webRoutePath = "/color-picker")
+    data object Slider : Route(webRoutePath = "/slider")
     data object WebDemo : Route(webRoutePath = "/web-demo")
+    data object WindowInfo : Route(webRoutePath = "/window-info")
 
     companion object {
         val deepLinks = Router.buildDeepLinks {

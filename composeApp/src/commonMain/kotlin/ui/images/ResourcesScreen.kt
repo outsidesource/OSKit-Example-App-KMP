@@ -22,7 +22,6 @@ import ui.common.Screen
 import com.outsidesource.oskitcompose.resources.LocalLocaleOverride
 import com.outsidesource.oskitcompose.resources.rememberKmpString
 import kotlinx.coroutines.delay
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.DrawableResource
@@ -31,7 +30,10 @@ import org.jetbrains.compose.resources.painterResource
 import oskit_example_app_kmp.composeapp.generated.resources.Res
 import oskit_example_app_kmp.composeapp.generated.resources.penguin
 import oskit_example_app_kmp.composeapp.generated.resources.tux
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun ResourcesScreen() {
     Screen("Resources") {

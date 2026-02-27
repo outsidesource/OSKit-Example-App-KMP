@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.outsidesource.oskitcompose.color.*
+import com.outsidesource.oskitcompose.form.KmpSliderDirection
 import com.outsidesource.oskitcompose.interactor.collectAsState
 import com.outsidesource.oskitcompose.layout.FlexRow
 import com.outsidesource.oskitcompose.lib.rememberInjectForRoute
@@ -175,25 +176,25 @@ fun ColorPickerScreen(
                     modifier = Modifier.fillMaxHeight(),
                     color = state.color,
                     onChange = interactor::colorChanged,
-                    direction = ColorPickerSliderDirection.Vertical,
+                    direction = KmpSliderDirection.Vertical,
                 )
                 KmpColorPickerSaturationSlider(
                     modifier = Modifier.fillMaxHeight(),
                     color = state.color,
                     onChange = interactor::colorChanged,
-                    direction = ColorPickerSliderDirection.Vertical,
+                    direction = KmpSliderDirection.Vertical,
                 )
                 KmpColorPickerValueSlider(
                     modifier = Modifier.fillMaxHeight(),
                     color = state.color,
                     onChange = interactor::colorChanged,
-                    direction = ColorPickerSliderDirection.Vertical,
+                    direction = KmpSliderDirection.Vertical,
                 )
                 KmpColorPickerAlphaSlider(
                     modifier = Modifier.fillMaxHeight(),
                     color = state.color,
                     onChange = interactor::colorChanged,
-                    direction = ColorPickerSliderDirection.Vertical,
+                    direction = KmpSliderDirection.Vertical,
                 )
             }
         }

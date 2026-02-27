@@ -5,7 +5,7 @@ import service.swift.ISwiftExampleService
 
 actual class PlatformContext
 
-private val koin = initKoin(
+val koin = initKoin(
     platformContext = PlatformContext(),
 ).koin
 

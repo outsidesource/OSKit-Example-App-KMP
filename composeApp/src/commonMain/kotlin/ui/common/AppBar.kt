@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.outsidesource.oskitcompose.modifier.outerShadow
+import com.outsidesource.oskitcompose.modifier.kmpOuterShadow
 import com.outsidesource.oskitcompose.systemui.KmpWindowInsets
 import com.outsidesource.oskitcompose.systemui.horizontal
 import com.outsidesource.oskitcompose.systemui.top
@@ -41,7 +41,7 @@ fun AppBar(
 
     Column(
         modifier = modifier
-            .outerShadow(blur = 8.dp, color = Color.Black.copy(alpha = .25f), offset = DpOffset(0.dp, 2.dp))
+            .kmpOuterShadow(blur = 8.dp, color = Color.Black.copy(alpha = .25f), offset = DpOffset(0.dp, 2.dp))
             .background(AppTheme.colors.primary)
             .windowInsetsPadding(KmpWindowInsets.top)
             .windowInsetsPadding(KmpWindowInsets.horizontal)
