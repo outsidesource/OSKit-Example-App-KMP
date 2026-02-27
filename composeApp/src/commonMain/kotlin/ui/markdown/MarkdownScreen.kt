@@ -11,17 +11,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import ui.app.theme.AppTheme
-import ui.common.Screen
+import androidx.compose.ui.text.font.FontWeight
 import com.outsidesource.oskitcompose.markdown.Markdown
 import com.outsidesource.oskitcompose.markdown.MarkdownStyles
 import com.outsidesource.oskitcompose.systemui.KmpWindowInsets
 import com.outsidesource.oskitcompose.systemui.bottom
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
+import oskit_example_app_kmp.composeapp.generated.resources.JetBrainsMono_Regular
 import oskit_example_app_kmp.composeapp.generated.resources.Res
 import oskit_example_app_kmp.composeapp.generated.resources.penguin
 import oskit_example_app_kmp.composeapp.generated.resources.tux
+import ui.app.theme.AppTheme
+import ui.common.Screen
 
 @Composable
 fun MarkdownScreen() {
@@ -29,17 +32,18 @@ fun MarkdownScreen() {
     val tux = painterResource(Res.drawable.tux)
     val defaultFontFamily = AppTheme.typography.defaultFontFamily
     val colors = AppTheme.colors
+    val monospaceFont = Font(Res.font.JetBrainsMono_Regular, FontWeight.Normal)
+    val monospaceFontFamily = remember(monospaceFont) { FontFamily(monospaceFont) }
 
-    val markdownStyles = remember(colors.fontColor) {
+    val markdownStyles = remember(colors.fontColor, monospaceFontFamily) {
         MarkdownStyles()
             .withDefaultTextStyle(TextStyle(fontFamily = defaultFontFamily, color = colors.fontColor))
             .let { it.copy(
-                codeTextStyle = it.codeTextStyle.merge(TextStyle(fontFamily = FontFamily.Monospace)),
+                codeTextStyle = it.codeTextStyle.merge(TextStyle(fontFamily = monospaceFontFamily)),
                 loaderBackgroundColor = colors.primary,
                 linkTextStyle = it.linkTextStyle.merge(TextStyle(color = colors.primary))
             ) }
     }
-
     Screen("Markdown") {
         Markdown(
             modifier = Modifier
